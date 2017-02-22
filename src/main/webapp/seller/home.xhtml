@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+    <b:row style="padding-top: 30px;">
+        <b:column colMd="9" ng:role="complementary" hidden="sm" styleClass="operation-list">
+
+            <div class="account-fun">
+                <b:dropButton value="#{identity.account.firstName} #{identity.account.lastName}">
+                    <b:navLink iconAwesome="key" value="修改密码" href="#"></b:navLink>
+                    <b:navLink iconAwesome="cog" value="帐户设置" href="#"></b:navLink>
+                </b:dropButton>
+            </div>
+
+
+        </b:column>
+        <b:column colMd="3" ng:role="main">
+            <b:panel look="default" title="存量房交易备案" collapsible="false">
+                <b:listLinks>
+
+                    <b:navLink href="#{request.contextPath}/erp/hr/employeeList.xhtml" value="交易挂牌"
+                               iconAwesome="ticket" />
+
+
+                    <b:navLink styleClass="todo-disable" disabled="true" href="#" value="租赁挂牌"
+                               iconAwesome="ticket" />
+
+                    <b:navLink href="#{request.contextPath}/erp/hr/employeeJoin.xhtml" value="房源管理"
+                               iconAwesome="user-plus" />
+
+
+                    <b:navLink href="#{request.contextPath}/erp/operational/officeTypeMgr.xhtml"  value="合同管理"
+                               iconAwesome="sitemap" />
+
+
+                    <b:navLink href="#{request.contextPath}/erp/operational/shopMgr.xhtml"  value="系统设置"
+                               iconAwesome="beer" />
+
+                </b:listLinks>
+            </b:panel>
+        </b:column>
+    </b:row>
+
+</ui:composition>

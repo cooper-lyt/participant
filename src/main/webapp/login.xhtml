@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:b="http://bootsfaces.net/ui"
+        xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
+        xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>#{messages.application_title}</title>
+    <h:outputScript library="bsf" name="js/button.js"/>
+    <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
+
+    <h:outputStylesheet library="github" name="bootstrap.min.css"/>
+    <h:outputStylesheet library="github" name="theme.css" position="last"/>
+</h:head>
+
+<h:body styleClass="session-authentication">
+
+
+    <div class="header header-logged-out" role="banner">
+        <b:container layout="fluid">
+            <span class="header-logo">
+            <b:iconAwesome size="3x" name="vcard"/>
+            </span>
+        </b:container>
+    </div>
+
+    <b:container layout="fluid">
+
+
+        <b:row>
+            <b:column offsetXs="0" colXs="12" offsetSm="2" colSm="8" offsetMd="3" colMd="6" offsetLg="4" colLg="4">
+
+
+                    <div class="auth-form-header">
+                        <h1 style="margin:0;">房产交易管理平台登录</h1>
+                    </div>
+
+
+                <b:messages escape="false"/>
+
+                <b:alert severity="danger" rendered="#{param['type'] eq 'fail'}"><b:iconAwesome name="exclamation-circle"/> <strong>认证失败!</strong> 请检查您的用户名和密码. </b:alert>
+                <b:panel>
+                    <h:form method="POST" prependId="false" styleClass="auth-form">
+                        <label for="j_username">用户名</label>
+                        <h:inputText id="j_username" value="#{loginCredentials.userId}" required="true"
+                                     label="用户名"  renderLabel="true" styleClass="form-control bf-required"/>
+                        <label for="j_password">密码</label>
+                        <h:inputSecret id="j_password" value="#{loginCredentials.password}"
+                                       label="密码"  renderLabel="true" styleClass="form-control bf-required"/>
+                        <b:commandButton look="success" styleClass="btn-block" id="login" value="登陆"
+                                         ng:data-loading-text="认证中..." onclick="$(this).button('loading');" action="#{identity.login}"/>
+                    </h:form>
+                </b:panel>
+
+            </b:column>
+        </b:row>
+    </b:container>
+
+
+
+
+</h:body>
+</html>

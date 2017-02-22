@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="context">
+        <div class="pagehead datasearch-head">
+            <b:container>
+                <b:row>
+                    <b:column colMd="3" hidden="xs,sm">
+
+                        <h1>#{fun_title}</h1>
+                    </b:column>
+                    <b:column colMd="9">
+                        <o:form includeViewParams="true">
+                            <div class="flex-table search-form-fluid">
+                                <div class="flex-table-item flex-table-item-primary">
+                                    <ui:insert name="search-condition"/>
+                                </div>
+                                <div class="flex-table-item">
+                                    <ui:insert name="search-action"/>
+                                </div>
+                            </div>
+
+                        </o:form>
+                    </b:column>
+                </b:row>
+            </b:container>
+        </div>
+
+
+        <ui:insert name="data-context-body">
+            <b:container style="min-height:350px">
+
+                <ui:insert/>
+            </b:container>
+        </ui:insert>
+
+    </ui:define>
+
+</ui:composition>

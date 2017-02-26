@@ -46,6 +46,8 @@ public class ParticipantAuthenticator extends BaseAuthenticator{
             }
 
             BasicModel.grantRole(relationshipManager,root,BasicModel.getRole(identityManager,"seller"));
+            BasicModel.grantRole(relationshipManager,root,BasicModel.getRole(identityManager,"attrCorp"));
+
 
             setAccount(root);
 

@@ -5,6 +5,7 @@ import cc.coopersoft.common.util.DefaultMessageBundle;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -20,6 +21,13 @@ public class EnumHelper {
     private ResourceBundle bundle;
 
     public String getLabel(Enum value){
-        return bundle.getString(value.getClass().getName() + "." + value.name());
+        if (value == null){
+            return "";
+        }
+        try {
+            return bundle.getString(value.getClass().getName() + "." + value.name());
+        }catch (MissingResourceException e){
+            return value.getClass().getName() + "." + value.name();
+        }
     }
 }

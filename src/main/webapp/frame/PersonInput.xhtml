@@ -1,0 +1,65 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <!-- param: personEntityHelper  , render-->
+
+    <h:panelGroup>
+
+
+    <p:outputPanel id="personCardInput" layout="block" styleClass="input-group" >
+
+        <p:outputPanel id="credentialsType" layout="block" styleClass="input-group-btn">
+
+            <h:selectOneMenu label="证件类型" id="personCredentialsTypeInput"
+                             styleClass="selectpicker form-control select-theme"
+                             converter="omnifaces.GenericEnumConverter" pt:data-width="170px"
+                             value="#{_person.credentialsType}" required="true">
+
+                <f:selectItems var="_type" value="#{allowCredentialsTypeList}" itemValue="#{_type}" itemLabel="#{enumHelper.getLabel(_type)}"/>
+
+            </h:selectOneMenu>
+
+        </p:outputPanel>
+
+
+        <b:inputText id="cardNumber"
+                     label="证件编号"
+                     styleClass="form-control"
+                     required="true"
+                     size="25"
+                     maxlength="100"
+                     renderLabel="false"
+                     p:placeholder="证件编号"
+                     value="#{_person.credentialsNumber}">
+        </b:inputText>
+
+
+
+        <div class="input-group-addon">
+            @
+        </div>
+        <b:inputText id="cerdentialsName" value="#{_person.personName}"
+                     p:placeholder="姓名" renderLabel="false"
+                     required="true" styleClass="form-control person-name" label="姓名">
+
+        </b:inputText>
+
+        <ui:insert name="after"/>
+
+    </p:outputPanel>
+
+
+        <p:outputPanel id="personEditFields" styleClass="upgrade-upsell">
+
+            <ui:insert/>
+        </p:outputPanel>
+    </h:panelGroup>
+
+</ui:composition>

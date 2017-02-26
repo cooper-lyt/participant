@@ -29,14 +29,12 @@ public class SecurityInitializer {
 
         IdentityManager identityManager = this.partitionManager.createIdentityManager();
 
-        Role seller = new Role("seller");
-
-        Role developer = new Role("developer");
-        identityManager.add(seller);
-        identityManager.add(developer);
+        identityManager.add(new Role("seller"));
+        identityManager.add(new Role("developer"));
+        identityManager.add(new Role("attrCorp"));
 
 
-        RelationshipManager relationshipManager = this.partitionManager.createRelationshipManager();
+        this.partitionManager.createRelationshipManager();
 
 
     }

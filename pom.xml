@@ -11,6 +11,12 @@
 
   <repositories>
     <repository>
+      <id>in-project</id>
+      <name>In Project Repo</name>
+      <url>file://${project.basedir}/lib/</url>
+    </repository>
+
+    <repository>
       <id>prime-repo</id>
       <name>PrimeFaces Maven Repository</name>
       <url>http://repository.primefaces.org</url>
@@ -58,7 +64,11 @@
   <dependencies>
 
 
-
+    <dependency>
+      <groupId>local.house</groupId>
+      <artifactId>houseInterface</artifactId>
+      <version>2.0.33Bate</version>
+    </dependency>
 
     <!--  deltaspike  -->
 

@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:define name="custom-header">
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select.min.css"/>
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select-plug.css"/>
+        <h:outputScript library="bsf" name="js/dropdown.js"/>
+        <h:outputScript library="bootstrap-select" name="js/bootstrap-select.min.js"/>
+        <h:outputScript library="bootstrap-select" name="js/i18n/defaults-zh_CN.min.js"/>
+    </ui:define>
+
+
+
+    <h:form id="houes-valid"  styleClass="page-form">
+        <b:row>
+            <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
+                <div class="setup-header setup-gift">
+                    <h1 class="subhead-heading">房源审核申请</h1>
+
+                    <ol class="steps steps-4">
+                        <li class="current">
+                            <b:iconAwesome name="stethoscope" size="2x"/>
+                            <strong class="step">产权:</strong>
+                            产权验证
+                        </li>
+                        <li>
+                            <b:iconAwesome name="bookmark" size="2x"/>
+                            <strong class="step">描述:</strong>
+                            房屋描述
+                        </li>
+                        <li>
+                            <b:iconAwesome name="photo" size="2x"/>
+                            <strong class="step">图片:</strong>
+                            图片上传
+                        </li>
+                        <li>
+                            <b:iconAwesome name="university" size="2x"/>
+                            <strong class="step">提交:</strong>
+                            房源提交
+                        </li>
+                    </ol>
+                </div>
+
+                <b:messages globalOnly="false" styleClass="top-messages"/>
+
+                <b:inputText label="权证编号" renderLabel="true"  value="#{houseValid.houseValidInfo.powerCardNumber}"
+                             required="true">
+                </b:inputText>
+                <b:message tooltip="true"/>
+
+                <hr/>
+
+                <p:outputPanel id="valid_radio_panel" >
+
+
+
+                    <div class="form-checkbox">
+                    <b:radiobutton ajax="true" update="valid_radio_panel" converter="omnifaces.GenericEnumConverter" value="#{houseValid.houseValidInfo.validType}" process="@this" itemLabel="测绘标识" itemValue="MBBH_NUMBER" display="inline"/>
+                    <b:iconAwesome name="map"/>
+                    <span class="note">
+                        测绘部门为房屋编制的标识由图号、丘号、幢号、房号组成. 你可以在你的产权证中找到此标识.
+                    </span>
+
+                    <p:outputPanel layout="block" styleClass="upgrade-upsell" rendered="#{houseValid.houseValidInfo.validType eq 'MBBH_NUMBER'}">
+                        <div class="input-group">
+                            <span class="input-group-addon">图<span class="required">*</span></span>
+                            <b:inputText value="#{houseValid.houseValidInfo.mapNumber}"
+                                         required="true" renderLabel="false"
+                                         id="mapNumberInput" label="图号" p:placeholder="图号"/>
+
+                            <span class="input-group-addon">丘<span class="required">*</span></span>
+                            <b:inputText value="#{houseValid.houseValidInfo.blockNumber}" renderLabel="false"
+                                         id="blockNumberInput" required="true" label="丘号"
+                                         p:placeholder="丘号"/>
+
+                            <span class="input-group-addon">幢<span class="required">*</span></span>
+                            <b:inputText value="#{houseValid.houseValidInfo.buildNumber}" renderLabel="false"
+                                         id="buildNumberInput" required="true" label="幢号"
+                                         p:placeholder="幢号"/>
+
+                            <span class="input-group-addon">房<span class="required">*</span></span>
+                            <b:inputText id="houseOrderInput" required="true" label="房号" p:placeholder="房号"
+                                         value="#{houseValid.houseValidInfo.houseNumber}" renderLabel="false"/>
+
+                        </div>
+                    </p:outputPanel>
+                </div>
+                <div class="form-checkbox">
+                    <b:radiobutton ajax="true" update="valid_radio_panel" converter="omnifaces.GenericEnumConverter" value="#{houseValid.houseValidInfo.validType}" itemLabel="房屋编码" process="@this" itemValue="HOUSE_CODE" display="inline"/>
+                    <b:iconAwesome name="tag"/>
+                    <span class="note">
+                        房产管理部门为房屋编制的唯一编码. 你可以在你的产权证中找到此编码.
+                    </span>
+
+                    <p:outputPanel layout="block" styleClass="upgrade-upsell" rendered="#{houseValid.houseValidInfo.validType eq 'HOUSE_CODE'}">
+
+                        <b:inputText value="#{houseValid.houseValidInfo.houseCode}" required="true" placeholder="房屋编码"/>
+
+                    </p:outputPanel>
+
+                </div>
+                <div class="form-checkbox">
+                    <b:radiobutton ajax="true" update="valid_radio_panel"  converter="omnifaces.GenericEnumConverter" value="#{houseValid.houseValidInfo.validType}" itemLabel="不动产单元号" process="@this" itemValue="UNIT_NUMBER" display="inline"/>
+                    <b:iconAwesome name="cubes"/>
+                    <span class="note">
+                        不动产登记部门为不动产编制的唯一编码. 你可以在你的不动产权证中找到此编码.
+                    </span>
+                    <p:outputPanel layout="block" styleClass="upgrade-upsell" rendered="#{houseValid.houseValidInfo.validType eq 'UNIT_NUMBER'}">
+
+                        <b:inputText value="#{houseValid.houseValidInfo.unitNumber}" required="true" placeholder="不动产单元号"/>
+
+                    </p:outputPanel>
+
+                </div>
+                </p:outputPanel>
+
+                <hr/>
+
+                <label for="cardNumber">产权人</label>
+                <ui:decorate template="/frame/PersonInput.xhtml">
+                    <ui:param name="_person" value="#{houseValid.houseValidInfo}"/>
+                    <ui:param name="allowCredentialsTypeList" value="#{allCredentialsTypes}"/>
+
+                    <b:inputText value="#{houseValid.houseValidInfo.tel}" required="true" label="联系电话" renderLabel="true"/>
+                    <b:message/>
+                </ui:decorate>
+
+
+                <hr/>
+
+                <b:commandButton  action="#{houseValid.validHouse}" look="success" value="产权验证"/>
+
+            </b:column>
+
+        </b:row>
+
+    </h:form>
+
+</ui:composition>

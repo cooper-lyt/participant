@@ -221,7 +221,7 @@ label.bf-error {
     list-style: none;
 }
 
-.site-footer .site-footer-mark .fa-cutlery {
+.site-footer .site-footer-mark .fa {
     position: absolute;
     top: 38px;
     left: 50%;
@@ -652,7 +652,11 @@ table.floatThead-table {
 }
 
 .subhead-heading {
+    font-size: 24px;
     font-weight: normal;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 
 .subhead-description {
@@ -953,11 +957,79 @@ table.floatThead-table {
     z-index: inherit !important;
 }
 
+.input-group .input-group-btn .bootstrap-select {
+    margin: 0; !important;
+}
+
 .important-text{
     font-weight: bold;
 }
 
 .todo-disable a , .todo-disable a:hover , .todo-disable a:focus {
     color: #888 !important;
-    cursor: default;
+    cursor: not-allowed;
+}
+
+
+.form-checkbox {
+    padding-left: 20px;
+    margin: 15px 0;
+    vertical-align: middle
+}
+
+.form-checkbox label , .form-checkbox .radio{
+    display: inline;
+}
+.form-checkbox .radio label{
+    padding: 0;
+}
+
+.form-checkbox label em.highlight {
+    position: relative;
+    left: -4px;
+    padding: 2px 4px;
+    font-style: normal;
+    background: #fffbdc;
+    border-radius: 3px
+}
+
+.form-checkbox input[type=checkbox], .form-checkbox input[type=radio] {
+    float: left;
+    margin: 5px 0 0 -55px;
+    vertical-align: middle
+}
+
+.form-checkbox .note {
+    min-height: 17px;
+    display: block;
+    margin: 0;
+    font-size: 12px;
+    font-weight: normal;
+    color: #666
+}
+
+.form-checkbox .fa {
+    float: left;
+    margin-right: 10px;
+    font-size: 26px;
+
+    height: 32px;
+    width: 24px;
+}
+
+.upgrade-upsell {
+    padding-left: 33px;
+    margin: 15px 0;
+}
+
+
+.input-group .form-group:last-child > .form-control{
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+
+.input-group .form-group:first-child > .form-control{
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
 }

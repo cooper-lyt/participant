@@ -6,10 +6,10 @@
 <h:head>
     <c:if test="#{identity.loggedIn}">
         <c:if test="#{auth.hasRole('seller')}">
-            <meta http-equiv="Refresh" content="0; URL=seller/home.jsf"/>
+            <meta http-equiv="Refresh" content="0; URL=seller/home.xhtml"/>
         </c:if>
         <c:if test="#{auth.hasRole('developer')}">
-            <meta http-equiv="Refresh" content="0; URL=seller/home.jsf"/>
+            <meta http-equiv="Refresh" content="0; URL=seller/home.xhtml"/>
         </c:if>
     </c:if>
 </h:head>

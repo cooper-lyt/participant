@@ -34,6 +34,9 @@ public class ParticipantAuthenticator extends BaseAuthenticator{
     @Inject
     private IdentityManager identityManager;
 
+    @Inject
+    private AttrUser attrUser;
+
     public void authenticate() {
 
         if ("root".equals(credentials.getUserId()) && "coopersoft".equals(credentials.getPassword())){
@@ -42,11 +45,16 @@ public class ParticipantAuthenticator extends BaseAuthenticator{
             User root = BasicModel.getUser(identityManager,"root");
             if (root == null){
                 root = new User("root");
+                root.setFirstName("测试");
+                root.setFirstName("软件");
                 identityManager.add(root);
             }
 
+            attrUser.setGroupId("test");
+            attrUser.setGroupName("软件测试");
+
             BasicModel.grantRole(relationshipManager,root,BasicModel.getRole(identityManager,"seller"));
-            BasicModel.grantRole(relationshipManager,root,BasicModel.getRole(identityManager,"attrCorp"));
+
 
 
             setAccount(root);

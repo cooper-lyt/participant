@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by cooper on 26/02/2017.
@@ -12,6 +13,15 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "HOUSE_SELL_INFO", catalog = "CONTRACT")
 public class HouseSaleInfo implements java.io.Serializable{
+
+    public enum HouseSourceStatus{
+        SUBMIT,PREPARE,CHECK,CANCEL,SELL
+    }
+
+    public enum SaleType{
+        DEVELOPER,SELLER;
+    }
+
 
     private String id;
 
@@ -34,11 +44,18 @@ public class HouseSaleInfo implements java.io.Serializable{
     private String cover;
     private int inFloor;
     private String houseCode;
+    private String sourceId;
+    private Date applyTime;
+    private HouseSourceStatus status;
+    private Date checkTime;
+    private SaleType saleType;
 
     private HouseSource houseSource;
 
     public HouseSaleInfo() {
     }
+
+
 
 
     @Id
@@ -159,7 +176,7 @@ public class HouseSaleInfo implements java.io.Serializable{
         this.schoolArea = schoolArea;
     }
 
-    @Column(name = "SCHOOL_AREA", length = 32)
+    @Column(name = "METRO_AREA", length = 32)
     @Size(max = 32)
     public String getMetroArea() {
         return metroArea;
@@ -233,6 +250,58 @@ public class HouseSaleInfo implements java.io.Serializable{
 
     public void setHouseCode(String houseCode) {
         this.houseCode = houseCode;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS", nullable = false, length = 20)
+    @NotNull
+    public HouseSourceStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(HouseSourceStatus status) {
+        this.status = status;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TYPE", nullable = false, length = 20)
+    @NotNull
+    public SaleType getSaleType() {
+        return saleType;
+    }
+
+    public void setSaleType(SaleType saleType) {
+        this.saleType = saleType;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CHECK_TIME", length = 19, columnDefinition = "DATETIME")
+    public Date getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(Date checkTime) {
+        this.checkTime = checkTime;
+    }
+
+    @Column(name = "SOURCE_ID" , nullable = false, length = 32, unique = true)
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "APPLY_TIME", nullable = false, length = 19, columnDefinition = "DATETIME")
+    @NotNull
+    public Date getApplyTime() {
+        return applyTime;
+    }
+
+    public void setApplyTime(Date applyTime) {
+        this.applyTime = applyTime;
     }
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "houseSaleInfo", optional = false)

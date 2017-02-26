@@ -31,7 +31,7 @@ public class SecurityInitializer {
 
         identityManager.add(new Role("seller"));
         identityManager.add(new Role("developer"));
-        identityManager.add(new Role("attrCorp"));
+
 
 
         this.partitionManager.createRelationshipManager();

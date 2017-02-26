@@ -37,6 +37,7 @@
                      maxlength="100"
                      renderLabel="false"
                      p:placeholder="证件编号"
+                     autocomplete="false"
                      value="#{_person.credentialsNumber}">
         </b:inputText>
 
@@ -46,7 +47,7 @@
             @
         </div>
         <b:inputText id="cerdentialsName" value="#{_person.personName}"
-                     p:placeholder="姓名" renderLabel="false"
+                     p:placeholder="姓名" renderLabel="false" autocomplete="false"
                      required="true" styleClass="form-control person-name" label="姓名">
 
         </b:inputText>

@@ -1,21 +1,25 @@
-package cc.coopersoft.house.participant.data;
+package cc.coopersoft.house.participant.controller;
 
 import com.dgsoft.common.system.PersonEntity;
+
+import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 
 /**
  * Created by cooper on 22/02/2017.
  */
-public class HouseValidInfo implements PersonEntity {
+
+
+@Named
+@ViewScoped
+public class HouseValidInfo implements PersonEntity, java.io.Serializable {
 
     public enum ValidType {
         MBBH_NUMBER,HOUSE_CODE,UNIT_NUMBER
     }
 
     public HouseValidInfo() {
-    }
-
-    public HouseValidInfo(ValidType validType) {
-        this.validType = validType;
+        validType = ValidType.MBBH_NUMBER;
     }
 
     private CredentialsType credentialsType;

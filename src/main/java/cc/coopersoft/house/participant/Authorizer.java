@@ -25,7 +25,8 @@ public class Authorizer {
     @Secures
     @AttrCorp
     public boolean doAttrCorpCheck(Identity identity, IdentityManager identityManager, RelationshipManager relationshipManager) throws Exception{
-        return BasicModel.hasRole(relationshipManager, identity.getAccount(), BasicModel.getRole(identityManager, "attrCorp"));
+        return BasicModel.hasRole(relationshipManager, identity.getAccount(), BasicModel.getRole(identityManager, "seller")) ||
+                BasicModel.hasRole(relationshipManager, identity.getAccount(), BasicModel.getRole(identityManager, "developer"));
     }
 
 

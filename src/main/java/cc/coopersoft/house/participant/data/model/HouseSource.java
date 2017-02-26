@@ -1,6 +1,6 @@
 package cc.coopersoft.house.participant.data.model;
 
-import cc.coopersoft.house.participant.data.HouseValidInfo;
+import cc.coopersoft.house.participant.controller.HouseValidInfo;
 import com.dgsoft.common.system.PersonEntity;
 
 import javax.persistence.*;
@@ -15,37 +15,37 @@ import java.util.Date;
 @Table(name = "HOUSE_SOURCE", catalog = "CONTRACT")
 public class HouseSource implements PersonEntity , java.io.Serializable{
 
-    public enum HouseSourceStatus{
-        SUBMIT,PREPARE,CHECK,CANCEL,SELL
+    public enum ShowType{
+        TOW,SELF
     }
 
     public HouseSource() {
     }
 
-    public HouseSource(String id, String sourceId, HouseValidInfo vaildInfo){
+    public HouseSource(String id, String groupId, ShowType showType, HouseValidInfo validInfo,HouseSaleInfo houseSaleInfo ){
         this.id = id;
-        this.sourceId = sourceId;
-        this.applyTime = new Date();
-        this.powerCardNumber = vaildInfo.getPowerCardNumber();
-        this.credentialsNumber = vaildInfo.getCredentialsNumber();
-        this.credentialsType = vaildInfo.getCredentialsType();
-        this.personName = vaildInfo.getPersonName();
-        this.tel = vaildInfo.getTel();
-        this.status = HouseSourceStatus.PREPARE;
-
+        this.showType = showType;
+        this.groupId = groupId;
+        this.powerCardNumber = validInfo.getPowerCardNumber();
+        this.credentialsNumber = validInfo.getCredentialsNumber();
+        this.credentialsType = validInfo.getCredentialsType();
+        this.personName = validInfo.getPersonName();
+        this.tel = validInfo.getTel();
+        this.houseSaleInfo = houseSaleInfo;
     }
 
 
     private String id;
-    private String sourceId;
-    private Date applyTime;
+
     private String powerCardNumber;
     private CredentialsType credentialsType;
     private String credentialsNumber;
     private String personName;
     private String tel;
-    private HouseSourceStatus status;
-    private Date checkTime;
+    private String groupId;
+    private ShowType showType;
+
+
     private Long version;
 
     private HouseSaleInfo houseSaleInfo;
@@ -62,25 +62,6 @@ public class HouseSource implements PersonEntity , java.io.Serializable{
         this.id = id;
     }
 
-    @Column(name = "SOURCE_ID" , nullable = false, length = 32, unique = true)
-    public String getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "APPLY_TIME", nullable = false, length = 19, columnDefinition = "DATETIME")
-    @NotNull
-    public Date getApplyTime() {
-        return applyTime;
-    }
-
-    public void setApplyTime(Date applyTime) {
-        this.applyTime = applyTime;
-    }
 
     @Column(name = "POWER_CARD_NUMBER",nullable = false, length = 50)
     @NotNull
@@ -137,27 +118,6 @@ public class HouseSource implements PersonEntity , java.io.Serializable{
         this.tel = tel;
     }
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "STATUS", nullable = false, length = 20)
-    @NotNull
-    public HouseSourceStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(HouseSourceStatus status) {
-        this.status = status;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "APPLY_TIME", length = 19, columnDefinition = "DATETIME")
-    public Date getCheckTime() {
-        return checkTime;
-    }
-
-    public void setCheckTime(Date checkTime) {
-        this.checkTime = checkTime;
-    }
-
     @Version
     @Column(name = "VERSION", nullable = false)
     public Long getVersion() {
@@ -166,6 +126,28 @@ public class HouseSource implements PersonEntity , java.io.Serializable{
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "SHOW_TYPE",nullable = false,length = 20)
+    @NotNull
+    public ShowType getShowType() {
+        return showType;
+    }
+
+    public void setShowType(ShowType showType) {
+        this.showType = showType;
+    }
+
+    @Column(name = "MASTER_GROUP_ID",nullable = false,length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)

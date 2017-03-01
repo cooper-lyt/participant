@@ -5,6 +5,7 @@
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:b="http://bootsfaces.net/ui"
+        xmlns:o="http://omnifaces.org/ui"
         xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
         xmlns:f="http://xmlns.jcp.org/jsf/core">
 <h:head>
@@ -14,10 +15,69 @@
 
     <h:outputStylesheet library="github" name="bootstrap.min.css"/>
     <h:outputStylesheet library="github" name="theme.css" position="last"/>
+
+    <h:outputScript library="long-mai" name="mToken_K1.js"/>
+    <h:outputScript library="long-mai" name="K1mTokenPlugin.js"/>
+    <h:outputScript library="long-mai" name="base64.js"/>
+
+    <h:outputScript>
+        var randData = '#{attrUser.rndData}';
+        //<![CDATA[
+
+
+        //点击登录按钮时调用此函数方法
+        function OnKeyLogon() {
+
+        //获取页面文本框的密码
+        var userpin = document.getElementById("userpin").value;
+
+        if (userpin == "") {
+        alert("用户密码不能为空!");
+        return false;
+        }
+
+        //获取本Key的唯一硬件ID
+        K1mTokenFindDevice("j_username");
+
+        var keyUID = document.getElementById("j_username").value;
+
+        //打开加密锁
+        var nRet = K1mToken.K1_mTokenOpen(keyUID, userpin);
+        if(nRet != 0)
+        {
+        alert("验证用户密码权限失败,错误码:" + K1mToken.K1_mTokenGetLastError());
+        return false;
+        }
+
+        //获取本Key的唯一硬件ID
+        //K1mTokenFindDevice("uid");
+
+        //进行客户端摘要的计算
+       // var randomMessageFromServer = "#{authenticationManager.encodeRndData}";
+        var randomStr = _Base64encode(randData);
+        //var keyUID = document.getElementById("uid").value;
+        var sha1Str = K1mToken.K1_mTokenSHA1WithSeed(keyUID, randomStr);
+        if(sha1Str == null || sha1Str == "")
+        {
+        alert("SHA1摘要生成失败,错误码:" + K1mToken.K1_mTokenGetLastError());
+        return false;
+        }
+
+            document.getElementById("j_password").value = sha1Str;
+
+
+        return true;
+        }
+
+        //]]>
+    </h:outputScript>
 </h:head>
 
 <h:body styleClass="session-authentication">
 
+    <object id="mTokenPlugin" type="application/x-mtokenplugin" width="0" height="0">
+        <param value="pluginLoaded"/>
+    </object>
 
     <div class="header header-logged-out" role="banner">
         <b:container layout="fluid">
@@ -41,18 +101,24 @@
 
                 <b:messages escape="false"/>
 
-                <b:alert severity="danger" rendered="#{param['type'] eq 'fail'}"><b:iconAwesome name="exclamation-circle"/> <strong>认证失败!</strong> 请检查您的用户名和密码. </b:alert>
+                <b:alert severity="danger" rendered="#{param['type'] eq 'fail'}"><b:iconAwesome name="exclamation-circle"/> <strong>登录失败!</strong> #{enumHelper.getLabel(attrUser.logonStatus)}. </b:alert>
                 <b:panel>
-                    <h:form method="POST" prependId="false" styleClass="auth-form">
-                        <label for="j_username">用户名</label>
-                        <h:inputText id="j_username" value="#{loginCredentials.userId}" required="true"
+                    <div class="auth-form">
+
+                        <label for="j_username_22">用户名</label>
+                        <h:inputText id="j_username_22"
                                      label="用户名"  renderLabel="true" styleClass="form-control bf-required"/>
-                        <label for="j_password">密码</label>
-                        <h:inputSecret id="j_password" value="#{loginCredentials.password}"
-                                       label="密码"  renderLabel="true" styleClass="form-control bf-required"/>
+                        <label for="userpin">密码</label>
+                        <input type="password" class="form-control bf-required" id="userpin"/>
+                        <h:form method="POST" prependId="false">
+                        <h:inputHidden id="j_username" value="#{loginCredentials.userId}"/>
+                        <h:inputHidden id="j_password" value="#{loginCredentials.password}"/>
                         <b:commandButton look="success" styleClass="btn-block" id="login" value="登陆"
-                                         ng:data-loading-text="认证中..." onclick="$(this).button('loading');" action="#{identity.login}"/>
-                    </h:form>
+                                         ng:data-loading-text="认证中..." action="#{identity.login}"
+                                         onclick="if (OnKeyLogon()) {$(this).button('loading');} else {return false;}"/>
+                        </h:form>
+
+                    </div>
                 </b:panel>
 
             </b:column>

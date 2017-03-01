@@ -60,7 +60,7 @@ public class HouseSaleApplyMock implements HouseSaleApply{
 
 
 
-            HouseSource houseSource = new HouseSource(UUID.randomUUID().toString().replace("-", ""), attrUser.getGroupId(), HouseSource.ShowType.TOW, info, houseSaleInfo);
+            HouseSource houseSource = new HouseSource(UUID.randomUUID().toString().replace("-", ""), attrUser.getLoginData().getCorpInfo().getId(), HouseSource.ShowType.TOW, info, houseSaleInfo);
             houseSaleInfo.setHouseSource(houseSource);
             entityManager.persist(houseSource);
 

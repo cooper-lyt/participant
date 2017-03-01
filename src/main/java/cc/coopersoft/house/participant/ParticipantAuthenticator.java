@@ -1,5 +1,11 @@
 package cc.coopersoft.house.participant;
 
+import cc.coopersoft.comm.exception.HttpApiServerException;
+import cc.coopersoft.house.participant.controller.RunParam;
+import cc.coopersoft.house.sale.HouseSellService;
+import cc.coopersoft.house.sale.data.Developer;
+import cc.coopersoft.house.sale.data.Seller;
+import com.dgsoft.developersale.LogonStatus;
 import net.bootsfaces.utils.FacesMessages;
 import org.apache.deltaspike.jsf.api.message.JsfMessage;
 import org.picketlink.annotations.PicketLink;
@@ -11,6 +17,7 @@ import org.picketlink.idm.model.basic.BasicModel;
 import org.picketlink.idm.model.basic.User;
 
 import javax.inject.Inject;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -23,10 +30,10 @@ public class ParticipantAuthenticator extends BaseAuthenticator{
     private DefaultLoginCredentials credentials;
 
     @Inject
-    private JsfMessage<Messages> messages;
+    private RunParam runParam;
 
     @Inject
-    private  RelationshipManager relationshipManager;
+    private RelationshipManager relationshipManager;
 
     @Inject
     private Logger logger;
@@ -39,28 +46,36 @@ public class ParticipantAuthenticator extends BaseAuthenticator{
 
     public void authenticate() {
 
-        if ("root".equals(credentials.getUserId()) && "coopersoft".equals(credentials.getPassword())){
-            setStatus(AuthenticationStatus.SUCCESS);
 
-            User root = BasicModel.getUser(identityManager,"root");
-            if (root == null){
-                root = new User("root");
-                root.setFirstName("测试");
-                root.setFirstName("软件");
-                identityManager.add(root);
+
+        try {
+            attrUser.setLoginData(HouseSellService.login(runParam.getStringParam("nginx_address"),credentials.getUserId(),credentials.getPassword(),attrUser.getRndData()));
+            if (LogonStatus.LOGON.equals(attrUser.getLogonStatus())){
+                User user = BasicModel.getUser(identityManager,attrUser.getLoginData().getAttrEmp().getId());
+                if (user == null){
+                    user = new User(attrUser.getLoginData().getAttrEmp().getId());
+                    user.setFirstName(attrUser.getLoginData().getAttrEmp().getName());
+                    identityManager.add(user);
+                }
+
+                if (attrUser.getLoginData().getCorpInfo() instanceof Seller){
+                    BasicModel.grantRole(relationshipManager,user,BasicModel.getRole(identityManager,"seller"));
+                }else if (attrUser.getLoginData().getCorpInfo() instanceof Developer){
+                    BasicModel.grantRole(relationshipManager,user,BasicModel.getRole(identityManager,"developer"));
+                }else{
+                    throw new IllegalArgumentException("unknow logon type:" + attrUser.getLoginData().getCorpInfo().getClass());
+                }
+
+                setAccount(user);
+                setStatus(AuthenticationStatus.SUCCESS);
+                return;
             }
-
-            attrUser.setGroupId("test");
-            attrUser.setGroupName("软件测试");
-
-            BasicModel.grantRole(relationshipManager,root,BasicModel.getRole(identityManager,"seller"));
-
-
-
-            setAccount(root);
-
-        } else {
-            setStatus(AuthenticationStatus.FAILURE);
+        } catch (HttpApiServerException e) {
+            logger.log(Level.WARNING,e.getMessage(),e);
         }
+
+        setStatus(AuthenticationStatus.FAILURE);
+
+
     }
 }

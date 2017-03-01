@@ -1,10 +1,14 @@
 package cc.coopersoft.house.participant;
 
+import cc.coopersoft.house.sale.data.LoginResult;
+import com.dgsoft.developersale.LogonStatus;
 import org.picketlink.idm.model.annotation.IdentityStereotype;
 import org.picketlink.idm.model.basic.User;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+
+import java.security.SecureRandom;
 
 import static org.picketlink.idm.model.annotation.IdentityStereotype.Stereotype.USER;
 
@@ -18,24 +22,38 @@ public class AttrUser implements java.io.Serializable{
     public AttrUser() {
     }
 
-    private String GroupId;
-    private String GroupName;
+    private LoginResult loginData;
 
+    private String rndData;
 
-    public String getGroupId() {
-        return GroupId;
+    public String getRndData() {
+        if (rndData == null){
+            rndData = "";
+            int b ;
+            int a ;
+            SecureRandom r = new SecureRandom();
+            for (int i = 0; i < 32; i++) {
+                a = r.nextInt(26);
+                b = (char) (a + 65);
+                rndData += new Character((char) b).toString();
+            }
+        }
+        return rndData;
     }
 
-    public void setGroupId(String groupId) {
-        GroupId = groupId;
+    public LogonStatus getLogonStatus(){
+        if (loginData == null){
+            return LogonStatus.SERVER_ERROR;
+        }else{
+            return loginData.getLogonStatus();
+        }
     }
 
-    public String getGroupName() {
-        return GroupName;
+    public LoginResult getLoginData() {
+        return loginData;
     }
 
-    public void setGroupName(String groupName) {
-        GroupName = groupName;
+    public void setLoginData(LoginResult loginData) {
+        this.loginData = loginData;
     }
-
 }

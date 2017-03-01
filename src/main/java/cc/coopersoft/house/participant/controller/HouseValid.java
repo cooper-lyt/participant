@@ -2,6 +2,7 @@ package cc.coopersoft.house.participant.controller;
 
 import cc.coopersoft.house.participant.Messages;
 import cc.coopersoft.house.participant.annotations.Seller;
+import cc.coopersoft.house.participant.data.model.HouseSaleInfo;
 import cc.coopersoft.house.participant.data.model.HouseSource;
 import cc.coopersoft.house.participant.service.HouseSaleApply;
 import org.apache.deltaspike.core.api.config.view.ViewConfig;
@@ -27,14 +28,14 @@ public class HouseValid implements java.io.Serializable{
     @Inject
     private JsfMessage<Messages> messages;
 
-    private HouseSource houseSource;
+    private HouseSaleInfo houseSaleInfo;
 
     public HouseValidInfo getHouseValidInfo() {
         return houseValidInfo;
     }
 
-    public HouseSource getHouseSource() {
-        return houseSource;
+    public HouseSaleInfo getHouseSaleInfo() {
+        return houseSaleInfo;
     }
 
     @Seller
@@ -43,7 +44,7 @@ public class HouseValid implements java.io.Serializable{
         HouseSaleApply.ValidResult validResult = houseSaleApply.validSaleHouse(houseValidInfo);
         switch (validResult.getValidStatus()) {
             case SUCCESS:
-                houseSource = validResult.getHouseSource();
+                houseSaleInfo = validResult.getHouseSource().getHouseSaleInfo();
                 return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSellInfo.class;
             case HOUSE_NOT_FOUND:
                  messages.addError().validHouseNotFound();

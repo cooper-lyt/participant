@@ -1,12 +1,72 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title>Title</title>
-</head>
-<body>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
 
-</body>
-</html>
+    <h:form id="houes-valid"  styleClass="page-form">
+        <b:row>
+            <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
+                <div class="setup-header setup-gift">
+                    <h1 class="subhead-heading">房源审核申请</h1>
+
+                    <ol class="steps steps-4">
+                        <li class="complete">
+                            <b:iconAwesome name="check" size="2x"/>
+                            <strong class="step">产权:</strong>
+                            产权验证
+                        </li>
+                        <li class="current">
+                            <b:iconAwesome name="bookmark" size="2x"/>
+                            <strong class="step">描述:</strong>
+                            房屋描述
+                        </li>
+                        <li>
+                            <b:iconAwesome name="photo" size="2x"/>
+                            <strong class="step">图片:</strong>
+                            图片上传
+                        </li>
+                        <li>
+                            <b:iconAwesome name="university" size="2x"/>
+                            <strong class="step">提交:</strong>
+                            房源提交
+                        </li>
+                    </ol>
+                </div>
+
+
+                <b:inputText value="#{houseValid.houseSaleInfo.title}" label="标题" required="true"/>
+                <b:message/>
+
+                <b:inputTextarea value="#{houseValid.houseSaleInfo.description}" label="描述" />
+                <b:message/>
+
+                <b:inputTextarea value="#{houseValid.houseSaleInfo.environment}" label="环境"/>
+                <b:message/>
+
+                <div class="input-group">
+
+                    <b:inputText value="#{houseValid.houseSaleInfo.roomCount}"
+                             required="true" renderLabel="false" autocomplete="false" label="室" />
+
+                    <span class="input-group-addon">室<span class="required">*</span></span>
+                    <b:inputText value="#{houseValidInfo.blockNumber}" renderLabel="false"
+                             required="true" label="厅" autocomplete="false"/>
+                    <span class="input-group-addon">厅<span class="required">*</span></span>
+                </div>
+
+
+
+
+            </b:column>
+
+
+        </b:row>
+    </h:form>
+</ui:composition>

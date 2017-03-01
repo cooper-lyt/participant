@@ -20,7 +20,6 @@ public class HttpSecurityConfiguration {
                     .authenticationUri("/login.xhtml")
                     .loginPage("/login.xhtml")
                     .errorPage("/login.xhtml?type=fail")
-
                     .restoreOriginalRequest()
                 .forPath("/javax.faces.resource/*").unprotected()
                 .forPath("/logout")

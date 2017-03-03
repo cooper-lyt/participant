@@ -2,7 +2,6 @@ package cc.coopersoft.common;
 
 import cc.coopersoft.common.util.DefaultMessageBundle;
 
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.MissingResourceException;
@@ -14,8 +13,6 @@ import java.util.ResourceBundle;
 @Named
 public class EnumHelper {
 
-    @Inject
-    private FacesContext facesContext;
 
     @Inject @DefaultMessageBundle
     private ResourceBundle bundle;

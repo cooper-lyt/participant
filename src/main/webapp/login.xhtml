@@ -105,9 +105,10 @@
                 <b:panel>
                     <div class="auth-form">
 
-                        <label for="j_username_22">用户名</label>
-                        <h:inputText id="j_username_22"
-                                     label="用户名"  renderLabel="true" styleClass="form-control bf-required"/>
+                        <label for="login_type">登录为</label>
+                        <b:selectOneMenu id="login_type" >
+                            <f:selectItem itemLabel="从业机构" itemValue="1" noSelectionOption="true"/>
+                        </b:selectOneMenu>
                         <label for="userpin">密码</label>
                         <input type="password" class="form-control bf-required" id="userpin"/>
                         <h:form method="POST" prependId="false">

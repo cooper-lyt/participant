@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+    <entity class="cc.coopersoft.house.sale.data.HouseSource" access="FIELD">
+        <table name="HOUSE_SOURCE" catalog="CONTRACT"/>
+        <attributes>
+            <id name="id">
+                <column name="ID" unique="true" nullable="false" length="32"/>
+            </id>
+
+            <basic name="powerCardNumber">
+                <column name="POWER_CARD_NUMBER" nullable="false" length="50"/>
+            </basic>
+
+            <basic name="credentialsType">
+                <column name="CREDENTIALS_TYPE" nullable="false" length="32"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
+            <basic name="credentialsNumber">
+                <column name="CREDENTIALS_NUMBER" nullable="false" length="100"/>
+            </basic>
+
+            <basic name="personName">
+                <column name="OWNER_NAME" nullable="false" length="50"/>
+            </basic>
+            
+            <basic name="tel">
+                <column name="TEL" nullable="false" length="16"/>
+            </basic>
+
+            <basic name="showType">
+                <column name="SHOW_TYPE" nullable="false" length="20"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+            
+            <basic name="groupId">
+                <column name="MASTER_GROUP_ID" nullable="false" length="32"/>
+            </basic>
+
+            <version name="version">
+                <column name="VERSION" nullable="false"/>
+            </version>
+
+            <one-to-one fetch="LAZY" orphan-removal="true" name="houseSaleInfo">
+                <primary-key-join-column/>
+                <cascade> <cascade-all/></cascade>
+            </one-to-one>
+
+        </attributes>
+    </entity>
+
+</entity-mappings>

@@ -21,5 +21,8 @@ public interface Messages{
     @MessageTemplate("{valid_house_owner_fail}")
     String validHouesOwnerFail();
 
+    @MessageTemplate("{api_server_fail}")
+    String serverFail();
+
 
 }

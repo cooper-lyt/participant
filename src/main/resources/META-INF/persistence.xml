@@ -8,9 +8,11 @@
 
     <persistence-unit name="entityManagerFactory" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/HouseContract</jta-data-source>
-        <class>cc.coopersoft.house.participant.data.model.HouseSource</class>
-        <class>cc.coopersoft.house.participant.data.model.HouseSaleInfo</class>
+        <mapping-file>jpa/houseSaleInfo.orm.xml</mapping-file>
+        <mapping-file>jpa/houseSource.orm.xml</mapping-file>
+
         <class>cc.coopersoft.house.participant.data.model.SystemParam</class>
+
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

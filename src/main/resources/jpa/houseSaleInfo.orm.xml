@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+    <entity class="cc.coopersoft.house.sale.data.HouseSaleInfo" access="FIELD">
+        <table name="HOUSE_SELL_INFO" catalog="CONTRACT"/>
+        <attributes>
+            <id name="id">
+                <column name="ID" unique="true" nullable="false" length="32"/>
+            </id>
+            
+            <basic name="title">
+                <column name="TITLE" nullable="false" length="64"/>
+            </basic>
+
+            <basic name="tags">
+                <column name="TAGS" length="512"/>
+            </basic>
+            
+            <basic name="description">
+                <column name="DESCRIPTION" length="512"/>
+            </basic>
+
+            <basic name="environment">
+                <column name="ENVIRONMENT" length="512"/>
+            </basic>
+            
+            <basic name="lat">
+                <column name="LAT" precision="18" scale="14"/>
+            </basic>
+            
+            <basic name="lng">
+                <column name="LNG" precision="18" scale="14"/>
+            </basic>
+
+            <basic name="zoom">
+                <column name="ZOOM"/>
+            </basic>
+
+            <basic name="roomCount">
+                <column name="ROOM_COUNT" nullable="false"/>
+            </basic>
+            
+            <basic name="livingRoom">
+                <column name="LIVING_ROOM" nullable="false"/>
+            </basic>
+            
+            <basic name="localArea">
+                <column name="LOCAL_AREA" length="32"/>
+            </basic>
+            
+            <basic name="schoolArea">
+                <column name="SCHOOL_AREA" length="32"/>
+            </basic>
+
+            <basic name="metroArea">
+                <column name="METRO_AREA" length="32"/>
+            </basic>
+
+            <basic name="direction">
+                <column name="DIRECTION" length="32"/>
+            </basic>
+            
+            <basic name="decorate">
+                <column name="DECORATE" length="512"/>
+            </basic>
+            
+            <basic name="createYear">
+                <column name="CREATE_YEAR" nullable="false"/>
+            </basic>
+            
+            
+            <basic name="elevator">
+                <column name="ELEVATOR" nullable="false"/>
+            </basic>
+
+            <basic name="cover">
+                <column name="COVER" length="32"/>
+            </basic>
+            
+            <basic name="inFloor">
+                <column name="IN_FLOOR" nullable="false"/>
+            </basic>
+            
+            <basic name="houseCode">
+                <column name="HOUSE_CODE" nullable="false" length="32"/>
+            </basic>
+            
+            <basic name="status">
+                <column name="STATUS" nullable="false" length="20" />
+                <enumerated>STRING</enumerated>
+            </basic>
+
+            <basic name="saleType">
+                <column name="TYPE" nullable="false" length="20"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
+            <basic name="checkTime">
+                <column name="CHECK_TIME" length="19" column-definition="DATETIME"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            
+            <basic name="sourceId">
+                <column name="SOURCE_ID" nullable="false" length="32" unique="true"/>
+            </basic>
+            
+            <basic name="applyTime">
+                <column name="APPLY_TIME" nullable="false" length="19" column-definition="DATETIME"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            
+            <basic name="useType">
+                <column name="USE_TYPE" nullable="false" length="32"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
+            <basic name="inFloorName">
+                <column name="IN_FLOOR_NAME" nullable="false" length="50"/>
+            </basic>
+            
+            <basic name="houseArea">
+                <column name="HOUSE_AREA" nullable="false" precision="18" scale="3"/>
+            </basic>
+
+            <basic name="useArea">
+                <column name="USE_AREA" precision="18" scale="3"/>
+            </basic>
+
+            <basic name="structure">
+                <column name="STRUCTURE" nullable="false" length="32"/>
+            </basic>
+
+            <basic name="address">
+                <column name="ADDRESS" nullable="false" length="200"/>
+            </basic>
+
+            <basic name="saleTitle">
+                <column name="SALE_TITLE" nullable="false" length="200"/>
+            </basic>
+
+            <one-to-one fetch="LAZY" optional="false" mapped-by="houseSaleInfo" name="houseSource">
+                <primary-key-join-column/>
+            </one-to-one>
+        </attributes>
+
+
+    </entity>
+
+</entity-mappings>

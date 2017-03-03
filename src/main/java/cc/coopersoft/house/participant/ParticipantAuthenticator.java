@@ -6,8 +6,6 @@ import cc.coopersoft.house.sale.HouseSellService;
 import cc.coopersoft.house.sale.data.Developer;
 import cc.coopersoft.house.sale.data.Seller;
 import com.dgsoft.developersale.LogonStatus;
-import net.bootsfaces.utils.FacesMessages;
-import org.apache.deltaspike.jsf.api.message.JsfMessage;
 import org.picketlink.annotations.PicketLink;
 import org.picketlink.authentication.BaseAuthenticator;
 import org.picketlink.credential.DefaultLoginCredentials;

@@ -12,7 +12,7 @@
         <mapping-file>jpa/houseSource.orm.xml</mapping-file>
 
         <class>cc.coopersoft.house.participant.data.model.SystemParam</class>
-
+        <class>cc.coopersoft.house.participant.data.model.SaleArea</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

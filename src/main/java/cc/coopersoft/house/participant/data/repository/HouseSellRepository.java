@@ -5,13 +5,15 @@ import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.data.api.Query;
 import org.apache.deltaspike.data.api.Repository;
 
+import java.util.List;
+
 /**
  * Created by cooper on 03/03/2017.
  */
 @Repository
 public interface HouseSellRepository extends EntityRepository<HouseSaleInfo,String> {
 
-    @Query("SELECT COUNT(s) FROM HouseSaleInfo s where s.status = 'CHECK' and s.houseCode = ?1")
-    Long houseSaleingCount(String houseCode);
+    @Query("SELECT s FROM HouseSaleInfo s where s.status in (?1) and s.houseCode = ?2")
+    List<HouseSaleInfo> houseSalebyStatus(List<HouseSaleInfo.HouseSourceStatus> statuses, String houseCode);
 
 }

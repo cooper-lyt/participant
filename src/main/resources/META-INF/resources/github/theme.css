@@ -1033,3 +1033,7 @@ table.floatThead-table {
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
 }
+
+.btn-group>.btn.multiselect{
+    float: none;
+}

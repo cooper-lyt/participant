@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
  * Created by cooper on 6/16/16.
  */
 @Named
-public class EnumHelper {
+public class EnumHelper implements java.io.Serializable{
 
 
     @Inject @DefaultMessageBundle

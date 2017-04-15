@@ -10,6 +10,14 @@
                 xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
 
+    <ui:define name="custom-header">
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select.min.css"/>
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select-plug.css"/>
+        <h:outputScript library="bsf" name="js/dropdown.js"/>
+        <h:outputScript library="bootstrap-select" name="js/bootstrap-select.min.js"/>
+        <h:outputScript library="bootstrap-select" name="js/i18n/defaults-zh_CN.min.js"/>
+    </ui:define>
+
     <h:form id="houes-valid"  styleClass="page-form">
         <b:row>
             <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
@@ -41,7 +49,17 @@
                 </div>
 
 
-                <b:inputText value="#{houseValid.houseSaleInfo.title}" label="标题" required="true"/>
+                <div class="Subhead mt-3 mb-5">
+                    <h2 class="Subhead-heading">#{houseValid.houseSaleInfo.address}</h2>
+                    <p class="Subhead-description">
+                        请如实填写房屋销售挂牌信息
+                    </p>
+                </div>
+
+                <b:inputText value="#{houseValid.houseSaleInfo.title}" label="挂牌标题" placeholder="挂牌显示的标题" required="true"/>
+                <b:message/>
+
+                <b:inputText value="#{houseValid.houseSaleInfo.saleTitle}" label="房源标题" placeholder="不会显示在挂牌信息中" required="true"/>
                 <b:message/>
 
                 <b:inputTextarea value="#{houseValid.houseSaleInfo.description}" label="描述" />
@@ -49,6 +67,26 @@
 
                 <b:inputTextarea value="#{houseValid.houseSaleInfo.environment}" label="环境"/>
                 <b:message/>
+
+
+                <div class="form-group">
+                    <label>
+                        区域
+                    </label>
+                <div class="input-group">
+                    <span class="input-group-addon">室<span class="required">*</span></span>
+                <h:selectOneMenu styleClass="selectpicker from-control edit-select" value="#{houseValid.houseSaleInfo.localArea}" label="销售区域" >
+                    <f:selectItems value="#{houseValid.saleLocalAreaList}" var="_area" itemLabel="#{_area.name}" itemValue="#{_area.id}"/>
+                    <f:selectItem noSelectionOption="true" itemLabel="请选择"/>
+                </h:selectOneMenu>
+                    <span class="input-group-addon">室<span class="required">*</span></span>
+                <h:selectOneMenu styleClass="selectpicker from-control edit-select" value="#{houseValid.houseSaleInfo.schoolArea}" label="学区" >
+                    <f:selectItems value="#{houseValid.schoolAreaList}" var="_area" itemLabel="#{_area.name}" itemValue="#{_area.id}"/>
+                    <f:selectItem noSelectionOption="true" itemLabel="请选择"/>
+                </h:selectOneMenu>
+                </div>
+                </div>
+
 
                 <div class="input-group">
 
@@ -62,6 +100,11 @@
                 </div>
 
 
+                <hr/>
+
+                <b:commandButton  action="#{houseValid.saveHouseSource}" look="success" value="保存房源">
+                    <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
+                </b:commandButton>
 
 
             </b:column>

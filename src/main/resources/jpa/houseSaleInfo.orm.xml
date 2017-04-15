@@ -47,6 +47,10 @@
                 <column name="LIVING_ROOM" nullable="false"/>
             </basic>
             
+            <basic name="district">
+                <column name="DISTRICT" nullable="false" length="32"/>
+            </basic>
+            
             <basic name="localArea">
                 <column name="LOCAL_AREA" length="32"/>
             </basic>
@@ -141,8 +145,9 @@
                 <column name="SALE_TITLE" nullable="false" length="200"/>
             </basic>
 
-            <one-to-one fetch="LAZY" optional="false" mapped-by="houseSaleInfo" name="houseSource">
+            <one-to-one fetch="LAZY" orphan-removal="true" name="houseSource">
                 <primary-key-join-column/>
+                <cascade> <cascade-all/></cascade>
             </one-to-one>
         </attributes>
 

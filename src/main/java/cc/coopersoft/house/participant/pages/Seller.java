@@ -14,5 +14,9 @@ public interface Seller {
         class HouseValid implements Apply {}
 
         class HouseSellInfo implements Apply {}
+
+        class HouseSaleJoin implements Apply {}
+
+        class HouseSalePicUpload implements Apply{}
     }
 }

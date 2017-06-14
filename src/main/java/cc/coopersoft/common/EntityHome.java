@@ -3,7 +3,6 @@ package cc.coopersoft.common;
 import cc.coopersoft.common.util.EntityHelper;
 import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.apache.deltaspike.jsf.api.message.JsfMessage;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -204,12 +203,12 @@ public abstract class EntityHome<E, PK extends Serializable> extends MutableCont
 
     }
 
-    @Transactional
-    public boolean isManaged()
-    {
-        return getInstance()!=null &&
-                getEntityManager().contains( getInstance() );
-    }
+//    @Transactional
+//    public boolean isManaged()
+//    {
+//        return getInstance()!=null &&
+//                getEntityManager().contains( getInstance() );
+//    }
 
 
 
@@ -228,7 +227,7 @@ public abstract class EntityHome<E, PK extends Serializable> extends MutableCont
 
     protected abstract EntityRepository<E,PK> getEntityRepository();
 
-    protected abstract EntityManager getEntityManager();
+    //protected abstract EntityManager getEntityManager();
 
 
 

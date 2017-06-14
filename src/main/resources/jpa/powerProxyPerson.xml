@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+
+    <entity class="cc.coopersoft.house.sale.data.PowerProxyPerson" access="FIELD">
+        <table name="POWER_PROXY_PERSON" catalog="CONTRACT"/>
+
+        <attributes>
+
+            <id name="id">
+                <column name="ID" unique="true" nullable="false" length="32"/>
+            </id>
+
+            <basic name="personName">
+                <column name="NAME" nullable="false" length="50"/>
+            </basic>
+
+            <basic name="credentialsType">
+                <column name="ID_TYPE" nullable="false" length="32"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
+            <basic name="credentialsNumber">
+                <column name="ID_NO" nullable="false" length="100"/>
+            </basic>
+
+            <basic name="phone">
+                <column name="PHONE" length="15"/>
+            </basic>
+
+            <basic name="rootAddress">
+                <column name="ROOT_ADDRESS" length="50"/>
+            </basic>
+
+            <basic name="address">
+                <column name="ADDRESS" length="200"/>
+            </basic>
+
+            <basic name="proxyType">
+                <column name="TYPE" nullable="false" length="16"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
+            <basic name="birthday">
+                <column name="BIRTHDAY"/>
+                <temporal>DATE</temporal>
+            </basic>
+
+            <basic name="sex">
+                <column name="SEX" length="10"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
+            <basic name="postCode">
+                <column name="POST_CODE" length="9"/>
+            </basic>
+
+            <basic name="fingerprint" fetch="LAZY">
+                <column name="FINGERPRINT" length="1024"/>
+            </basic>
+
+            <basic name="paperCopyInfo" fetch="LAZY">
+                <column name="PAPER_COPY_INFO" length="1024"/>
+            </basic>
+
+            <one-to-one maps-id="id" name="powerPerson" fetch="LAZY">
+                <primary-key-join-column/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+
+</entity-mappings>

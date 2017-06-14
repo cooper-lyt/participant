@@ -88,34 +88,6 @@
                 <column name="IN_FLOOR" nullable="false"/>
             </basic>
             
-            <basic name="houseCode">
-                <column name="HOUSE_CODE" nullable="false" length="32"/>
-            </basic>
-            
-            <basic name="status">
-                <column name="STATUS" nullable="false" length="20" />
-                <enumerated>STRING</enumerated>
-            </basic>
-
-            <basic name="saleType">
-                <column name="TYPE" nullable="false" length="20"/>
-                <enumerated>STRING</enumerated>
-            </basic>
-
-            <basic name="checkTime">
-                <column name="CHECK_TIME" length="19" column-definition="DATETIME"/>
-                <temporal>TIMESTAMP</temporal>
-            </basic>
-            
-            <basic name="sourceId">
-                <column name="SOURCE_ID" nullable="false" length="32" unique="true"/>
-            </basic>
-            
-            <basic name="applyTime">
-                <column name="APPLY_TIME" nullable="false" length="19" column-definition="DATETIME"/>
-                <temporal>TIMESTAMP</temporal>
-            </basic>
-            
             <basic name="useType">
                 <column name="USE_TYPE" nullable="false" length="32"/>
                 <enumerated>STRING</enumerated>
@@ -141,14 +113,16 @@
                 <column name="ADDRESS" nullable="false" length="200"/>
             </basic>
 
-            <basic name="saleTitle">
-                <column name="SALE_TITLE" nullable="false" length="200"/>
-            </basic>
+            <one-to-many name="houseSalePics" fetch="LAZY" orphan-removal="true" mapped-by="houseSaleInfo">
+                <cascade><cascade-all/></cascade>
+            </one-to-many>
 
-            <one-to-one fetch="LAZY" orphan-removal="true" name="houseSource">
+            <!--
+            <one-to-one fetch="LAZY" name="houseSource">
                 <primary-key-join-column/>
-                <cascade> <cascade-all/></cascade>
             </one-to-one>
+             -->
+
         </attributes>
 
 

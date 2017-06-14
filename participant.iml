@@ -32,7 +32,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: local.house:houseInterface:2.0.53Bate" level="project" />
+    <orderEntry type="library" name="Maven: local.house:HouseInterface:2.0.60Bate" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.4" level="project" />
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
@@ -62,9 +62,9 @@
     <orderEntry type="library" name="Maven: org.picketlink:picketlink-deltaspike:2.7.0.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-web-api:7.0" level="project" />
-    <orderEntry type="library" name="Maven: org.omnifaces:omnifaces:2.3" level="project" />
-    <orderEntry type="library" name="Maven: net.bootsfaces:bootsfaces:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.primefaces:primefaces:6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.omnifaces:omnifaces:2.6.1" level="project" />
+    <orderEntry type="library" name="Maven: net.bootsfaces:bootsfaces:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.primefaces:primefaces:6.1" level="project" />
     <orderEntry type="library" name="Maven: org.primefaces.extensions:all-themes:1.0.8" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.primefaces.themes:afterdark:1.0.8" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.primefaces.themes:afternoon:1.0.8" level="project" />

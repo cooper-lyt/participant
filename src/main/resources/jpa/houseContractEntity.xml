@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+
+    <entity class="cc.coopersoft.house.sale.data.HouseContract" access="FIELD">
+        <table name="HOUSE_CONTRACT" catalog="CONTRACT"/>
+
+        <attributes>
+            <id name="id">
+                <column name="ID" unique="true" nullable="false" length="32"/>
+            </id>
+
+            <basic name="groupId" >
+                <column name="GROUP_ID" nullable="false" length="32"/>
+            </basic>
+
+            <basic name="houseCode">
+                <column name="HOUSE_CODE" nullable="false" length="32"/>
+            </basic>
+
+            <basic name="type">
+                <column name="TYPE" length="20" nullable="false"/>
+                <enumerated>STRING</enumerated>
+
+            </basic>
+
+            <basic name="createTime">
+                <column name="CREATE_TIME" nullable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+
+            <basic name="status">
+                <column name="STATUS" length="20" nullable="false"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
+            <basic name="attachEmpId">
+                <column name="ATTACH_EMP_ID" nullable="false" length="32"/>
+            </basic>
+
+            <basic name="attachEmpName">
+                <column name="ATTACH_EMP_NAME" nullable="false" length="50"/>
+            </basic>
+
+            <basic name="price">
+                <column name="CONTRACT_PRICE" nullable="false" length="21" scale="3"/>
+            </basic>
+
+            <basic fetch="LAZY" name="context">
+                <column name="CONTRACT" column-definition="LONGTEXT"/>
+                <lob/>
+            </basic>
+
+            <basic name="contractVersion">
+                <column name="CONTRACT_VERSION" nullable="false"/>
+            </basic>
+
+            <basic name="poolType">
+                <column name="POOL_TYPE" length="32" nullable="false"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+            
+            <basic name="houseArea">
+                <column name="HOUSE_AREA" nullable="false" length="18" scale="4"/>
+            </basic>
+            
+            <basic name="houseDescription">
+                <column name="HOUSE_DESCRIPTION" nullable="false" length="52"/>
+            </basic>
+            
+            <basic name="contractIndex">
+                <column name="CONTRACT_INDEX" length="1024"/>
+            </basic>
+
+            <basic name="salePayType">
+                <column name="SALE_PAY_TYPE" nullable="false" length="32"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
+
+            <version name="version">
+                <column name="VERSION" nullable="false"/>
+            </version>
+
+            <one-to-many name="contractNumbers" fetch="LAZY" orphan-removal="true" mapped-by="houseContract">
+                <cascade><cascade-all/></cascade>
+            </one-to-many>
+
+
+
+
+            <one-to-many name="powerPersons" fetch="LAZY" orphan-removal="true"
+                         mapped-by="houseContract">
+                <cascade><cascade-all/></cascade>
+            </one-to-many>
+
+
+            <one-to-one fetch="LAZY" orphan-removal="true" name="saleProxyPerson">
+                <primary-key-join-column/>
+                <cascade> <cascade-all/></cascade>
+            </one-to-one>
+
+            <one-to-one name="oldHouseContract" fetch="LAZY" orphan-removal="true">
+                <primary-key-join-column/>
+                <cascade><cascade-all/></cascade>
+
+            </one-to-one>
+
+            <one-to-one fetch="LAZY" orphan-removal="true" name="newHouseContract">
+                <primary-key-join-column/>
+                <cascade><cascade-all/></cascade>
+
+            </one-to-one>
+
+
+
+
+
+        </attributes>
+    </entity>
+
+
+</entity-mappings>

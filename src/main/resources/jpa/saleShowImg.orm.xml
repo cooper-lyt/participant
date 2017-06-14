@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+    <entity class="cc.coopersoft.house.sale.data.HouseSalePic" access="FIELD">
+        <table name="SELL_SHOW_IMG" catalog="CONTRACT"/>
+        <attributes>
+            <id name="id">
+                <column name="ID" unique="true" nullable="false" length="32"/>
+            </id>
+
+            <basic name="title">
+                <column name="TITLE" nullable="false" length="64"/>
+            </basic>
+
+            <basic name="description">
+                <column name="DESCRIPTION" nullable="true" length="512"/>
+            </basic>
+
+            <many-to-one name="houseSaleInfo">
+                <join-column name="HOUSE_SELL_INFO" nullable="false"/>
+            </many-to-one>
+
+
+        </attributes>
+
+    </entity>
+
+</entity-mappings>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+    <entity class="cc.coopersoft.house.sale.data.HouseSourceProxyPerson" access="FIELD">
+        <table name="SELL_PROXY_PERSON" catalog="CONTRACT"/>
+
+        <attributes>
+            <id name="id">
+                <column name="ID" unique="true" nullable="false" length="32"/>
+            </id>
+
+            <basic name="credentialsType">
+                <column name="CREDENTIALS_TYPE" nullable="false" length="32"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
+            <basic name="credentialsNumber">
+                <column name="CREDENTIALS_NUMBER" nullable="false" length="100"/>
+            </basic>
+
+            <basic name="personName">
+                <column name="PERSON_NAME" nullable="false" length="50"/>
+            </basic>
+
+            <basic name="tel">
+                <column name="TEL" nullable="false" length="16"/>
+            </basic>
+
+            <one-to-one fetch="LAZY" name="houseSource">
+                <join-column name="HOUSE_SOURCE" nullable="false" />
+            </one-to-one>
+
+        </attributes>
+
+    </entity>
+
+</entity-mappings>

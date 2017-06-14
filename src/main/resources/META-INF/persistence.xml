@@ -10,9 +10,20 @@
         <jta-data-source>java:jboss/datasources/HouseContract</jta-data-source>
         <mapping-file>jpa/houseSaleInfo.orm.xml</mapping-file>
         <mapping-file>jpa/houseSource.orm.xml</mapping-file>
+        <mapping-file>jpa/houseSourceCompany.orm.xml</mapping-file>
+        <mapping-file>jpa/houseSourceProxyPerson.orm.xml</mapping-file>
+        <mapping-file>jpa/saleShowImg.orm.xml</mapping-file>
+
+        <mapping-file>jpa/contractNumber.xml</mapping-file>
+        <mapping-file>jpa/newHouseContract.xml</mapping-file>
+        <mapping-file>jpa/oldHouseContract.xml</mapping-file>
+        <mapping-file>jpa/saleProxyPerson.xml</mapping-file>
+        <mapping-file>jpa/houseContractEntity.xml</mapping-file>
+        <mapping-file>jpa/powerProxyPerson.xml</mapping-file>
+        <mapping-file>jpa/powerPersonEntity.xml</mapping-file>
 
         <class>cc.coopersoft.house.participant.data.model.SystemParam</class>
-        <class>cc.coopersoft.house.participant.data.model.SaleArea</class>
+
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

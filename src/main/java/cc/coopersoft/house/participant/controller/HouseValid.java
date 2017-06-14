@@ -5,7 +5,7 @@ import cc.coopersoft.common.EnumHelper;
 import cc.coopersoft.house.participant.AttrUser;
 import cc.coopersoft.house.participant.Messages;
 import cc.coopersoft.house.participant.annotations.Seller;
-import cc.coopersoft.house.participant.data.repository.HouseSellRepository;
+import cc.coopersoft.house.participant.data.repository.HouseSourceRepository;
 import cc.coopersoft.house.sale.HouseSellService;
 import cc.coopersoft.house.sale.data.*;
 import org.apache.deltaspike.core.api.config.view.ViewConfig;
@@ -14,7 +14,6 @@ import org.apache.deltaspike.jsf.api.message.JsfMessage;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Conversation;
-import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.faces.application.FacesMessage;
@@ -29,7 +28,7 @@ import java.util.logging.Logger;
  * Created by cooper on 22/02/2017.
  */
 @Named
-@ConversationScoped
+@RequestScoped
 public class HouseValid implements java.io.Serializable{
 
     @Inject
@@ -55,22 +54,19 @@ public class HouseValid implements java.io.Serializable{
     private EnumHelper enumHelper;
 
     @Inject
-    private HouseSellRepository houseSellRepository;
+    private HouseSourceRepository houseSourceRepository;
 
-    @Inject
-    private SaleAreaCache saleAreaCache;
 
     @Inject
     private AttrUser attrUser;
 
-    private HouseSaleInfo houseSaleInfo;
+    @Inject
+    private HouseSourceHome houseSourceHome;
+
+    //private HouseSaleInfo houseSaleInfo;
 
     public HouseValidInfo getHouseValidInfo() {
         return houseValidInfo;
-    }
-
-    public HouseSaleInfo getHouseSaleInfo() {
-        return houseSaleInfo;
     }
 
     private void addLimitMessages(List<HouseValidResult.Limit> limits){
@@ -79,18 +75,15 @@ public class HouseValid implements java.io.Serializable{
         }
     }
 
-    public List<SaleArea> getSchoolAreaList(){
-        return saleAreaCache.getSaleAreas(SaleArea.SaleAreaType.SCHOOL,houseSaleInfo.getDistrict(),false);
-    }
 
-    public List<SaleArea> getSaleLocalAreaList(){
-        return saleAreaCache.getSaleAreas(SaleArea.SaleAreaType.SALE,houseSaleInfo.getDistrict(),false);
-    }
 
     @Seller
     @Transactional
     public Class<? extends ViewConfig> saveHouseSource(){
-        houseSaleInfo = houseSellRepository.save(houseSaleInfo);
+        //houseSaleInfo = houseSellRepository.save(houseSaleInfo);
+        logger.config("source Id:" + houseSourceHome.getInstance().getId() + " | sale info ID:" + houseSourceHome.getInstance().getId());
+        houseSourceHome.save();
+        endConversation();
         return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSalePicUpload.class;
     }
 
@@ -103,21 +96,31 @@ public class HouseValid implements java.io.Serializable{
             switch (result.getValidStatus()){
 
                 case SUCCESS:
-                    houseSaleInfo = result.getHouseSaleInfo();
-                    List<HouseSaleInfo> sellInfo =
-                            houseSellRepository.houseSalebyStatus(new ArrayList<HouseSaleInfo.HouseSourceStatus>(EnumSet.of(HouseSaleInfo.HouseSourceStatus.CHECK,HouseSaleInfo.HouseSourceStatus.SHOWING,HouseSaleInfo.HouseSourceStatus.CHECK_PASS)),houseSaleInfo.getHouseCode());
+                    houseSourceHome.setInstance(result.getHouseSource());
+                    List<HouseSource> sellInfo =
+                            houseSourceRepository.houseSourceByStatus(new ArrayList<HouseSource.HouseSourceStatus>(EnumSet.of(HouseSource.HouseSourceStatus.CHECK,HouseSource.HouseSourceStatus.SHOWING,HouseSource.HouseSourceStatus.CHECK_PASS)), houseSourceHome.getInstance().getHouseCode());
                     if (sellInfo.isEmpty()) {
                         if (result.getLimits().isEmpty()) {
-                            houseSaleInfo.setHouseSource(new HouseSource(UUID.randomUUID().toString().replace("-",""),attrUser.getLoginData().getCorpInfo().getId(),houseValidInfo,houseSaleInfo));
-                            houseSaleInfo.setId(houseSaleInfo.getHouseSource().getId());
-                            houseSaleInfo.getHouseSource().setHouseSaleInfo(houseSaleInfo);
-                            houseSaleInfo.setSaleType(HouseSaleInfo.SaleType.SELLER);
-                            houseSaleInfo.setApplyTime(new Date());
-                            houseSaleInfo.setCheckTime(new Date());
-                            houseSaleInfo.setStatus(HouseSaleInfo.HouseSourceStatus.PREPARE);
+
+                            houseSourceHome.getInstance().setId(UUID.randomUUID().toString().replace("-",""));
+                            houseSourceHome.getInstance().getHouseSaleInfo().setId(houseSourceHome.getInstance().getId());
+                            houseSourceHome.getInstance().setGroupId(attrUser.getLoginData().getCorpInfo().getId());
+
+                            houseSourceHome.getInstance().setPowerCardNumber(houseValidInfo.getPowerCardNumber());
+                            houseSourceHome.getInstance().setCredentialsNumber(houseValidInfo.getCredentialsNumber());
+                            houseSourceHome.getInstance().setCredentialsType(houseValidInfo.getCredentialsType());
+                            houseSourceHome.getInstance().setPersonName(houseValidInfo.getPersonName());
+                            houseSourceHome.getInstance().setTel(houseValidInfo.getTel());
+
+                            //houseSaleInfoHome.getInstance().getHouseSource().setHouseSaleInfo(houseSaleInfoHome.getInstance());
+                            houseSourceHome.getInstance().setSaleType(HouseSource.SaleType.SELLER);
+                            houseSourceHome.getInstance().setApplyTime(new Date());
+                            houseSourceHome.getInstance().setCheckTime(new Date());
+                            houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.PREPARE);
 
                             if ( conversation.isTransient() )
                             {
+
                                 conversation.begin();
                                 conversation.setTimeout(1200000);
                             }
@@ -127,18 +130,18 @@ public class HouseValid implements java.io.Serializable{
                             addLimitMessages(result.getLimits());
                         }
                     }else{
-
-                        houseSaleInfo = sellInfo.get(0);
+                        houseSourceHome.setId(sellInfo.get(0).getId());
+                       // houseSaleInfo = sellInfo.get(0);
                         if (result.getLimits().isEmpty()) {
                             return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSaleJoin.class;
                         }else{
                             addLimitMessages(result.getLimits());
-                            houseSaleInfo.setStatus(HouseSaleInfo.HouseSourceStatus.CANCEL);
-                            houseSaleInfo.getHouseSource().setCheckView(result.getLimits().get(0).getDescription());
-                            houseSellRepository.save(houseSaleInfo);
+                            houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.CANCEL);
+                            houseSourceHome.getInstance().setCheckView(result.getLimits().get(0).getDescription());
+                            houseSourceHome.saveOrUpdate();
                         }
                     }
-                    logger.config(result.getHouseSaleInfo().getHouseCode());
+                    logger.config(result.getHouseSource().getHouseCode());
                     break;
                 case HOUSE_NOT_FOUND:
                     messages.addError().validHouseNotFound();
@@ -160,7 +163,6 @@ public class HouseValid implements java.io.Serializable{
     }
 
 
-    @PreDestroy
     public void endConversation() {
         if ( !conversation.isTransient() )
         {

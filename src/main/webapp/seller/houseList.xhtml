@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:o="http://omnifaces.org/ui">
+
+    <b:row>
+        <b:column span="8">
+
+            <div class="d-flex flex-justify-between border-bottom pb-3">
+                <h3>
+                    53,317 repository results
+                </h3>
+
+            </div>
+
+
+            <ul class="repo-list js-repo-list">
+
+                <ui:repeat value="#{houseSourceList.resultData.resultData}" var="_data">
+                    <div class="repo-list-item d-flex flex-justify-start py-4 public source">
+                        <div class="col-8 pr-3">
+                            <h3>
+                                <h:outputLink value="#{request.contextPath}/seller/houseSourceView.xhtml"  styleClass="v-align-middle" >
+                                    <f:param name="houseSaleInfoId" value="#{_data.id}"/>
+                                    #{_data.saleTitle}
+                                </h:outputLink>
+                            </h3>
+
+                            <p class="col-9 d-inline-block text-gray mb-2 pr-4">
+                                Forked from <a href="https://github.com/orvice/">https://github.com/orvice/</a><em>ss</em>-panel
+                            </p>
+
+                            <div class="topics-row-container col-9 d-inline-flex flex-wrap flex-items-center f6 my-1">
+                                <a href="/search?q=topic%3Ass-panel&amp;type=Repositories" class="topic-tag topic-tag-link f6 my-1" data-ga-click="Topic, search results" data-octo-click="topic_click" >
+                                    ss-panel
+                                </a>
+                                <a href="/search?q=topic%3Ashadowsocksr&amp;type=Repositories" class="topic-tag topic-tag-link f6 my-1" data-ga-click="Topic, search results" data-octo-click="topic_click" >
+                                    shadowsocksr
+                                </a>
+                            </div>
+
+                            <p class="f6 text-gray mb-0 mt-2">
+                                Updated <relative-time datetime="2017-04-15T01:30:04Z" title="Apr 15, 2017, 9:30 AM GMT+8">15 days ago</relative-time>
+                            </p>
+                        </div>
+
+                        <div class="d-table-cell col-2 text-gray pt-2">
+                            <span class="repo-language-color ml-0" style="background-color:#f1e05a;"></span>
+                            JavaScript
+                        </div>
+
+                        <div class="col-2 text-right pt-1 pr-3 pt-2">
+                            <a class="muted-link" href="esdeathlove/ss-panel-v3-mod/stargazers">
+                                <svg aria-label="star" class="octicon octicon-star" height="16" role="img" version="1.1" viewBox="0 0 14 16" width="14"><path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74z"></path></svg>
+                                971
+                            </a>
+                        </div>
+                    </div>
+                </ui:repeat>
+
+
+
+            </ul>
+
+        </b:column>
+        <b:column span="4"><h:outputText value="span=4"/></b:column>
+    </b:row>
+
+</ui:composition>

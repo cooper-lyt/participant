@@ -64,7 +64,7 @@
 
 
                     <div class="form-checkbox">
-                    <b:radiobutton ajax="true" update="valid_radio_panel" converter="omnifaces.GenericEnumConverter" value="#{houseValidInfo.validType}" process="@this" itemLabel="测绘标识" itemValue="MBBH_NUMBER" display="inline"/>
+                    <b:radiobutton ajax="true" update="valid_radio_panel" converter="validTypeConverter" value="#{houseValidInfo.validType}" process="@this" itemLabel="测绘标识" itemValue="MBBH_NUMBER" display="inline"/>
                     <b:iconAwesome name="map"/>
                     <span class="note">
                         测绘部门为房屋编制的标识由图号、丘号、幢号、房号组成. 你可以在你的产权证中找到此标识.
@@ -98,7 +98,7 @@
 
                 </div>
                 <div class="form-checkbox">
-                    <b:radiobutton ajax="true" update="valid_radio_panel" converter="omnifaces.GenericEnumConverter" value="#{houseValidInfo.validType}" itemLabel="房屋编码" process="@this" itemValue="HOUSE_CODE" display="inline"/>
+                    <b:radiobutton ajax="true" update="valid_radio_panel" converter="validTypeConverter" value="#{houseValidInfo.validType}" itemLabel="房屋编码" process="@this" itemValue="HOUSE_CODE" display="inline"/>
                     <b:iconAwesome name="tag"/>
                     <span class="note">
                         房产管理部门为房屋编制的唯一编码. 你可以在你的产权证中找到此编码.
@@ -114,7 +114,7 @@
 
                 </div>
                 <div class="form-checkbox">
-                    <b:radiobutton ajax="true" update="valid_radio_panel"  converter="omnifaces.GenericEnumConverter" value="#{houseValidInfo.validType}" itemLabel="不动产单元号" process="@this" itemValue="UNIT_NUMBER" display="inline"/>
+                    <b:radiobutton ajax="true" update="valid_radio_panel"  converter="validTypeConverter" value="#{houseValidInfo.validType}" itemLabel="不动产单元号" process="@this" itemValue="UNIT_NUMBER" display="inline"/>
                     <b:iconAwesome name="cubes"/>
                     <span class="note">
                         不动产登记部门为不动产编制的唯一编码. 你可以在你的不动产权证中找到此编码.

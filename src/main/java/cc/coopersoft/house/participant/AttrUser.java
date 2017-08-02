@@ -26,17 +26,11 @@ public class AttrUser implements java.io.Serializable{
 
     private String rndData;
 
+    private String keyId;
+
     public String getRndData() {
         if (rndData == null){
-            rndData = "";
-            int b ;
-            int a ;
-            SecureRandom r = new SecureRandom();
-            for (int i = 0; i < 32; i++) {
-                a = r.nextInt(26);
-                b = (char) (a + 65);
-                rndData += new Character((char) b).toString();
-            }
+            rndData = Tools.validRandomData();
         }
         return rndData;
     }
@@ -55,5 +49,13 @@ public class AttrUser implements java.io.Serializable{
 
     public void setLoginData(LoginResult loginData) {
         this.loginData = loginData;
+    }
+
+    public String getKeyId() {
+        return keyId;
+    }
+
+    public void setKeyId(String keyId) {
+        this.keyId = keyId;
     }
 }

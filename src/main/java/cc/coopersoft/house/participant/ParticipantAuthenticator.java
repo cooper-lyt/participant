@@ -55,7 +55,7 @@ public class ParticipantAuthenticator extends BaseAuthenticator{
                     user.setFirstName(attrUser.getLoginData().getAttrEmp().getName());
                     identityManager.add(user);
                 }
-
+                attrUser.setKeyId(credentials.getUserId());
                 if (attrUser.getLoginData().getCorpInfo() instanceof Seller){
                     BasicModel.grantRole(relationshipManager,user,BasicModel.getRole(identityManager,"seller"));
                 }else if (attrUser.getLoginData().getCorpInfo() instanceof Developer){

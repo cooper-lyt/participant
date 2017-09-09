@@ -2,6 +2,7 @@ package cc.coopersoft.house.participant;
 
 import cc.coopersoft.comm.exception.HttpApiServerException;
 import cc.coopersoft.house.participant.controller.RunParam;
+import cc.coopersoft.house.participant.service.HouseSourceService;
 import cc.coopersoft.house.sale.HouseSellService;
 import cc.coopersoft.house.sale.data.Developer;
 import cc.coopersoft.house.sale.data.Seller;
@@ -42,6 +43,9 @@ public class ParticipantAuthenticator extends BaseAuthenticator{
     @Inject
     private AttrUser attrUser;
 
+    @Inject
+    private HouseSourceService houseSourceService;
+
     public void authenticate() {
 
 
@@ -57,6 +61,8 @@ public class ParticipantAuthenticator extends BaseAuthenticator{
                 }
                 attrUser.setKeyId(credentials.getUserId());
                 if (attrUser.getLoginData().getCorpInfo() instanceof Seller){
+                    //TODO 异步
+                    houseSourceService.updateHouseSourceByCorp(attrUser.getLoginData().getCorpInfo().getId());
                     BasicModel.grantRole(relationshipManager,user,BasicModel.getRole(identityManager,"seller"));
                 }else if (attrUser.getLoginData().getCorpInfo() instanceof Developer){
                     BasicModel.grantRole(relationshipManager,user,BasicModel.getRole(identityManager,"developer"));
@@ -66,6 +72,8 @@ public class ParticipantAuthenticator extends BaseAuthenticator{
 
                 setAccount(user);
                 setStatus(AuthenticationStatus.SUCCESS);
+
+
                 return;
             }
         } catch (HttpApiServerException e) {

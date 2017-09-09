@@ -79,6 +79,14 @@
                 <column name="SEARCH_KEY" length="1024"/>
             </basic>
 
+            <basic name="businessId">
+                <column name="BUSINESS_ID" length="32"/>
+            </basic>
+
+            <basic name="messages" fetch="LAZY" optional="true">
+                <column name="MESSAGES" column-definition="LONGTEXT"/>
+                <lob/>
+            </basic>
 
             <version name="version">
                 <column name="VERSION" nullable="false"/>

@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
         version="3.1" metadata-complete="false"
 >
-  <display-name>房屋交易管理平台</display-name>
+  <display-name>存量房网上备案</display-name>
 
 
   <!-- Development   Production-->

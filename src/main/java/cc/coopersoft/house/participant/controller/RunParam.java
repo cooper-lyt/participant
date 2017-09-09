@@ -8,6 +8,7 @@ import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,5 +41,11 @@ public class RunParam {
         return result.getValue();
     }
 
+    public BigDecimal getDecimalParam(String name){
+        String result = getStringParam(name);
+        if (result == null)
+            return null;
+        return new BigDecimal(result);
+    }
 
 }

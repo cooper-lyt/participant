@@ -1,6 +1,6 @@
 /*!
  * jQuery Upload File Plugin
- * version: 4.0.10
+ * version: 4.0.1
  * @requires jQuery v1.5 or later & form plugin
  * Copyright (c) 2013 Ravishanker Kusuma
  * http://hayageek.com/
@@ -55,7 +55,6 @@
             onSuccess: function (files, response, xhr, pd) {},
             onError: function (files, status, message, pd) {},
             onCancel: function (files, pd) {},
-            onAbort: function (files, pd) {},
             downloadCallback: false,
             deleteCallback: false,
             afterUploadAll: false,
@@ -89,8 +88,7 @@
             showPreview: false,
             previewHeight: "auto",
             previewWidth: "100%",
-            extraHTML:false,
-            uploadQueueOrder:'top'
+            extraHTML:false
         }, options);
 
         this.fileCounter = 1;
@@ -111,11 +109,11 @@
         $(this).html("");
 
         var obj = this;
-
+        
         var uploadLabel = $('<div>' + s.uploadStr + '</div>');
 
         $(uploadLabel).addClass(s.uploadButtonClass);
-
+        
         // wait form ajax Form plugin and initialize
         (function checkAjaxFormLoaded() {
             if($.fn.ajaxForm) {
@@ -131,29 +129,24 @@
                     $(obj).append(uploadLabel);
                 }
                 $(obj).append(obj.errorLog);
-
-                if(s.showQueueDiv)
-                    obj.container =$("#"+s.showQueueDiv);
-                else
-                    obj.container = $("<div class='ajax-file-upload-container'></div>").insertAfter($(obj));
-
+                
+   				if(s.showQueueDiv)
+		        	obj.container =$("#"+s.showQueueDiv);
+        		else
+		            obj.container = $("<div class='ajax-file-upload-container'></div>").insertAfter($(obj));
+        
                 s.onLoad.call(this, obj);
-                createCustomInputFile(obj, formGroup, s, uploadLabel);
+                createCutomInputFile(obj, formGroup, s, uploadLabel);
 
             } else window.setTimeout(checkAjaxFormLoaded, 10);
         })();
 
         this.startUpload = function () {
-            $("form").each(function(i,items)
-            {
-                if($(this).hasClass(obj.formGroup))
-                {
-                    mainQ.push($(this));
-                }
+            $("." + this.formGroup).each(function (i, items) {
+                if($(this).is('form'))
+                mainQ.push($(this));
             });
-
-            if(mainQ.length >= 1 )
-                submitPendingUploads();
+ 			submitPendingUploads();
 
         }
 
@@ -165,7 +158,7 @@
             $("." + s.abortButtonClass).each(function (i, items) {
                 if($(this).hasClass(obj.formGroup)) $(this).click();
             });
-            $("." + s.cancelButtonClass).each(function (i, items) {
+             $("." + s.cancelButtonClass).each(function (i, items) {
                 if($(this).hasClass(obj.formGroup)) $(this).click();
             });
         }
@@ -179,65 +172,57 @@
             s = $.extend(s, settings);
         }
         this.reset = function (removeStatusBars) {
-            obj.fileCounter = 1;
-            obj.selectedFiles = 0;
-            obj.errorLog.html("");
-            //remove all the status bars.
-            if(removeStatusBars != false)
-            {
-                obj.container.html("");
-            }
+			obj.fileCounter = 1;
+			obj.selectedFiles = 0;
+			obj.errorLog.html("");
+					//remove all the status bars.
+			if(removeStatusBars != false)
+			{
+				obj.container.html("");
+			}
         }
-        this.remove = function()
-        {
-            obj.container.html("");
-            $(obj).remove();
-
-        }
+		this.remove = function()
+		{
+			obj.container.html("");
+			$(obj).remove();
+	
+		}
         //This is for showing Old files to user.
-        this.createProgress = function (filename,filepath,filesize) {
+        this.createProgress = function (filename) {
             var pd = new createProgressDiv(this, s);
             pd.progressDiv.show();
             pd.progressbar.width('100%');
 
             var fileNameStr = "";
-            if(s.showFileCounter)
-                fileNameStr = obj.fileCounter + s.fileCounterStyle + filename;
+            if(s.showFileCounter) fileNameStr = obj.fileCounter + s.fileCounterStyle + filename;
             else fileNameStr = filename;
-
-
-            if(s.showFileSize)
-                fileNameStr += " ("+getSizeStr(filesize)+")";
-
 
             pd.filename.html(fileNameStr);
             obj.fileCounter++;
             obj.selectedFiles++;
             if(s.showPreview)
             {
-                pd.preview.attr('src',filepath);
+                pd.preview.attr('src',s.filename);
                 pd.preview.show();
             }
-
+            
             if(s.showDownload) {
                 pd.download.show();
                 pd.download.click(function () {
                     if(s.downloadCallback) s.downloadCallback.call(obj, [filename]);
                 });
             }
-            if(s.showDelete)
-            {
-                pd.del.show();
-                pd.del.click(function () {
-                    pd.statusbar.hide().remove();
-                    var arr = [filename];
-                    if(s.deleteCallback) s.deleteCallback.call(this, arr, pd);
-                    obj.selectedFiles -= 1;
-                    updateFileCounter(s, obj);
-                });
-            }
+            pd.del.show();
 
+            pd.del.click(function () {
+                pd.statusbar.hide().remove();
+                var arr = [filename];
+                if(s.deleteCallback) s.deleteCallback.call(this, arr, pd);
+                obj.selectedFiles -= 1;
+                updateFileCounter(s, obj);
+            });
             return pd;
+
         }
 
         this.getResponses = function () {
@@ -246,37 +231,32 @@
         var mainQ=[];
         var progressQ=[]
         var running = false;
-        function submitPendingUploads() {
-            if(running) return;
-            running = true;
+          function submitPendingUploads() {
+			if(running) return;
+			running = true;
             (function checkPendingForms() {
-
-                //if not sequential upload all files
-                if(!s.sequential) s.sequentialCount=99999;
-
-                if(mainQ.length == 0 &&   progressQ.length == 0)
-                {
-                    if(s.afterUploadAll) s.afterUploadAll(obj);
-                    running= false;
-                }
-                else
-                {
-                    if( progressQ.length < s.sequentialCount)
-                    {
-                        var frm = mainQ.shift();
-                        if(frm != undefined)
-                        {
-                            progressQ.push(frm);
-                            //Remove the class group.
-                            frm.removeClass(obj.formGroup);
-                            frm.submit();
-                        }
-                    }
-                    window.setTimeout(checkPendingForms, 100);
-                }
-            })();
+                
+					if(mainQ.length == 0 &&   progressQ.length == 0)
+					{
+						s.afterUploadAll(obj);
+						running= false;
+					}              
+					else 
+					{
+						if( progressQ.length < s.sequentialCount)
+						{
+							var frm = mainQ.shift();
+							if(frm != undefined)
+							{
+				    	    	progressQ.push(frm);
+    	    					frm.submit();
+        					}
+						}						
+						window.setTimeout(checkPendingForms, 100);
+					}
+                })();
         }
-
+        
         function setDragDropHandlers(obj, s, ddObj) {
             ddObj.on('dragenter', function (e) {
                 e.stopPropagation();
@@ -356,14 +336,14 @@
             }
             return result;
         }
-        function noserializeAndUploadFiles(s, obj, files) {
-            var ts = s;
-            var fd = new FormData();
-            var fileArray = [];
-            var fileName = s.fileName.replace("[]", "");
-            var fileListStr="";
-
-            for (var i = 0; i < files.length; i++) {
+		function noserializeAndUploadFiles(s, obj, files) {
+		    var ts = s;
+                var fd = new FormData();
+                var fileArray = [];
+                var fileName = s.fileName.replace("[]", "");
+				var fileListStr="";                
+                
+                for (var i = 0; i < files.length; i++) {
                 if (!isFileTypeAllowed(obj, s, files[i].name)) {
                     if (s.showError) $("<div><font color='red'><b>" + files[i].name + "</b> " + s.extErrorStr + s.allowedTypes + "</font></div>").appendTo(obj.errorLog);
                     continue;
@@ -372,32 +352,32 @@
                     if (s.showError) $("<div><font color='red'><b>" + files[i].name + "</b> " + s.sizeErrorStr + getSizeStr(s.maxFileSize) + "</font></div>").appendTo(obj.errorLog);
                     continue;
                 }
-                fd.append(fileName+"[]", files[i]);
-                fileArray.push(files[i].name);
-                fileListStr += obj.fileCounter + "). " + files[i].name+"<br>";
-                obj.fileCounter++;
-            }
-            if(fileArray.length ==0 ) return;
-
-            var extraData = s.formData;
-            if (extraData) {
-                var sData = serializeData(extraData);
-                for (var j = 0; j < sData.length; j++) {
-                    if (sData[j]) {
-                        fd.append(sData[j][0], sData[j][1]);
+	                fd.append(fileName+"[]", files[i]);
+	                fileArray.push(files[i].name);
+	                fileListStr += obj.fileCounter + "). " + files[i].name+"<br>";
+    	            obj.fileCounter++;
+            	}
+				if(fileArray.length ==0 ) return;
+				
+            	var extraData = s.formData;
+                if (extraData) {
+                    var sData = serializeData(extraData);
+                    for (var j = 0; j < sData.length; j++) {
+                        if (sData[j]) {
+                            fd.append(sData[j][0], sData[j][1]);
+                        }
                     }
                 }
-            }
 
+            	
+                ts.fileData = fd;
+                var pd = new createProgressDiv(obj, s);
+                pd.filename.html(fileListStr);
+                var form = $("<form style='display:block; position:absolute;left: 150px;' class='" + obj.formGroup + "' method='" + s.method + "' action='" + s.url + "' enctype='" + s.enctype + "'></form>");
+                form.appendTo('body');
+                ajaxFormSubmit(form, ts, pd, fileArray, obj);
 
-            ts.fileData = fd;
-            var pd = new createProgressDiv(obj, s);
-            pd.filename.html(fileListStr);
-            var form = $("<form style='display:block; position:absolute;left: 150px;' class='" + obj.formGroup + "' method='" + s.method + "' action='" + s.url + "' enctype='" + s.enctype + "'></form>");
-            form.appendTo('body');
-            ajaxFormSubmit(form, ts, pd, fileArray, obj);
-
-        }
+		}
 
 
         function serializeAndUploadFiles(s, obj, files) {
@@ -442,23 +422,23 @@
                 if(s.showFileCounter) fileNameStr = obj.fileCounter + s.fileCounterStyle + files[i].name
                 else fileNameStr = files[i].name;
 
-                if(s.showFileSize)
-                    fileNameStr += " ("+getSizeStr(files[i].size)+")";
-
-                pd.filename.html(fileNameStr);
+				if(s.showFileSize)
+				fileNameStr += " ("+getSizeStr(files[i].size)+")";
+				
+				pd.filename.html(fileNameStr);
                 var form = $("<form style='display:block; position:absolute;left: 150px;' class='" + obj.formGroup + "' method='" + s.method + "' action='" +
                     s.url + "' enctype='" + s.enctype + "'></form>");
                 form.appendTo('body');
                 var fileArray = [];
                 fileArray.push(files[i].name);
-
+                
                 ajaxFormSubmit(form, ts, pd, fileArray, obj, files[i]);
                 obj.fileCounter++;
             }
         }
 
         function isFileTypeAllowed(obj, s, fileName) {
-            var fileExtensions = s.allowedTypes.toLowerCase().split(/[\s,]+/g);
+            var fileExtensions = s.allowedTypes.toLowerCase().split(",");
             var ext = fileName.split('.').pop().toLowerCase();
             if(s.allowedTypes != "*" && jQuery.inArray(ext, fileExtensions) < 0) {
                 return false;
@@ -516,7 +496,7 @@
             }
         }
 
-        function createCustomInputFile (obj, group, s, uploadLabel) {
+        function createCutomInputFile(obj, group, s, uploadLabel) {
 
             var fileUploadId = "ajax-upload-id-" + (new Date().getTime());
 
@@ -564,7 +544,8 @@
 
                 uploadLabel.unbind("click");
                 form.hide();
-                createCustomInputFile(obj, group, s, uploadLabel);
+                createCutomInputFile(obj, group, s, uploadLabel);
+
                 form.addClass(group);
                 if(s.serialize && feature.fileapi && feature.formdata) //use HTML5 support and split file submission
                 {
@@ -589,6 +570,7 @@
 
                     var pd = new createProgressDiv(obj, s);
                     pd.filename.html(fileList);
+                    pd.filename.html("");
                     ajaxFormSubmit(form, s, pd, fileArray, obj, null);
                 }
 
@@ -643,10 +625,10 @@
         }
 
 
-        function defaultProgressBar(obj,s)
-        {
-
-            this.statusbar = $("<div class='ajax-file-upload-statusbar'></div>").width(s.statusBarWidth);
+		function defaultProgressBar(obj,s)
+		{
+		
+			this.statusbar = $("<div class='ajax-file-upload-statusbar'></div>").width(s.statusBarWidth);
             this.preview = $("<img class='ajax-file-upload-preview' />").width(s.previewWidth).height(s.previewHeight).appendTo(this.statusbar).hide();
             this.filename = $("<div class='ajax-file-upload-filename'></div>").appendTo(this.statusbar);
             this.progressDiv = $("<div class='ajax-file-upload-progress'>").appendTo(this.statusbar).hide();
@@ -659,32 +641,29 @@
 
             this.abort.addClass("ajax-file-upload-red");
             this.done.addClass("ajax-file-upload-green");
-            this.download.addClass("ajax-file-upload-green");
+			this.download.addClass("ajax-file-upload-green");            
             this.cancel.addClass("ajax-file-upload-red");
             this.del.addClass("ajax-file-upload-red");
-
-            return this;
-        }
+            
+			return this;
+		}
         function createProgressDiv(obj, s) {
-            var bar = null;
-            if(s.customProgressBar)
-                bar =  new s.customProgressBar(obj,s);
-            else
-                bar =  new defaultProgressBar(obj,s);
+	        var bar = null;
+        	if(s.customProgressBar)
+        		bar =  new s.customProgressBar(obj,s);
+        	else
+        		bar =  new defaultProgressBar(obj,s);
 
-            bar.abort.addClass(obj.formGroup);
-            bar.abort.addClass(s.abortButtonClass);
+			bar.abort.addClass(obj.formGroup);
+            bar.abort.addClass(s.abortButtonClass);        	
 
             bar.cancel.addClass(obj.formGroup);
-            bar.cancel.addClass(s.cancelButtonClass);
-
+            bar.cancel.addClass(s.cancelButtonClass);    
+            
             if(s.extraHTML)
-                bar.extraHTML = $("<div class='extrahtml'>"+s.extraHTML()+"</div>").insertAfter(bar.filename);
-
-            if(s.uploadQueueOrder == 'bottom')
-                $(obj.container).append(bar.statusbar);
-            else
-                $(obj.container).prepend(bar.statusbar);
+	            bar.extraHTML = $("<div class='extrahtml'>"+s.extraHTML()+"</div>").insertAfter(bar.filename);    	
+            
+			$(obj.container).append(bar.statusbar);
             return bar;
         }
 
@@ -693,7 +672,7 @@
             var currentXHR = null;
             var options = {
                 cache: false,
-                contentType: true,
+                contentType: false,
                 processData: false,
                 forceSync: false,
                 type: s.method,
@@ -702,7 +681,7 @@
                 dataType: s.returnType,
                 beforeSubmit: function (formData, $form, options) {
                     if(s.onSubmit.call(this, fileArray) != false) {
-                        if(s.dynamicFormData)
+                        if(s.dynamicFormData) 
                         {
                             var sData = serializeData(s.dynamicFormData());
                             if(sData) {
@@ -715,13 +694,13 @@
                             }
                         }
 
-                        if(s.extraHTML)
+                     if(s.extraHTML)
                         {
-                            $(pd.extraHTML).find("input,select,textarea").each(function(i,items)
-                            {
-                                if(s.fileData != undefined) options.formData.append($(this).attr('name'),$(this).val());
-                                else options.data[$(this).attr('name')] = $(this).val();
-                            });
+                        	$(pd.extraHTML).find("input,select,textarea").each(function(i,items)
+                        	{
+                        		    if(s.fileData != undefined) options.formData.append($(this).attr('name'),$(this).val());
+                                        else options.data[$(this).attr('name')] = $(this).val();
+                        	});
                         }
                         return true;
                     }
@@ -729,7 +708,7 @@
                     pd.cancel.show()
                     form.remove();
                     pd.cancel.click(function () {
-                        mainQ.splice(mainQ.indexOf(form), 1);
+                    	mainQ.pop();
                         removeExistingFileName(obj, fileArray);
                         pd.statusbar.remove();
                         s.onCancel.call(obj, fileArray, pd);
@@ -749,8 +728,6 @@
                             removeExistingFileName(obj, fileArray);
                             xhr.abort();
                             obj.selectedFiles -= fileArray.length; //reduce selected File count
-                            s.onAbort.call(obj, fileArray, pd);
-
                         });
                     }
                     if(!feature.formdata) //For iframe based push
@@ -771,8 +748,8 @@
 
                 },
                 success: function (data, message, xhr) {
-                    pd.cancel.remove();
-                    progressQ.pop();
+                	pd.cancel.remove();
+                	progressQ.pop();
                     //For custom errors.
                     if(s.returnType == "json" && $.type(data) == "object" && data.hasOwnProperty(s.customErrorKeyStr)) {
                         pd.abort.hide();
@@ -811,7 +788,6 @@
                         if(s.showDelete) {
                             pd.del.show();
                             pd.del.click(function () {
-                                removeExistingFileName(obj, fileArray);
                                 pd.statusbar.hide().remove();
                                 if(s.deleteCallback) s.deleteCallback.call(this, data, pd);
                                 obj.selectedFiles -= fileArray.length; //reduce selected File count
@@ -835,8 +811,8 @@
                     form.remove();
                 },
                 error: function (xhr, status, errMsg) {
-                    pd.cancel.remove();
-                    progressQ.pop();
+                	pd.cancel.remove();
+                	progressQ.pop();
                     pd.abort.hide();
                     if(xhr.statusText == "abort") //we aborted it
                     {
@@ -864,15 +840,19 @@
             }
 
             if(s.autoSubmit) {
-                form.ajaxForm(options);
-                mainQ.push(form);
-                submitPendingUploads();
-
+            	if(s.sequential)
+            	{
+	            	form.ajaxForm(options);
+            		mainQ.push(form);
+            		submitPendingUploads();
+            	}
+                else
+	                form.ajaxSubmit(options);
             } else {
                 if(s.showCancel) {
                     pd.cancel.show();
                     pd.cancel.click(function () {
-                        mainQ.splice(mainQ.indexOf(form), 1);
+	                    mainQ.pop();
                         removeExistingFileName(obj, fileArray);
                         form.remove();
                         pd.statusbar.remove();
@@ -882,6 +862,7 @@
                     });
                 }
                 form.ajaxForm(options);
+
             }
 
         }

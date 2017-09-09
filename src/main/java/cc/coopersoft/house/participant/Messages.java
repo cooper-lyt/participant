@@ -19,10 +19,16 @@ public interface Messages{
     String validHouseError();
 
     @MessageTemplate("{valid_house_owner_fail}")
-    String validHouesOwnerFail();
+    String validHouseOwnerFail();
 
     @MessageTemplate("{api_server_fail}")
     String serverFail();
+
+    @MessageTemplate("{house_source_exists}")
+    String houseSourceExists();
+
+    @MessageTemplate("{house_exists_to_edit}")
+    String houseSourceToEdit();
 
 
 }

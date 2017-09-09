@@ -19,6 +19,10 @@
                 <column name="DESCRIPTION" nullable="true" length="512"/>
             </basic>
 
+            <basic name="pri">
+                <column name="PRI" nullable="false"/>
+            </basic>
+
             <many-to-one name="houseSaleInfo">
                 <join-column name="HOUSE_SELL_INFO" nullable="false"/>
             </many-to-one>

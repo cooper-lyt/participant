@@ -9,14 +9,18 @@ public interface Seller {
 
     class Home implements ViewConfig {}
 
+    class HouseSourceView implements ViewConfig{}
+
     interface Apply extends ViewConfig{
 
         class HouseValid implements Apply {}
 
         class HouseSellInfo implements Apply {}
 
-        class HouseSaleJoin implements Apply {}
-
         class HouseSalePicUpload implements Apply{}
+
+        class HouseSourceSubmit implements Apply{}
+
+        class HouseSourceComited implements Apply{}
     }
 }

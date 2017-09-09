@@ -12,29 +12,179 @@
 
     <h:outputStylesheet library="uploadfile" name="uploadfile.css"/>
 
-    #{attrUser.keyId}
+    <h:outputStylesheet>
+        .ajax-file-upload-filename{
+            margin:0;
+            width: 200px;
+            text-overflow: ellipsis;
+            white-space:nowrap;
+            overflow:hidden;
 
-    "#{runParam.getStringParam('nginx_address')}/api/protected/put-media?uid=#{attrUser.keyId}&amp;rnd=#{serverToken.rndData}&amp;digest=#{serverToken.digest}}"
+        }
+
+        .ajax-file-upload-progress{
+            width: 140px;
+        }
+
+        .ajax-file-upload-statusbar{
+            float: left;
+        }
+
+        .ajax-file-upload-statusbar{
+            width: 240px;
+        }
+
+    </h:outputStylesheet>
+
+    <div class="page-form">
+    <b:row>
+    <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
 
 
-    <div id="fileuploader">Upload</div>
+    <div class="setup-header setup-gift">
+        <h1 class="subhead-heading">房屋图片上传</h1>
+
+        <ol class="steps steps-4">
+            <li class="complete">
+                <b:iconAwesome name="check" size="2x"/>
+                <strong class="step">产权:</strong>
+                产权验证
+            </li>
+            <li class="complete">
+                <b:iconAwesome name="check" size="2x"/>
+                <strong class="step">描述:</strong>
+                房屋描述
+            </li>
+            <li class="current">
+                <b:iconAwesome name="photo" size="2x"/>
+                <strong class="step">图片:</strong>
+                图片上传
+            </li>
+            <li>
+                <b:iconAwesome name="university" size="2x"/>
+                <strong class="step">提交:</strong>
+                房源提交
+            </li>
+        </ol>
+    </div>
+        <b:messages globalOnly="false" styleClass="top-messages"/>
+    </b:column>
+
+    </b:row>
+        <b:row>
+            <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
+
+            <div id="fileuploader">上传图片</div>
+
+            </b:column>
+        </b:row>
+
+        <b:row>
+
+            <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
+
+                <hr/>
+                <h:form prependId="false">
+                    <h:inputHidden id="pic_order_input" value="#{houseSaleInfoEdit.orderStr}"/>
+
+                    <h:commandButton onclick="setPicOrder();" action="#{houseSaleInfoEdit.savePics}"
+                                     value="完成"
+                                     styleClass="btn btn-success">
+                        <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                    </h:commandButton>
+            </h:form>
+            </b:column>
+        </b:row>
+
+    </div>
+
+    <h:form>
+
+    <p:remoteCommand name="addPic" update="@none" actionListener="#{houseSaleInfoEdit.addPic}"/>
+
+    <p:remoteCommand name="removePic" update="@none" actionListener="#{houseSaleInfoEdit.removePic}"/>
+
+    </h:form>
+    <script>//<![CDATA[
+
+        function setPicOrder() {
+            var orderStr = "";
+            $('.ajax-file-upload-statusbar').each(function () {
+                orderStr += " " + $(this).attr('data-fid')
+            });
+
+            $('#pic_order_input').val(orderStr);
 
 
-    <script>
+        }
+
         $(document).ready(function()
         {
             $("#fileuploader").uploadFile({
                 url:"#{runParam.getStringParam('nginx_address')}/api/protected/put-media?uid=#{attrUser.keyId}&amp;rnd=#{serverToken.rndData}&amp;digest=#{serverToken.digest}}",
                 fileName:"myfile",
-                acceptFiles:"image/*"
+                acceptFiles:"image/*",
+                showDelete: false,
+                showPreview:true,
+                showFileCounter:false,
+                showDelete:true,
+                dragdropWidth:"100%",
+                previewHeight: "207px",
+                previewWidth: "207px",
+                statusBarWidth:"240px",
+                dragDropStr: "<span><b>可拖拽图片到此处上传</b></span>",
+                abortStr:"中止",
+                cancelStr:"取消",
+                doneStr:"完成",
+                multiDragErrorStr: "不允许此操作",
+                extErrorStr:"不允许此类型的文件",
+                sizeErrorStr:"文件大小不被允许",
+                uploadErrorStr:"上传文件发生错误",
+                uploadStr:"上传图片",
+                deletelStr:"删除",
+
+                onSuccess:function (files, data, xhr, pd) {
+
+                    pd.statusbar.attr("data-fid",data.fid);
+
+
+                    addPic([{name:'fid',value: data.fid},{name:'fname',value: data.name},{name:'houseSaleInfoId',value: '#{houseSourceHome.instance.id}'}]);
+                    $( ".ajax-file-upload-container" ).sortable();
+                    $( ".ajax-file-upload-container" ).disableSelection();
+
+                },
+
+                deleteCallback: function (data,pd) {
+                    removePic([{name:'houseSaleInfoId',value: '#{houseSourceHome.instance.id}'},{name:'fid',value: pd.statusbar.attr("data-fid")}]);
+                    pd.statusbar.hide();
+                },
+                onLoad: function (obj) {
+                    var data = #{houseSourceHome.picJsonData};
+
+                    for(var i=0 ; i < data.length ; i++){
+                        var pd = obj.createProgress(data[i].title);
+                        pd.statusbar.attr("data-fid",data[i].id);
+                        pd.preview.attr('src',"#{runParam.getStringParam('nginx_address')}/img/200x200/" + data[i].id);
+                    }
+                    $( ".ajax-file-upload-container" ).sortable();
+                    $( ".ajax-file-upload-container" ).disableSelection();
+
+                }
+                
             });
 
+
+
+
         });
-    </script>
+
+        //]]></script>
 
 
 
     <h:outputScript library="uploadfile" name="jquery.uploadfile.js"/>
+    <link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet"/>
+    <script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.js"></script>
 
 
 </ui:composition>

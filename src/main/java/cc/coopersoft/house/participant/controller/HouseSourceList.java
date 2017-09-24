@@ -3,19 +3,23 @@ package cc.coopersoft.house.participant.controller;
 import cc.coopersoft.common.I18n;
 import cc.coopersoft.common.PageResultData;
 import cc.coopersoft.common.util.ConditionAdapter;
+import cc.coopersoft.house.participant.AttrUser;
+import cc.coopersoft.house.participant.data.model.HouseFilterType;
 import cc.coopersoft.house.participant.data.repository.HouseSourceRepository;
-import cc.coopersoft.house.sale.data.HouseSaleInfo;
 import cc.coopersoft.house.sale.data.HouseSource;
 import org.omnifaces.cdi.Param;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Created by cooper on 22/04/2017.
  */
 @Named
+@RequestScoped
 public class HouseSourceList {
 
     private static final int PAGE_SIZE = 15;
@@ -23,10 +27,11 @@ public class HouseSourceList {
     @Inject
     private I18n i18n;
 
-    @Inject
-    @Param(name = "condition")
+    @Inject @Param(name = "condition")
     private String condition;
 
+    @Inject
+    private Logger logger;
 
     @Inject @Param(name = "filterType")
     private HouseSource.HouseSourceStatus filterType;
@@ -42,6 +47,9 @@ public class HouseSourceList {
 
     @Inject
     private HouseSourceRepository houseSourceRepository;
+
+    @Inject
+    private AttrUser attrUser;
 
     public int getFirstResult() {
         if (firstResult == null){
@@ -92,18 +100,31 @@ public class HouseSourceList {
 
     private PageResultData<HouseSource> resultData;
 
+    private List<HouseFilterType> houseSourceFilterTypeList;
+
+    public List<HouseFilterType> getHouseSourceFilterTypeList() {
+        if (houseSourceFilterTypeList == null){
+            findResultData();
+        }
+        return houseSourceFilterTypeList;
+    }
+
     public PageResultData<HouseSource> getResultData() {
         if (resultData == null){
-            resultData = findResultData();
-            this.firstResult = resultData.getFirstResult();
+            findResultData();
         }
         return resultData;
     }
 
-    protected PageResultData<HouseSource> findResultData(){
 
-        return new PageResultData<HouseSource>(houseSourceRepository.searchResultData(getConditionAdapter().getCondition(),getConditionAdapter().getContains(),getConditionAdapter().isEmpty(),getDateFrom(),getDateFrom() != null, getDateTo(),getDateTo() != null , filterType == null ? EnumSet.allOf(HouseSource.HouseSourceStatus.class) : EnumSet.of(filterType),getFirstResult(),PAGE_SIZE), getFirstResult(),
-                houseSourceRepository.searchResultCount(getConditionAdapter().getCondition(),getConditionAdapter().getContains(),getConditionAdapter().isEmpty(),getDateFrom(),getDateFrom() != null, getDateTo(),getDateTo() != null , filterType == null ? EnumSet.allOf(HouseSource.HouseSourceStatus.class) : EnumSet.of(filterType)),PAGE_SIZE);
 
+    protected void findResultData(){
+
+        resultData =  new PageResultData<HouseSource>(houseSourceRepository.searchResultData(attrUser.getLoginData().getCorpInfo().getId(),  getConditionAdapter().getCondition(),getConditionAdapter().getContains(),getConditionAdapter().isEmpty(),getDateFrom(),getDateFrom() != null, getDateTo(),getDateTo() != null , filterType == null ? EnumSet.allOf(HouseSource.HouseSourceStatus.class) : EnumSet.of(filterType),getFirstResult(),PAGE_SIZE), getFirstResult(),
+                houseSourceRepository.searchResultCount(attrUser.getLoginData().getCorpInfo().getId(),getConditionAdapter().getCondition(),getConditionAdapter().getContains(),getConditionAdapter().isEmpty(),getDateFrom(),getDateFrom() != null, getDateTo(),getDateTo() != null , filterType == null ? EnumSet.allOf(HouseSource.HouseSourceStatus.class) : EnumSet.of(filterType)),PAGE_SIZE);
+        this.firstResult = resultData.getFirstResult();
+
+        houseSourceFilterTypeList = houseSourceRepository.searchHouseSourceFilterGroup(attrUser.getLoginData().getCorpInfo().getId(),getConditionAdapter().getCondition(),getConditionAdapter().getContains(),getConditionAdapter().isEmpty(),getDateFrom(),getDateFrom() != null, getDateTo(),getDateTo() != null );
     }
+
 }

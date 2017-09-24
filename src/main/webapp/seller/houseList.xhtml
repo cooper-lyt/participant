@@ -2,17 +2,65 @@
 <!DOCTYPE html>
 <ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:o="http://omnifaces.org/ui">
 
+
+    <ui:define name="context">
+
+
+
+        <f:metadata>
+            <f:viewParam name="condition" value="#{houseSourceList.condition}"/>
+            <f:viewParam name="filterType" value="#{houseSourceList.filterType}"/>
+            <f:viewParam name="firstResult" value="#{houseSourceList.firstResult}"/>
+
+        </f:metadata>
+        <div class="border-bottom mb-4">
+
+            <b:container styleClass="d-flex flex-items-center">
+                <nav class="underline-nav" data-pjax="" role="navigation">
+                    <a href="#" class="underline-nav-item selected">销售房源</a>
+                    <a disabled="true" href="#" class="underline-nav-item todo-disable">租赁房源</a>
+                    <a href="#{request.contextPath}/seller/contractList.xhtml" class="underline-nav-item ">销售合同</a>
+                    <a disabled="true" href="#" class="underline-nav-item todo-disable">租赁合同</a>
+                </nav>
+                <div class="flex-auto f6 text-right">
+                    <a disabled="true" href="#" class="muted-link todo-disable">高级查询</a>
+                </div>
+            </b:container>
+
+        </div>
+
+        <b:container style="min-height:400px">
+
+
+
+
+
     <b:row>
-        <b:column span="8">
+
+
+
+        <b:column rendered="#{empty houseSourceList.resultData.resultData}" styleClass="blankslate" span="9">
+
+
+            <svg aria-hidden="true" class="octicon octicon-search blankslate-icon" height="32" version="1.1" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" d="M15.7 13.3l-3.81-3.83A5.93 5.93 0 0 0 13 6c0-3.31-2.69-6-6-6S1 2.69 1 6s2.69 6 6 6c1.3 0 2.48-.41 3.47-1.11l3.83 3.81c.19.2.45.3.7.3.25 0 .52-.09.7-.3a.996.996 0 0 0 0-1.41v.01zM7 10.7c-2.59 0-4.7-2.11-4.7-4.7 0-2.59 2.11-4.7 4.7-4.7 2.59 0 4.7 2.11 4.7 4.7 0 2.59-2.11 4.7-4.7 4.7z"></path></svg>
+            <h3>
+                没有找到附合条件的记录
+            </h3>
+            你可以尝试 <a href="#" disabled="true" class="todo-disable">高级查询</a>.
+        </b:column>
+        <b:column rendered="#{not (empty houseSourceList.resultData.resultData)}" styleClass="result-list" span="9">
 
             <div class="d-flex flex-justify-between border-bottom pb-3">
                 <h3>
-                    53,317 repository results
+                    <h:outputText value="#{houseSourceList.resultData.dataCount}">
+                        <f:convertNumber groupingUsed="true" pattern="#0"/>
+                    </h:outputText> 条符合条件的记录
                 </h3>
 
             </div>
@@ -21,53 +69,88 @@
             <ul class="repo-list js-repo-list">
 
                 <ui:repeat value="#{houseSourceList.resultData.resultData}" var="_data">
-                    <div class="repo-list-item d-flex flex-justify-start py-4 public source">
-                        <div class="col-8 pr-3">
-                            <h3>
-                                <h:outputLink value="#{request.contextPath}/seller/houseSourceView.xhtml"  styleClass="v-align-middle" >
-                                    <f:param name="houseSaleInfoId" value="#{_data.id}"/>
-                                    #{_data.saleTitle}
-                                </h:outputLink>
-                            </h3>
-
-                            <p class="col-9 d-inline-block text-gray mb-2 pr-4">
-                                Forked from <a href="https://github.com/orvice/">https://github.com/orvice/</a><em>ss</em>-panel
+               <b:row styleClass="repo-list-item d-flex flex-justify-start py-4 public source">
+                   <b:column styleClass="pr-3" span="12">
+                       <h3>
+                           <h:outputLink value="#{request.contextPath}/seller/houseSourceView.xhtml"  styleClass="v-align-middle" >
+                               <f:param name="houseSaleInfoId" value="#{_data.id}"/>
+                               #{_data.sourceId}/<em>#{_data.houseCode}</em>
+                           </h:outputLink>
+                           <span class="label #{_data.status}">#{enumHelper.getLabel(_data.status)}</span>
+                       </h3>
+                        <c:if test="#{_data.status.name() eq 'CHECK_FAIL'}">
+                            <p class="mb-2 pr-4 text-danger">
+                                #{_data.checkView}
                             </p>
+                        </c:if>
 
-                            <div class="topics-row-container col-9 d-inline-flex flex-wrap flex-items-center f6 my-1">
-                                <a href="/search?q=topic%3Ass-panel&amp;type=Repositories" class="topic-tag topic-tag-link f6 my-1" data-ga-click="Topic, search results" data-octo-click="topic_click" >
-                                    ss-panel
-                                </a>
-                                <a href="/search?q=topic%3Ashadowsocksr&amp;type=Repositories" class="topic-tag topic-tag-link f6 my-1" data-ga-click="Topic, search results" data-octo-click="topic_click" >
-                                    shadowsocksr
-                                </a>
-                            </div>
 
-                            <p class="f6 text-gray mb-0 mt-2">
-                                Updated <relative-time datetime="2017-04-15T01:30:04Z" title="Apr 15, 2017, 9:30 AM GMT+8">15 days ago</relative-time>
-                            </p>
-                        </div>
+                       <p class="col-9 d-inline-block mb-2 pr-4">
+                           #{_data.saleTitle}
+                       </p>
+                       <p class="mb-2 pr-4 ">
+                           产权人:<strong>#{_data.personName}</strong>  证件号:<strong>#{_data.powerCardNumber}</strong>   联系电话:<strong>#{_data.tel}</strong>
+                       </p>
 
-                        <div class="d-table-cell col-2 text-gray pt-2">
-                            <span class="repo-language-color ml-0" style="background-color:#f1e05a;"></span>
-                            JavaScript
-                        </div>
 
-                        <div class="col-2 text-right pt-1 pr-3 pt-2">
-                            <a class="muted-link" href="esdeathlove/ss-panel-v3-mod/stargazers">
-                                <svg aria-label="star" class="octicon octicon-star" height="16" role="img" version="1.1" viewBox="0 0 14 16" width="14"><path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74z"></path></svg>
-                                971
-                            </a>
-                        </div>
-                    </div>
+                       <p class="f6 text-gray mb-0 mt-2">
+                           建立时间:<h:outputText value="#{_data.applyTime}"><f:convertDateTime locale="#{i18n.locale}" timeZone="#{i18n.timeZone}" pattern="#{messages.datetime_pattern}"/></h:outputText>
+                           更新时间:<h:outputText value="#{_data.updateTime}"><f:convertDateTime locale="#{i18n.locale}" timeZone="#{i18n.timeZone}" pattern="#{messages.datetime_pattern}"/></h:outputText>
+                           审核时间:<h:outputText value="#{_data.checkTime}"><f:convertDateTime locale="#{i18n.locale}" timeZone="#{i18n.timeZone}" pattern="#{messages.datetime_pattern}"/></h:outputText>
+                       </p>
+                   </b:column>
+               </b:row>
+
                 </ui:repeat>
 
 
 
             </ul>
 
-        </b:column>
-        <b:column span="4"><h:outputText value="span=4"/></b:column>
-    </b:row>
+            <o:form includeViewParams="true">
+                <ui:include src="/tools/pageNav.xhtml">
+                    <ui:param name="pageResultData" value="#{houseSourceList.resultData}"/>
+                </ui:include>
+            </o:form>
 
+        </b:column>
+        <b:column span="3" rendered="#{not (empty houseSourceList.resultData.resultData)}">
+            <div class="border rounded-1 p-3 mb-3">
+                <h2 class="d-inline-block f5 mb-2 mt-0">
+                    房源状态
+                </h2>
+
+                <ul class="filter-list small pl-0" >
+
+                        <c:forEach items="#{houseSourceList.houseSourceFilterTypeList}" var="_type">
+                        <li>
+                            <span class="bar" style="width: 25%;"></span>
+
+                            <h:link includeViewParams="true" styleClass="filter-item  #{(_type.filterType eq houseSourceList.filterType) ? 'selected' : ''}">
+                                <c:if test="#{(_type.filterType eq houseSourceList.filterType)}">
+                                    <span class="fa fa-times float-right" aria-hidden="true"></span>
+
+                                    <f:param name="filterType" value=""/>
+                                </c:if>
+                                <c:if test="#{not (_type.filterType eq houseSourceList.filterType)}">
+                                    <span class="count">#{_type.count}</span>
+                                    <f:param name="filterType" value="#{_type.filterType}"/>
+                                </c:if>
+
+
+
+                                #{enumHelper.getLabel(_type.filterType)}
+
+                            </h:link>
+
+                        </li>
+                        </c:forEach>
+
+
+                </ul>
+            </div>
+        </b:column>
+    </b:row>
+        </b:container>
+    </ui:define>
 </ui:composition>

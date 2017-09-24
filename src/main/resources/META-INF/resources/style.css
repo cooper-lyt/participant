@@ -1,0 +1,24 @@
+.label.SHOWING{
+    background-color: #337ab7;
+}
+.label.SUBMIT{
+    background-color: #f0ad4e;
+}
+.label.PREPARE{
+    background-color: #777;
+}
+.label.CHECK{
+    background-color: #f0ad4e;
+}
+.label.CANCEL{
+    background-color: #777;
+}
+.label.SELL{
+    background-color: #5bc0de;
+}
+.label.CHECK_PASS{
+    background-color: #5cb85c;
+}
+.label.CHECK_FAIL{
+    background-color: #d9534f;
+}

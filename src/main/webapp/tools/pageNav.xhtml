@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+
+    <div class="data-page-nav">
+        <nav>
+            <ul class="pagination">
+                <li class="#{pageResultData.havePrevious ? '' : 'disabled'}">
+                    <h:outputLink pt:aria-label="上一页" includeViewParams="true">
+                        <span aria-hidden="true">#{messages.left}#{messages.left}</span>
+                        <f:param name="firstResult" value="#{pageResultData.previousFirstResult}"/>
+                    </h:outputLink>
+                </li>
+
+                <c:forEach items="#{pageResultData.pages}" var="_page">
+                    <li class="#{_page.page eq pageResultData.page ? 'active' : ''} ">
+                        <h:link includeViewParams="true">
+
+                            #{_page.title} <span class="sr-only">(current)</span>
+                            <o:param name="firstResult" value="#{_page.firstResult}"/>
+                        </h:link>
+                    </li>
+
+                </c:forEach>
+
+                <li class="#{pageResultData.haveNext ? '' : 'disabled'}">
+                    <h:outputLink pt:aria-label="下一页">
+
+                        <f:param name="firstResult" value="#{pageResultData.nextFirstResult}"/>
+                        <span aria-hidden="true">#{messages.right}#{messages.right}</span>
+                    </h:outputLink>
+
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</ui:composition>

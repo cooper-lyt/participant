@@ -64,7 +64,10 @@
                 <temporal>TIMESTAMP</temporal>
             </basic>
 
-
+            <basic name="updateTime">
+                <column name="UPDATE_TIME" nullable="false" length="19"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
 
             <basic name="applyTime">
                 <column name="APPLY_TIME" nullable="false" length="19" column-definition="DATETIME"/>
@@ -107,7 +110,7 @@
             </one-to-one>
 
             <one-to-one fetch="LAZY" orphan-removal="true" name="houseContract">
-                <primary-key-join-column/>
+                <join-column name="CONTRACT" nullable="true" />
                 <cascade> <cascade-all/></cascade>
             </one-to-one>
 

@@ -13,6 +13,7 @@
 
     <h:outputStylesheet library="github" name="bootstrap.min.css"/>
     <h:outputStylesheet library="github" name="theme.css" position="last"/>
+    <h:outputStylesheet name="style.css" />
     <h:outputStylesheet>
         .navbar .navbar-header .navbar-brand{
             padding: 10px 15px;
@@ -20,16 +21,26 @@
     </h:outputStylesheet>
 
     <ui:insert name="custom-header"/>
+
+
 </h:head>
 <h:body style="padding-top: 50px;">
 
     <b:navBar brandImg="#{request.contextPath}/img/logo-icon.png" brand-href="#{request.contextPath}/home.xhtml" position="top" sticky="true">
         <b:container>
-            <h:form styleClass="navbar-form navbar-left " pt:role="search">
+
+            <h:form  styleClass="navbar-form navbar-left " pt:role="search">
                 <div class="form-group">
-                    <h:inputText size="40" styleClass="form-control" pt:placeholder="房源或合同查询"/>
+                    <h:inputText size="40" value="#{houseSourceList.condition}" styleClass="form-control" pt:placeholder="房源或合同查询">
+                        <f:param name="firstResult" value="0"/>
+                        <f:param name="filterType" value=""/>
+                    </h:inputText>
                 </div>
+                <h:commandButton  style="display: none;" action="/seller/houseList.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
+
+
             </h:form>
+
             <b:navbarLinks>
 
                 <b:navLink value="交易挂牌" href="#{request.contextPath}/erp/hr/employeeList.xhtml"></b:navLink>
@@ -44,6 +55,7 @@
 
         </b:container>
     </b:navBar>
+
 
     <ui:insert name="context">
     <b:container style="min-height:400px">

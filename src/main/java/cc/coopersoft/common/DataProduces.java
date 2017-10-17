@@ -1,6 +1,8 @@
 package cc.coopersoft.common;
 
 import com.dgsoft.common.system.PersonEntity;
+import com.dgsoft.common.system.Sex;
+import com.dgsoft.house.PoolType;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -31,5 +33,19 @@ public class DataProduces {
             }
         }
         return result;
+    }
+
+    @Named
+    @Produces
+    @ApplicationScoped
+    public PoolType[] poolTypes(){
+        return PoolType.values();
+    }
+
+    @Named
+    @Produces
+    @ApplicationScoped
+    public Sex[] sexValues(){
+        return Sex.values();
     }
 }

@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+    <ui:define name="custom-header">
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select.min.css"/>
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select-plug.css"/>
+        <h:outputScript library="bsf" name="js/dropdown.js"/>
+        <h:outputScript library="bootstrap-select" name="js/bootstrap-select.min.js"/>
+        <h:outputScript library="bootstrap-select" name="js/i18n/defaults-zh_CN.min.js"/>
+    </ui:define>
+
+
+
+
+    <h:form id="houes-valid"  styleClass="page-form">
+    <b:row>
+    <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
+    <div class="setup-header setup-gift">
+        <h1 class="subhead-heading">房屋签约</h1>
+
+        <ol class="steps steps-5">
+            <li class="complete">
+                <b:iconAwesome name="check" size="2x"/>
+                <strong class="step">产权验证:</strong>
+                产权验证
+            </li>
+            <li class="complete">
+                <b:iconAwesome name="check" size="2x"/>
+                <strong class="step">交易信息:</strong>
+                交易信息
+            </li>
+            <li class="current">
+                <b:iconAwesome name="address-book-o" size="2x"/>
+                <strong class="step">卖方:</strong>
+                卖方信息
+            </li>
+            <li>
+                <b:iconAwesome name="address-book-o" size="2x"/>
+                <strong class="step">买方:</strong>
+                买方信息
+            </li>
+            <li>
+                <b:iconAwesome name="university" size="2x"/>
+                <strong class="step">建立:</strong>
+                建立提交
+            </li>
+        </ol>
+    </div>
+
+    <b:messages globalOnly="false" styleClass="top-messages"/>
+
+
+        <ui:repeat value="#{contractHome.sellerEditList}" var="_seller">
+
+            <ui:include src="/frame/contractPerson.xhtml">
+                <ui:param name="_person" value="#{_seller}"/>
+
+            </ui:include>
+
+        </ui:repeat>
+
+    </b:column>
+
+    </b:row>
+
+    </h:form>
+
+</ui:composition>

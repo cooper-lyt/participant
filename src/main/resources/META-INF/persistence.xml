@@ -23,6 +23,7 @@
         <mapping-file>jpa/powerPersonEntity.xml</mapping-file>
 
         <class>cc.coopersoft.house.participant.data.model.SystemParam</class>
+        <class>cc.coopersoft.house.participant.data.model.NumberSequence</class>
 
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>

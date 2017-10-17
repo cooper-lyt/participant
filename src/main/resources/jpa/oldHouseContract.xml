@@ -20,6 +20,12 @@
                 <column name="CONTROL" nullable="false"/>
             </basic>
 
+            
+            <basic name="sellerPoolType">
+                <column name="SELLER_POOL_TYPE" nullable="false" length="32"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
             <one-to-one maps-id="id" fetch="LAZY" name="houseContract">
                 <primary-key-join-column />
             </one-to-one>

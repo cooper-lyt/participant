@@ -1,0 +1,58 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+
+
+    <ui:decorate template="personInput.xhtml">
+        <ui:param name="allowCredentialsTypeList" value="#{personCredentialsTypes}"/>
+
+
+        <b:inputText label="#{_person.credentialsType.name() eq 'PASSPORT' ? '国籍' : '户籍所在地'}"
+                     p:placeholder="#{_person.credentialsType.name() eq 'PASSPORT' ? '国籍' : '户籍所在地'}"
+                     value="#{_person.personEntity.rootAddress}"/>
+
+        <p:outputPanel layout="block" styleClass="input-group">
+
+            <b:inputText value="#{_person.personEntity.birthday}"
+                         p:placeholder="出生日期" label="出生日期"
+                         styleClass="js-datepicker" renderLabel="false"/>
+            <p:outputPanel layout="block" styleClass="input-group-btn">
+
+
+
+                <h:selectOneMenu label="性别"
+                                 styleClass="selectpicker form-control select-theme"
+                                 converter="omnifaces.GenericEnumConverter" pt:data-width="70px"
+                                 value="#{_person.personEntity.sex}" required="false">
+
+                    <f:selectItems var="_sex" value="#{sexValues}" itemValue="#{_sex}" itemLabel="#{enumHelper.getLabel(_sex)}"/>
+
+                </h:selectOneMenu>
+            </p:outputPanel>
+        </p:outputPanel>
+
+        <p:outputPanel layout="block" styleClass="input-group">
+            <b:inputText label="邮政编码" p:placeholder="邮政编码" size="9" maxlength="9" />
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-earphone"/>
+            </div>
+
+            <h:inputText label="联系电话" size="30" maxlength="15" p:placeholder="联系电话"
+                         value="#{_person.personEntity.phone}" required="true">
+
+                <f:validateRegex pattern="\+?(\d{2})?((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)"/>
+                <p:clientValidator event="blur"/>
+            </h:inputText>
+        </p:outputPanel>
+
+    </ui:decorate>
+
+
+</ui:composition>

@@ -12,9 +12,13 @@
 
         <ul class="pagehead-actions">
             <li>
-               <b:button
 
-                       value="签约" styleClass="btn btn-sm"/>
+                <h:form>
+                    <h:commandLink action="#{contractCreate.createBySource}" value="签约" styleClass="btn btn-sm">
+                        <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                    </h:commandLink>
+                </h:form>
+
 
             </li>
 

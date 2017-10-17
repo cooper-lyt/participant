@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:define name="custom-header">
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select.min.css"/>
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select-plug.css"/>
+        <h:outputScript library="bsf" name="js/dropdown.js"/>
+        <h:outputScript library="bootstrap-select" name="js/bootstrap-select.min.js"/>
+        <h:outputScript library="bootstrap-select" name="js/i18n/defaults-zh_CN.min.js"/>
+    </ui:define>
+
+
+
+    <h:form id="houes-valid"  styleClass="page-form">
+        <b:row>
+            <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
+                <div class="setup-header setup-gift">
+                    <h1 class="subhead-heading">房屋签约</h1>
+
+                    <ol class="steps steps-5">
+                        <li class="complete">
+                            <b:iconAwesome name="check" size="2x"/>
+                            <strong class="step">产权验证:</strong>
+                            产权验证
+                        </li>
+                        <li class="current">
+                            <b:iconAwesome name="bookmark" size="2x"/>
+                            <strong class="step">交易信息:</strong>
+                            交易信息
+                        </li>
+                        <li>
+                            <b:iconAwesome name="address-book-o" size="2x"/>
+                            <strong class="step">卖方:</strong>
+                            卖方信息
+                        </li>
+                        <li>
+                            <b:iconAwesome name="address-book-o" size="2x"/>
+                            <strong class="step">买方:</strong>
+                            买方信息
+                        </li>
+                        <li>
+                            <b:iconAwesome name="university" size="2x"/>
+                            <strong class="step">建立:</strong>
+                            建立提交
+                        </li>
+                    </ol>
+                </div>
+
+                <b:messages globalOnly="false" styleClass="top-messages"/>
+
+
+                <label for="cardNumber">机构代理人</label>
+                <ui:decorate template="/frame/personInput.xhtml">
+                    <ui:param name="_person" value="#{contractHome.proxyPersonHelper}"/>
+                    <ui:param name="allowCredentialsTypeList" value="#{personCredentialsTypes}"/>
+
+                    <b:inputText value="#{contractHome.proxyPersonHelper.personEntity.tel}" required="true" label="联系电话" renderLabel="true"/>
+                    <b:message/>
+                </ui:decorate>
+
+
+                <label for="sellerCountInput">卖方共有情况</label>
+                <p:outputPanel layout="block" styleClass="input-group js-pool-type-edit"  style="margin-bottom: 15px">
+
+                <p:outputPanel layout="block" styleClass="input-group-btn">
+
+                    <h:selectOneMenu label="卖方共有情况" id="sellerPoolTypeInput"
+                                     styleClass="selectpicker form-control select-theme"
+                                     converter="omnifaces.GenericEnumConverter" pt:data-width="170px"
+                                     value="#{contractHome.instance.oldHouseContract.sellerPoolType}" required="true">
+
+                        <f:selectItems var="_type" value="#{poolTypes}" itemValue="#{_type}" itemLabel="#{enumHelper.getLabel(_type)}"/>
+
+                    </h:selectOneMenu>
+
+                </p:outputPanel>
+
+
+                <b:inputText id="sellerCountInput"
+                             label="权利人数量"
+                             styleClass="form-control"
+                             required="true"
+                             renderLabel="false"
+                             p:placeholder="权利人数量"
+                             autocomplete="false"
+                             value="#{contractHome.sellerCount}">
+                </b:inputText>
+
+                </p:outputPanel>
+
+
+                <label for="buyerCountInput">买方共有情况</label>
+                <p:outputPanel layout="block" styleClass="input-group js-pool-type-edit"  style="margin-bottom: 15px">
+
+                    <p:outputPanel layout="block" styleClass="input-group-btn">
+
+                        <h:selectOneMenu label="买方共有情况" id="buyerPoolTypeInput"
+                                         styleClass="selectpicker form-control select-theme"
+                                         converter="omnifaces.GenericEnumConverter" pt:data-width="170px"
+                                         value="#{contractHome.instance.poolType}" required="true">
+
+                            <f:selectItems var="_type" value="#{poolTypes}" itemValue="#{_type}" itemLabel="#{enumHelper.getLabel(_type)}"/>
+
+                        </h:selectOneMenu>
+
+                    </p:outputPanel>
+
+
+                    <b:inputText id="buyerCountInput"
+                                 label="权利人数量"
+                                 styleClass="form-control"
+                                 required="true"
+                                 renderLabel="false"
+                                 p:placeholder="权利人数量"
+                                 autocomplete="false"
+                                 value="#{contractHome.sellerCount}">
+                    </b:inputText>
+
+                </p:outputPanel>
+
+
+                <b:inputText label="成交价格"  required="true" value="#{contractHome.instance.price}" renderLabel="true"/>
+
+
+                <hr/>
+
+                <b:commandButton action="#{contractCreate.toSellerInfo}" look="success" value="下一步">
+
+                </b:commandButton>
+
+
+            </b:column>
+
+        </b:row>
+
+    </h:form>
+
+    <h:outputScript>
+
+
+        $(function(){
+            $('.js-pool-type-edit select').each(function () {
+                if ($(this).val() == 'SINGLE_OWNER'){
+
+                    $(this).parents('.js-pool-type-edit').find('input').val(1);
+
+                    $(this).parents('.js-pool-type-edit').find('input').prop( "disabled", true );
+                }else{
+                    $(this).parents('.js-pool-type-edit').find('input').prop( "disabled", false );
+                }
+            });
+
+            $('.js-pool-type-edit').find('select').change(function () {
+                if ($(this).val() == 'SINGLE_OWNER'){
+
+                    $(this).parents('.js-pool-type-edit').find('input').val(1);
+
+                    $(this).parents('.js-pool-type-edit').find('input').prop( "disabled", true );
+                }else{
+                    $(this).parents('.js-pool-type-edit').find('input').prop( "disabled", false );
+                }
+            });
+        });
+
+    </h:outputScript>
+
+</ui:composition>

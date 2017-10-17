@@ -25,5 +25,11 @@ public interface Seller {
         class HouseSourceSubmit implements Apply{}
 
         class HouseSourceComited implements Apply{}
+
+        class ContractBaseInfo implements Apply{}
+
+        class ContractBuyerInfo implements Apply{}
+
+        class ContractSellerInfo implements Apply{}
     }
 }

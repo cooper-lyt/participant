@@ -41,7 +41,7 @@
         <label class="control-label" for="personPhoneInput">联系电话</label>
         <div class="input-group" style="margin-bottom: 15px">
             <h:inputText label="联系电话" size="30" maxlength="15" p:placeholder="联系电话"
-                         styleClass="form-control"
+                         styleClass="form-control" validatorMessage="电话号格式不正确" required="true"
                          value="#{_person.personEntity.phone}" id="personPhoneInput" >
 
                 <f:validateRegex pattern="\+?(\d{2})?((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)"/>

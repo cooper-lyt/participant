@@ -90,7 +90,6 @@ public class ContractCreate implements java.io.Serializable{
     protected void beginConversation(){
         if ( conversation.isTransient() )
         {
-
             conversation.begin();
             conversation.setTimeout(1200000);
         }

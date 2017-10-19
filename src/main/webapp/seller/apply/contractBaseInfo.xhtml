@@ -127,7 +127,22 @@
                 </p:outputPanel>
 
 
-                <b:inputText label="成交价格"  required="true" value="#{contractHome.instance.price}" renderLabel="true"/>
+                <label for="contract_money">成交价格</label>
+                <div class="input-group">
+                    <p:outputPanel layout="block" styleClass="input-group-btn">
+                        <h:selectOneMenu label="付款方式"
+                                         styleClass="selectpicker form-control select-theme"
+                                         converter="omnifaces.GenericEnumConverter" pt:data-width="170px"
+                                         value="#{contractHome.instance.salePayType}" required="true">
+
+                            <f:selectItems var="_type" value="#{salePayTypeValues}" itemValue="#{_type}" itemLabel="#{enumHelper.getLabel(_type)}"/>
+
+                        </h:selectOneMenu>
+
+                    </p:outputPanel>
+                    <b:inputText p:placeholder="成交价格" label="成交价格" id="contract_money"  required="true" value="#{contractHome.instance.price}" renderLabel="false"/>
+
+                </div>
 
 
                 <hr/>

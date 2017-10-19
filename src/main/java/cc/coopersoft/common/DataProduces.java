@@ -5,6 +5,7 @@ import com.dgsoft.common.system.PersonEntity;
 import com.dgsoft.common.system.PowerPersonEntity;
 import com.dgsoft.common.system.Sex;
 import com.dgsoft.house.PoolType;
+import com.dgsoft.house.SalePayType;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -42,6 +43,13 @@ public class DataProduces {
     @ApplicationScoped
     public PoolType[] poolTypes(){
         return PoolType.values();
+    }
+
+    @Named
+    @Produces
+    @ApplicationScoped
+    public SalePayType[] salePayTypeValues(){
+        return SalePayType.values();
     }
 
     @Named

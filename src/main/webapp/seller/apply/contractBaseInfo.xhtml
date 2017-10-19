@@ -19,7 +19,6 @@
     </ui:define>
 
 
-
     <h:form id="houes-valid"  styleClass="page-form">
         <b:row>
             <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
@@ -50,7 +49,7 @@
                         <li>
                             <b:iconAwesome name="university" size="2x"/>
                             <strong class="step">建立:</strong>
-                            建立提交
+                            建立合同
                         </li>
                     </ol>
                 </div>
@@ -122,7 +121,7 @@
                                  renderLabel="false"
                                  p:placeholder="权利人数量"
                                  autocomplete="false"
-                                 value="#{contractHome.sellerCount}">
+                                 value="#{contractHome.buyerCount}">
                     </b:inputText>
 
                 </p:outputPanel>
@@ -134,7 +133,7 @@
                 <hr/>
 
                 <b:commandButton action="#{contractCreate.toSellerInfo}" look="success" value="下一步">
-
+                    <f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
                 </b:commandButton>
 
 

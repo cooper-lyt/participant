@@ -1,12 +1,113 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title>Title</title>
-</head>
-<body>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
 
-</body>
-</html>
+
+    <ui:define name="custom-header">
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select.min.css"/>
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select-plug.css"/>
+        <h:outputStylesheet library="bootstrap-datepicker" name="css/bootstrap-datetimepicker.min.css"/>
+
+        <h:outputScript library="bsf" name="js/dropdown.js"/>
+        <h:outputScript library="bootstrap-select" name="js/bootstrap-select.min.js"/>
+        <h:outputScript library="bootstrap-select" name="js/i18n/defaults-zh_CN.min.js"/>
+
+        <h:outputScript library="bootstrap-datepicker" name="js/bootstrap-datetimepicker.min.js"/>
+        <h:outputScript library="bootstrap-datepicker" name="js/locales/bootstrap-datetimepicker.zh-CN.js"/>
+    </ui:define>
+
+    <h:form id="houes-valid"  styleClass="page-form">
+        <b:row>
+            <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
+                <div class="setup-header setup-gift">
+                    <h1 class="subhead-heading">房屋签约</h1>
+
+                    <ol class="steps steps-5">
+                        <li class="complete">
+                            <b:iconAwesome name="check" size="2x"/>
+                            <strong class="step">产权验证:</strong>
+                            产权验证
+                        </li>
+                        <li class="complete">
+                            <b:iconAwesome name="check" size="2x"/>
+                            <strong class="step">交易信息:</strong>
+                            交易信息
+                        </li>
+                        <li class="complete">
+                            <b:iconAwesome name="check" size="2x"/>
+                            <strong class="step">卖方:</strong>
+                            卖方信息
+                        </li>
+                        <li class="current">
+                            <b:iconAwesome name="address-book-o" size="2x"/>
+                            <strong class="step">买方:</strong>
+                            买方信息
+                        </li>
+                        <li>
+                            <b:iconAwesome name="university" size="2x"/>
+                            <strong class="step">建立:</strong>
+                            建立合同
+                        </li>
+                    </ol>
+                </div>
+
+                <b:messages globalOnly="false" styleClass="top-messages"/>
+
+
+                <c:forEach items="#{contractHome.buyerEditList}" var="_buyer">
+                    <f:subview id="s_#{_buyer.uuid}">
+                        <b:panel>
+                            <ui:decorate template="/frame/contractPerson.xhtml">
+
+                                <ui:param name="_contract_person" value="#{_buyer}"/>
+
+                                <ui:param name="_poolType" value="#{contractHome.instance.poolType}"/>
+
+
+
+
+                            </ui:decorate>
+                        </b:panel>
+                    </f:subview>
+                </c:forEach>
+
+
+                <hr/>
+
+                <b:commandButton action="#{contractCreate.toBuyerInfo}" look="success" value="下一步">
+                    <f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+                </b:commandButton>
+
+            </b:column>
+
+        </b:row>
+
+    </h:form>
+
+    <p:outputPanel autoUpdate="true">
+        <h:outputScript>
+            $('.selectpicker').selectpicker();
+            $('.js-datepicker').datetimepicker({
+            language: "zh-CN",
+            format: 'yyyy-mm-dd',
+            weekStart: 1,
+            todayBtn:  1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0
+            });
+        </h:outputScript>
+
+    </p:outputPanel>
+
+</ui:composition>

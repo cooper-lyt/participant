@@ -1,6 +1,8 @@
 package cc.coopersoft.common;
 
+import cc.coopersoft.house.ProxyType;
 import com.dgsoft.common.system.PersonEntity;
+import com.dgsoft.common.system.PowerPersonEntity;
 import com.dgsoft.common.system.Sex;
 import com.dgsoft.house.PoolType;
 
@@ -47,5 +49,19 @@ public class DataProduces {
     @ApplicationScoped
     public Sex[] sexValues(){
         return Sex.values();
+    }
+
+    @Named
+    @Produces
+    @ApplicationScoped
+    public ProxyType[] proxyTypeValues(){
+        return ProxyType.values();
+    }
+
+    @Named
+    @Produces
+    @ApplicationScoped
+    public PowerPersonEntity.LegalType[] legalTypeValues(){
+        return PowerPersonEntity.LegalType.values();
     }
 }

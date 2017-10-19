@@ -48,4 +48,11 @@ public class RunParam {
         return new BigDecimal(result);
     }
 
+    public Integer getIntegerParam(String name){
+        String result = getStringParam(name);
+        if (result == null)
+            return null;
+        return Integer.valueOf(result);
+    }
+
 }

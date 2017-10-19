@@ -24,6 +24,7 @@
 
                 <f:selectItems var="_type" value="#{allowCredentialsTypeList}" itemValue="#{_type}" itemLabel="#{enumHelper.getLabel(_type)}"/>
 
+                <p:ajax event="change" update="personEditFields" process="personCredentialsTypeInput"/>
             </h:selectOneMenu>
 
         </p:outputPanel>
@@ -54,7 +55,7 @@
 
         <ui:insert name="after"/>
 
-    </p:outputPanel>
+        </p:outputPanel>
 
 
         <p:outputPanel id="personEditFields" styleClass="upgrade-upsell">

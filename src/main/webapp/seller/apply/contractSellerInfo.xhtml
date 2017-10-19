@@ -14,13 +14,15 @@
     <ui:define name="custom-header">
         <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select.min.css"/>
         <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select-plug.css"/>
+        <h:outputStylesheet library="bootstrap-datepicker" name="css/bootstrap-datetimepicker.min.css"/>
+
         <h:outputScript library="bsf" name="js/dropdown.js"/>
         <h:outputScript library="bootstrap-select" name="js/bootstrap-select.min.js"/>
         <h:outputScript library="bootstrap-select" name="js/i18n/defaults-zh_CN.min.js"/>
+
+        <h:outputScript library="bootstrap-datepicker" name="js/bootstrap-datetimepicker.min.js"/>
+        <h:outputScript library="bootstrap-datepicker" name="js/locales/bootstrap-datetimepicker.zh-CN.js"/>
     </ui:define>
-
-
-
 
     <h:form id="houes-valid"  styleClass="page-form">
     <b:row>
@@ -52,7 +54,7 @@
             <li>
                 <b:iconAwesome name="university" size="2x"/>
                 <strong class="step">建立:</strong>
-                建立提交
+                建立合同
             </li>
         </ol>
     </div>
@@ -60,19 +62,52 @@
     <b:messages globalOnly="false" styleClass="top-messages"/>
 
 
-        <ui:repeat value="#{contractHome.sellerEditList}" var="_seller">
+        <c:forEach items="#{contractHome.sellerEditList}" var="_seller">
+            <f:subview id="s_#{_seller.uuid}">
+            <b:panel>
+            <ui:decorate template="/frame/contractPerson.xhtml">
 
-            <ui:include src="/frame/contractPerson.xhtml">
-                <ui:param name="_person" value="#{_seller}"/>
+                <ui:param name="_contract_person" value="#{_seller}"/>
 
-            </ui:include>
+                <ui:param name="_poolType" value="#{contractHome.instance.oldHouseContract.sellerPoolType}"/>
 
-        </ui:repeat>
+
+
+
+            </ui:decorate>
+            </b:panel>
+            </f:subview>
+        </c:forEach>
+
+
+        <hr/>
+
+        <b:commandButton action="#{contractCreate.toBuyerInfo}" look="success" value="下一步">
+            <f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+        </b:commandButton>
 
     </b:column>
 
     </b:row>
 
     </h:form>
+
+    <p:outputPanel autoUpdate="true">
+        <h:outputScript>
+            $('.selectpicker').selectpicker();
+            $('.js-datepicker').datetimepicker({
+                language: "zh-CN",
+                format: 'yyyy-mm-dd',
+                weekStart: 1,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 2,
+                forceParse: 0
+            });
+        </h:outputScript>
+
+    </p:outputPanel>
 
 </ui:composition>

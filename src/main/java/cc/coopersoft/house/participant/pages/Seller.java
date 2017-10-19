@@ -14,6 +14,8 @@ public interface Seller {
 
     class HouseList implements ViewConfig{}
 
+    class ContractEdit implements ViewConfig{}
+
     interface Apply extends ViewConfig{
 
         class HouseValid implements Apply {}

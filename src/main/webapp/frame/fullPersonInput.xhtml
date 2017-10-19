@@ -1,0 +1,94 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+
+
+    <ui:decorate template="personInput.xhtml">
+
+        <div class="form-group">
+            <label class="control-label" for="rootAddressInput">#{_person.credentialsType.name() eq 'PASSPORT' ? '国籍' : '户籍所在地'}</label>
+            <h:inputText p:placeholder="#{_person.credentialsType.name() eq 'PASSPORT' ? '国籍' : '户籍所在地'}" id="rootAddressInput" styleClass="form-control" value="#{_person.personEntity.rootAddress}"/>
+        </div>
+
+        <label class="control-label" for="birthdayInput">出生日期</label>
+        <div class="input-group" style="margin-bottom: 15px">
+
+
+            <h:inputText p:placeholder="出生日期" styleClass="js-datepicker  form-control" id="birthdayInput" value="#{_person.personEntity.birthday}">
+                <f:convertDateTime pattern="yyyy-mm-dd"/>
+            </h:inputText>
+
+
+            <span class="input-group-btn">
+                <h:selectOneMenu label="性别"
+                                 styleClass="selectpicker form-control select-theme"
+                                 converter="omnifaces.GenericEnumConverter" pt:data-width="70px"
+                                 value="#{_person.personEntity.sex}" required="false">
+
+                        <f:selectItems var="_sex" value="#{sexValues}" itemValue="#{_sex}" itemLabel="#{enumHelper.getLabel(_sex)}"/>
+
+                    </h:selectOneMenu>
+            </span>
+        </div>
+
+        <label class="control-label" for="personPhoneInput">联系电话</label>
+        <div class="input-group" style="margin-bottom: 15px">
+            <h:inputText label="联系电话" size="30" maxlength="15" p:placeholder="联系电话"
+                         styleClass="form-control"
+                         value="#{_person.personEntity.phone}" id="personPhoneInput" >
+
+                <f:validateRegex pattern="\+?(\d{2})?((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)"/>
+                <p:clientValidator event="blur"/>
+            </h:inputText>
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-earphone"/>
+            </div>
+
+            <h:inputText value="#{_person.personEntity.postCode}" p:placeholder="邮政编码" size="9" maxlength="9" label="邮政编码" styleClass="form-control"/>
+
+
+        </div>
+
+
+
+        <div class="form-group">
+            <label class="control-label" for="addressInput">通讯地址</label>
+            <h:inputText p:placeholder="通讯地址" id="addressInput" styleClass="form-control" value="#{_person.personEntity.rootAddress}"/>
+        </div>
+
+        <p:outputPanel rendered="#{_person.credentialsType.corp}" layout="block" styleClass="input-group" style="margin-bottom: 15px">
+            <span class="input-group-btn">
+                <h:selectOneMenu
+                        styleClass="selectpicker form-control select-theme"
+                        converter="omnifaces.GenericEnumConverter" pt:data-width="100px"
+                        value="#{_person.personEntity.legalType}" required="false">
+
+                        <f:selectItems var="_type" value="#{legalTypeValues}" itemValue="#{_type}" itemLabel="#{enumHelper.getLabel(_type)}"/>
+
+                    </h:selectOneMenu>
+            </span>
+            <h:inputText styleClass="form-control" maxlength="50" label="姓名" required="true" value="#{_person.personEntity.legalPerson}"/>
+        </p:outputPanel>
+
+
+        <ui:insert/>
+
+
+
+
+    </ui:decorate>
+
+
+
+
+
+
+
+</ui:composition>

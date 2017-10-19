@@ -10,49 +10,93 @@
 
 
 
-    <ui:decorate template="personInput.xhtml">
-        <ui:param name="allowCredentialsTypeList" value="#{personCredentialsTypes}"/>
+    <ui:decorate template="fullPersonInput.xhtml">
+        <ui:param name="allowCredentialsTypeList" value="#{allCredentialsTypes}"/>
+        <ui:param name="_person" value="#{_contract_person}"/>
 
+        <p:outputPanel rendered="#{_poolType eq 'TOGETHER_OWNER'}" layout="block"
+                       styleClass="form-group" style="margin-bottom: 15px">
+            <label for="reationInput" >共有关系</label>
+            <h:selectOneMenu id="reationInput"
+                    styleClass="selectpicker form-control edit-select"
+                    value="#{_contract_person.personEntity.relation}">
 
-        <b:inputText label="#{_person.credentialsType.name() eq 'PASSPORT' ? '国籍' : '户籍所在地'}"
-                     p:placeholder="#{_person.credentialsType.name() eq 'PASSPORT' ? '国籍' : '户籍所在地'}"
-                     value="#{_person.personEntity.rootAddress}"/>
+                <f:selectItems var="_type" value="#{wordProduces.getWordList('67')}" itemValue="#{_type.id}"
+                               itemLabel="#{_type.name}"/>
 
-        <p:outputPanel layout="block" styleClass="input-group">
-
-            <b:inputText value="#{_person.personEntity.birthday}"
-                         p:placeholder="出生日期" label="出生日期"
-                         styleClass="js-datepicker" renderLabel="false"/>
-            <p:outputPanel layout="block" styleClass="input-group-btn">
-
-
-
-                <h:selectOneMenu label="性别"
-                                 styleClass="selectpicker form-control select-theme"
-                                 converter="omnifaces.GenericEnumConverter" pt:data-width="70px"
-                                 value="#{_person.personEntity.sex}" required="false">
-
-                    <f:selectItems var="_sex" value="#{sexValues}" itemValue="#{_sex}" itemLabel="#{enumHelper.getLabel(_sex)}"/>
-
-                </h:selectOneMenu>
-            </p:outputPanel>
+            </h:selectOneMenu>
         </p:outputPanel>
 
-        <p:outputPanel layout="block" styleClass="input-group">
-            <b:inputText label="邮政编码" p:placeholder="邮政编码" size="9" maxlength="9" />
-            <div class="input-group-addon">
-                <span class="glyphicon glyphicon-earphone"/>
+        <p:outputPanel rendered="#{(_poolType eq 'SHARE_OWNER') and contractCreate.ownerShareCalcType eq 'SCALE'}" layout="block"
+                       styleClass="form-group" style="margin-bottom: 15px">
+            <label for="poolPercInput" >所占份额</label>
+            <div class="input-group">
+                <h:inputText value="#{_contract_person.poolPerc}" id="poolPercInput"
+                             p:placeholder="所占份额"
+                             label="所占份额" styleClass="form-control">
+                    <p:ajax event="change" process="poolPercInput" update="areaForPerc"/>
+                </h:inputText>
+
+
+
+                <p:outputPanel id="areaForPerc" layout="block" class="input-group-addon">
+                    #{_contract_person.poolArea}  <strong>m<sup>2</sup></strong>
+                </p:outputPanel>
             </div>
 
-            <h:inputText label="联系电话" size="30" maxlength="15" p:placeholder="联系电话"
-                         value="#{_person.personEntity.phone}" required="true">
-
-                <f:validateRegex pattern="\+?(\d{2})?((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)"/>
-                <p:clientValidator event="blur"/>
-            </h:inputText>
         </p:outputPanel>
 
+
+        <p:outputPanel rendered="#{(_poolType eq 'SHARE_OWNER') and contractCreate.ownerShareCalcType eq 'AREA'}" layout="block"
+                       styleClass="form-group" style="margin-bottom: 15px">
+        <label for="poolAreaInput" >共有面积</label>
+        <div class="input-group">
+
+            <h:inputText value="#{_contract_person.poolArea}" id="poolAreaInput"
+                         p:placeholder="共有面积"
+                         label="共有面积" styleClass="form-control">
+                <f:convertNumber pattern="#0.000"/>
+                <p:ajax event="change" process="poolAreaInput" update="percForArea"/>
+            </h:inputText>
+
+
+            <p:outputPanel id="percForArea" layout="block" class="input-group-addon">
+                #{_contract_person.poolPerc}<strong>%</strong>
+            </p:outputPanel>
+        </div>
+
+        </p:outputPanel>
+
+
     </ui:decorate>
+
+
+    <div class="form-group" style="margin-bottom: 15px">
+    <h:selectOneMenu id="proxyPersonTypeInput" converter="omnifaces.GenericEnumConverter" pt:data-width="170px"
+                     styleClass="selectpicker form-control "
+                     value="#{_contract_person.proxyType}">
+
+        <f:selectItems var="_type" value="#{proxyTypeValues}" itemValue="#{_type}"
+                       itemLabel="#{enumHelper.getLabel(_type)}"/>
+
+        <f:selectItem noSelectionOption="true" itemValue="#{null}" itemLabel="无代理人"/>
+        <p:ajax event="change" update="proxyPersonPanel"  process="proxyPersonTypeInput"/>
+
+    </h:selectOneMenu>
+
+    </div>
+
+    <p:outputPanel id="proxyPersonPanel">
+        <p:outputPanel rendered="#{not empty _contract_person.proxyType}">
+            <f:subview id="p_#{_contract_person.proxyPersonHelper.uuid}">
+            <ui:include src="fullPersonInput.xhtml">
+                <ui:param name="_person" value="#{_contract_person.proxyPersonHelper}"/>
+                <ui:param name="allowCredentialsTypeList" value="#{personCredentialsTypes}"/>
+            </ui:include>
+            </f:subview>
+        </p:outputPanel>
+
+    </p:outputPanel>
 
 
 </ui:composition>

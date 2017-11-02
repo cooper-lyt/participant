@@ -46,6 +46,18 @@
             <basic name="livingRoom">
                 <column name="LIVING_ROOM" nullable="false"/>
             </basic>
+
+            <basic name="kitchenCount">
+                <column name="KITCHEN_COUNT" nullable="false"/>
+            </basic>
+
+            <basic name="toiletCount">
+                <column name="TOILET_COUNT" nullable="false"/>
+            </basic>
+
+            <basic name="floorCount">
+                <column name="FLOOR_COUNT" nullable="false"/>
+            </basic>
             
             <basic name="district">
                 <column name="DISTRICT" nullable="false" length="32"/>
@@ -111,6 +123,24 @@
 
             <basic name="address">
                 <column name="ADDRESS" nullable="false" length="200"/>
+            </basic>
+            
+            <basic name="showAreaType" optional="false">
+                <column name="TIME_AREA_TYPE" nullable="false"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
+            <basic name="price" optional="false">
+                <column name="PRICE" nullable="false" precision="19" scale="4"/>
+            </basic>
+
+            <basic name="sumPrice" optional="false">
+                <column name="SUM_PRICE" nullable="false" precision="19" scale="4"/>
+            </basic>
+
+            <basic name="endTime">
+                <column name="END_TIME" nullable="true" length="19" column-definition="DATETIME"/>
+                <temporal>TIMESTAMP</temporal>
             </basic>
 
             <one-to-many name="houseSalePics" fetch="LAZY" orphan-removal="true" mapped-by="houseSaleInfo">

@@ -1,8 +1,8 @@
 package cc.coopersoft.house.participant.controller;
 
+
 import cc.coopersoft.house.participant.pages.Seller;
 import com.dgsoft.house.OwnerShareCalcType;
-import com.dgsoft.house.PoolType;
 import com.dgsoft.house.SaleType;
 import org.apache.deltaspike.core.api.config.view.ViewConfig;
 
@@ -31,6 +31,9 @@ public class ContractCreate implements java.io.Serializable{
 
     @Inject
     private RunParam runParam;
+
+    @Inject
+    private LocalContractConfig localContractConfig;
 
     private OwnerShareCalcType ownerShareCalcType;
 
@@ -84,7 +87,8 @@ public class ContractCreate implements java.io.Serializable{
         contractHome.save();
 
         endConversation();
-        return Seller.ContractEdit.class;
+        return localContractConfig.getConfig().getEditPath(contractHome.getInstance().getType());
+
     }
 
     protected void beginConversation(){

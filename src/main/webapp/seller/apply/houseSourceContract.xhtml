@@ -1,0 +1,425 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+    <title>#{messages.application_title}</title>
+    <h:outputScript library="bsf" name="js/button.js"/>
+    <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
+
+    <h:outputStylesheet library="github" name="bootstrap.min.css"/>
+    <h:outputStylesheet library="github" name="theme.css" position="last"/>
+    <h:outputStylesheet name="style.css" />
+    <h:outputStylesheet>
+        .navbar .navbar-header .navbar-brand{
+            padding: 10px 15px;
+        }
+    </h:outputStylesheet>
+
+    <h:outputStylesheet name="doc.css"/>
+    <h:outputStylesheet name="patch.css"/>
+    <h:outputStylesheet name="contract.css"/>
+    <h:outputScript library="bsf" name="js/scrollspy.js"/>
+    <h:outputScript library="bsf" name="js/dropdown.js"/>
+    <h:outputScript name="select-edit.js"/>
+
+
+
+</h:head>
+
+<h:body style="padding-top: 50px;" pt:data-spy="scroll" pt:data-target=".bs-docs-sidebar" pt:data-offset="60">
+
+    <b:navBar brandImg="#{request.contextPath}/img/logo-icon.png" brand-href="#{request.contextPath}/home.xhtml" position="top" sticky="true">
+        <b:container>
+
+            <h:form  styleClass="navbar-form navbar-left " pt:role="search">
+                <div class="form-group">
+                    <h:inputText size="40" value="#{houseSourceList.condition}" styleClass="form-control" pt:placeholder="房源或合同查询">
+                        <f:param name="firstResult" value="0"/>
+                        <f:param name="filterType" value=""/>
+                    </h:inputText>
+                </div>
+                <h:commandButton  style="display: none;" action="/seller/houseList.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
+
+
+            </h:form>
+
+            <b:navbarLinks>
+
+                <b:navLink value="交易挂牌" href="#{request.contextPath}/erp/hr/employeeList.xhtml"></b:navLink>
+                <b:navLink value="租赁挂牌"  styleClass="todo-disable" href="#"></b:navLink>
+
+            </b:navbarLinks>
+
+            <b:navbarLinks pull="right">
+                <b:navLink iconAwesome="gear" tooltip="设置" value=" " href="#{request.contextPath}/logout"/>
+                <b:navLink iconAwesome="sign-out" tooltip="退出" value=" " href="#{request.contextPath}/logout"/>
+            </b:navbarLinks>
+
+        </b:container>
+    </b:navBar>
+
+
+
+
+    <b:container >
+
+   <div class="row">
+
+       <div class="col-md-9" role="main">
+
+           <div class="bs-docs-section">
+               <h1 id="overview" class="page-header">
+                   <a class="anchorjs-link " href="#overview" aria-label="Anchor link for: overview" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   房屋出售经纪服务合同
+               </h1>
+           </div>
+
+           <div class="bs-docs-section">
+               <p>房屋出售委托人（甲方）：#{houseSaleInfoEdit.contractContextMap.seller_name.stringValue}</p>
+               <p>【#{houseSaleInfoEdit.contractContextMap.seller_id_type.stringValue}】：#{houseSaleInfoEdit.contractContextMap.seller_id_number.stringValue}</p>
+               <p>【住址】：#{houseSaleInfoEdit.contractContextMap.seller_address.stringValue}</p>
+               <p>联系电话：#{houseSaleInfoEdit.contractContextMap.seller_tel.stringValue}</p>
+               <c:if test="#{not empty houseSaleInfoEdit.contractContextMap.seller_proxy_name.stringValue}">
+                   <p>代理人：#{houseSaleInfoEdit.contractContextMap.seller_proxy_name.stringValue}</p>
+                   <p>【#{houseSaleInfoEdit.contractContextMap.seller_proxy_id_type.stringValue}】：#{houseSaleInfoEdit.contractContextMap.seller_proxy_id_number.stringValue}</p>
+                   <p>住址：#{houseSaleInfoEdit.contractContextMap.seller_proxy_address.stringValue}</p>
+                   <p>联系电话：#{houseSaleInfoEdit.contractContextMap.seller_proxy_tel.stringValue}</p>
+
+               </c:if>
+           </div>
+
+
+           <div class="bs-docs-section">
+               <p>房地产经纪机构（乙方）：#{houseSaleInfoEdit.contractContextMap.group_name.stringValue}</p>
+               <p>【#{houseSaleInfoEdit.contractContextMap.group_owner_type.stringValue}】：#{houseSaleInfoEdit.contractContextMap.group_owner.stringValue}</p>
+               <p>【#{houseSaleInfoEdit.contractContextMap.group_cer_type.stringValue}】：#{houseSaleInfoEdit.contractContextMap.group_cer_number.stringValue}</p>
+               <p>房地产经纪机构备案证明编号： #{houseSaleInfoEdit.contractContextMap.group_id.stringValue}</p>
+               <p>住所：#{houseSaleInfoEdit.contractContextMap.group_address.stringValue}</p>
+               <p>联系电话：#{houseSaleInfoEdit.contractContextMap.group_tel.stringValue}</p>
+           </div>
+
+           <div class="bs-docs-section">
+               <p class="lead">
+                   根据《中华人民共和国合同法》《中华人民共和国城市房地产管理法》《房地产经纪管理办法》等法律法规，甲乙双方遵循自愿、公平、诚信原则，经协商，就甲方委托乙方提供房屋出售经纪服务达成如下合同条款。
+               </p>
+           </div>
+
+
+           <div class="bs-docs-section">
+
+               <h2 id="section1"><a class="anchorjs-link " href="#section1" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   第一条  房屋基本状况</h2>
+
+               <p>
+                   委托出售的房屋（以下称房屋）【#{houseSaleInfoEdit.contractContextMap.house_card_type.stringValue}】：<span class="input-line">#{houseSaleInfoEdit.contractContextMap.house_card_number.stringValue}</span>；
+               </p>
+
+               <p>
+                   房屋坐落：<span class="input-line">#{houseSaleInfoEdit.contractContextMap.house_address.stringValue} </span> ；
+               </p>
+
+               <p>
+                   规划用途：【#{houseSaleInfoEdit.contractContextMap.house_design_type.stringValue}】；
+               </p>
+               <p>
+                   房屋权利凭证记载【套内建筑面积】：<span class="input-line"><h:outputText value="#{houseSaleInfoEdit.contractContextMap.house_area.numberValue}"><f:convertNumber pattern="#0.000"/></h:outputText></span>平方米；
+               </p>
+               <p>
+                   户型：<span class="input-line">#{houseSaleInfoEdit.contractContextMap.house_room_count.stringValue}</span>室<span class="input-line">#{houseSaleInfoEdit.contractContextMap.house_living_count.stringValue}</span>厅<span class="input-line">#{houseSaleInfoEdit.contractContextMap.house_kitchen_count.stringValue}</span>厨<span class="input-line">#{houseSaleInfoEdit.contractContextMap.house_toilet_count.stringValue}</span>卫；朝向：<span class="input-line">#{houseSaleInfoEdit.contractContextMap.house_direction.stringValue}</span>；
+               </p>
+               <p>
+                   所在楼层：<span class="input-line">#{houseSaleInfoEdit.contractContextMap.house_in_floor.stringValue} </span> 层；地上总层数：<span class="input-line">#{houseSaleInfoEdit.contractContextMap.house_floor_count.stringValue} </span> 层；电梯：【<span class="input-line">#{houseSaleInfoEdit.contractContextMap.house_elevator.stringValue} </span> 】。
+               </p>
+           </div>
+
+           <div class="bs-docs-section">
+               <h2 id="section2"><a class="anchorjs-link " href="#section2" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   第二条  委托挂牌价格</h2>
+
+               <p>
+                   甲方要求房屋出售的挂牌【总价为<span class="input-line"><h:outputText value="#{houseSaleInfoEdit.contractContextMap.house_price.numberValue}"><f:convertNumber pattern="#0.00"/></h:outputText></span>万元（大写<span class="input-line"><h:outputText value="#{houseSaleInfoEdit.contractContextMap.house_price.numberValue}"><f:converter converterId="cooper.faces.BigMoneyConverter"/> </h:outputText></span>）】。
+               </p>
+               <p>
+                   甲方如果调整挂牌价格，应及时通知乙方。
+               </p>
+
+           </div>
+
+           <div class="bs-docs-section">
+               <h2 id="section3"><a class="anchorjs-link " href="#section3" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   第三条  经纪服务内容</h2>
+
+               <p>
+                   乙方为甲方提供的房屋出售经纪服务内容包括：
+               </p>
+               <p>
+                   （一）提供相关房地产信息咨询；
+               </p>
+               <p>
+                   （二）办理房屋的房源核验，编制房屋状况说明书；
+               </p>
+               <p>
+                   （三）发布房屋的房源信息，寻找意向购买人；
+               </p>
+
+               <p>
+                   （四）接待意向购买人咨询和实地查看房屋；
+               </p>
+               <p>
+                   （五）协助甲方与房屋购买人签订房屋买卖合同；
+               </p>
+               <p>
+                   （六）其他：<h:inputText styleClass="form-control" value="#{houseSaleInfoEdit.contractContextMap.c_3_6.stringValue}" size="70"/>。
+               </p>
+           </div>
+
+           <div class="bs-docs-section">
+               <h2 id="section4"><a class="anchorjs-link " href="#section4" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   第四条  服务期限和完成标准</h2>
+
+               <p>
+                   经纪服务期限
+                   <c:if test="#{not empty houseSaleInfoEdit.contractContextMap.time_limit_begin.dateValue}">
+                       【自<span class="input-line"><h:outputText value="#{houseSaleInfoEdit.contractContextMap.time_limit_begin.dateValue}"><f:convertDateTime pattern="yyyy年mm日dd日" /></h:outputText></span> 起至 <span class="input-line"><h:outputText value="#{houseSaleInfoEdit.contractContextMap.time_limit_end.dateValue}"><f:convertDateTime pattern="yyyy年mm日dd日" /></h:outputText></span>】
+                   </c:if>
+                   <c:if test="#{empty houseSaleInfoEdit.contractContextMap.time_limit_begin.dateValue}">
+                       【自本合同签订之日起至甲方与房屋购买人签订房屋买卖合同之日止】
+                   </c:if>。
+               </p>
+
+               <div class="doc-p">
+                   乙方为甲方提供经纪服务的完成标准为：【<ui:decorate template="/frame/selectEditInput.xhtml">
+                       <ui:param name="size" value="59"/>
+                       <ui:param name="inputValue" value="#{houseSaleInfoEdit.contractContextMap.c_4_2.stringValue}"/>
+                       <li><a href="#">在经纪服务期限内,甲方与乙方引见的房屋购买人签订房屋买卖合同</a></li>
+
+                   </ui:decorate> 】。
+               </div>
+           </div>
+
+           <div class="bs-docs-section">
+               <h2 id="section5"><a class="anchorjs-link " href="#section5" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   第五条  委托权限</h2>
+               <p>
+                   （一）在经纪服务期限内，甲方【#{houseSaleInfoEdit.contractContextMap.allow_join.stringValue}】自己出售及委托其他机构出售房屋的权利。（注：如果勾选【放弃】，则房屋在经纪服务期限内即使不是由乙方出售，甲方仍可能须向乙方支付经纪服务费用。因此，当勾选【放弃】时，甲方应谨慎考虑，并关注本合同第八条的违约责任。）
+               </p>
+
+               <div class="doc-p">
+                   （二）甲方 【<b:selectOneMenu value="#{houseSaleInfoEdit.contractContextMap.c_5_2.stringValue}"><f:selectItem itemLabel="同意" itemValue="同意"/><f:selectItem itemLabel="不同意" itemValue="不同意"/></b:selectOneMenu> 】在经纪服务期限内将房屋的钥匙交乙方保管，供乙方接待意向购买人实地查看房屋时使用。
+               </div>
+           </div>
+
+           <div class="bs-docs-section">
+               <h2 id="section6"><a class="anchorjs-link " href="#section6" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   第六条  经纪服务费用</h2>
+               <div class="doc-p">
+                    （一）乙方达到本合同第四条约定的经纪服务完成标准的，经纪服务费用【<b:selectOneMenu value="#{houseSaleInfoEdit.contractContextMap.c_6_1.stringValue}"><f:selectItem itemLabel="全由甲方" itemValue="全由甲方"/><f:selectItem itemLabel="全由房屋购买方" itemValue="全由房屋购买方"/><f:selectItem itemLabel="由甲方与房屋购买方分别" itemValue="由甲方与房屋购买方分别"/></b:selectOneMenu> 】支付。
+               </div>
+               <div class="doc-p">
+                   （二）由甲方支付的经纪服务费用，按【<ui:decorate template="/frame/selectEditInput.xhtml">
+                   <ui:param name="size" value="59"/>
+                   <ui:param name="inputValue" value="#{houseSaleInfoEdit.contractContextMap.c_6_2.stringValue}"/>
+                   <li><a href="#">房屋成交总价的    %计收</a></li>
+                   <li><a href="#">房屋成交总价分档计收，分别为：</a></li>
+               </ui:decorate> 】。支付方式为下列第<b:selectOneMenu value="#{houseSaleInfoEdit.contractContextMap.c_6_3.stringValue}"><f:selectItem itemLabel="1" itemValue="1"/><f:selectItem itemLabel="2" itemValue="2"/><f:selectItem itemLabel="3" itemValue="3"/></b:selectOneMenu>种（注：只可选其中一种）：
+               </div>
+               <p>
+                   1．一次性支付，自乙方达到本合同第四条约定的经纪服务完成标准之日起<h:inputText styleClass="form-control" value="#{houseSaleInfoEdit.contractContextMap.c_6_4.stringValue}" size="5"/>日内，支付经纪服务费用。
+               </p>
+               <p>
+                   2．分期支付，具体为：<h:inputText styleClass="form-control" value="#{houseSaleInfoEdit.contractContextMap.c_6_5.stringValue}" size="40"/>。
+               </p>
+               <p>
+                   3．其他方式：<h:inputText styleClass="form-control" value="#{houseSaleInfoEdit.contractContextMap.c_6_6.stringValue}" size="40"/>。
+               </p>
+               <p>
+                   （三）如果因乙方过错导致房屋买卖合同无法履行的，则甲方无需向乙方支付经纪服务费用。如果甲方已支付的，则乙方应在收到甲方书面退还要求之日起10个工作日内将经纪服务费用退还甲方。
+               </p>
+               <p>
+                   （四）其他：<h:inputText styleClass="form-control" value="#{houseSaleInfoEdit.contractContextMap.c_6_7.stringValue}" size="50"/>。
+               </p>
+               <p>
+                   乙方收到经纪服务费用后，应向甲方开具正式发票。
+               </p>
+           </div>
+
+
+           <div class="bs-docs-section">
+               <h2 id="section7"><a class="anchorjs-link " href="#section7" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   第七条  资料提供和退还</h2>
+                <p>
+                    甲方应向乙方提供完成本合同第三条约定的经纪服务内容所需要的相关有效身份证明、不动产权属证书等资料，乙方应向甲方开具规范的收件清单，对甲方提供的资料应妥善保管并负保密义务，除法律法规另有规定外，不得提供给其他任何第三方。乙方完成经纪服务内容后，除归档留存的复印件外，其余的资料应及时退还甲方。
+                </p>
+           </div>
+
+           <div class="bs-docs-section">
+               <h2 id="section8"><a class="anchorjs-link " href="#section8" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   第八条  违约责任</h2>
+
+               <p class="lead">
+                   （一）乙方违约责任
+               </p>
+               <p>
+                   1．乙方在为甲方提供经纪服务过程中应勤勉尽责，维护甲方的合法权益，如果有隐瞒、虚构信息或与他人恶意串通等损害甲方利益的，甲方有权单方解除本合同，乙方应退还甲方已支付的相关款项。如果由此给甲方造成损失的，乙方应承担赔偿责任。
+               </p>
+
+               <p>
+                   2．乙方应对经纪活动中知悉的甲方个人隐私和商业秘密予以保密，如果有不当泄露甲方个人隐私或商业秘密的，甲方有权单方解除本合同。如果由此给甲方造成损失的，乙方应承担赔偿责任。
+               </p>
+               <p>
+                   3．乙方遗失甲方提供的资料原件，给甲方造成损失的，乙方应依法给予甲方经济补偿。
+               </p>
+               <p>
+                   4．其他：<h:inputText styleClass="form-control" value="#{houseSaleInfoEdit.contractContextMap.c_8_1.stringValue}" size="50"/>。
+               </p>
+               <p class="lead">
+                   （二）甲方违约责任
+               </p>
+               <p>
+                   1．甲方故意隐瞒影响房屋交易的重大事项，或提供虚假的房屋状况和相关资料，乙方有权单方解除本合同。如果由此给乙方造成损失的，甲方应承担赔偿责任。
+               </p>
+               <div class="doc-p">
+                   2．甲方自行与乙方引见的意向购买人签订房屋买卖合同的，应按照【<ui:decorate template="/frame/selectEditInput.xhtml">
+                   <ui:param name="size" value="40"/>
+                   <ui:param name="inputValue" value="#{houseSaleInfoEdit.contractContextMap.c_8_2_2.stringValue}"/>
+                   <li><a href="#">本合同第六条约定的经纪服务费用标准</a></li>
+               </ui:decorate>】向乙方支付经纪服务费用。
+               </div>
+               <div class="doc-p">
+                   3．甲方放弃自己出售及委托其他机构出售房屋的权利，在本合同约定的经纪服务期限内自行或通过其他机构与第三人签订房屋买卖合同的，应按照【<ui:decorate template="/frame/selectEditInput.xhtml">
+                   <ui:param name="size" value="59"/>
+                   <ui:param name="inputValue" value="#{houseSaleInfoEdit.contractContextMap.c_8_2_3.stringValue}"/>
+                   <li><a href="#">本合同第六条约定的经纪服务费用标准</a></li>
+               </ui:decorate>】向乙方支付经纪服务费用。
+               </div>
+               <p>
+                   4．其他：<h:inputText styleClass="form-control" value="#{houseSaleInfoEdit.contractContextMap.c_8_2_4.stringValue}" size="50"/>。
+               </p>
+               <p class="lead">
+                   （三）逾期支付责任
+               </p>
+               <p>
+                   甲方与乙方之间有付款义务而延迟履行的，应按照逾期天数乘以应付款项的万分之五计算违约金支付给对方，但违约金数额最高不超过应付款总额。
+               </p>
+           </div>
+
+           <div class="bs-docs-section">
+               <h2 id="section9"><a class="anchorjs-link " href="#section9" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   第九条  合同变更和解除</h2>
+
+               <p>
+                   变更本合同条款的，经甲乙双方协商一致，可达成补充协议。补充协议为本合同的组成部分，与本合同具有同等效力，如果有冲突，以补充协议为准。
+               </p>
+               <p>
+                   甲乙双方应严格履行本合同，经甲乙双方协商一致，可签署书面协议解除本合同。如果任何一方单方解除本合同，应书面通知对方。因解除本合同给对方造成损失的，除不可归责于己方的事由和本合同另有约定外，应赔偿对方损失。
+               </p>
+
+           </div>
+
+           <div class="bs-docs-section">
+               <h2 id="section10"><a class="anchorjs-link " href="#section10" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   第十条  争议处理</h2>
+
+               <div class="doc-p">
+                   因履行本合同发生争议，甲乙双方协商解决。协商不成的，可由当地房地产经纪行业组织调解。不接受调解或调解不成的，【<ui:decorate template="/frame/selectEditInput.xhtml">
+                   <ui:param name="size" value="59"/>
+                   <ui:param name="inputValue" value="#{houseSaleInfoEdit.contractContextMap.c_10.stringValue}"/>
+                   <li><a href="#">提交        仲裁委员会仲裁</a></li>
+                   <li><a href="#">依法向房屋所在地人民法院起诉</a></li>
+               </ui:decorate>】。
+               </div>
+
+           </div>
+
+           <div class="bs-docs-section">
+               <h2 id="section11"><a class="anchorjs-link " href="#section11" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                   第十一条  合同生效</h2>
+
+               <p>
+                   本合同一式<h:inputText styleClass="form-control" value="#{houseSaleInfoEdit.contractContextMap.c_11_1.stringValue}" size="5"/>份，其中甲方<h:inputText styleClass="form-control" value="#{houseSaleInfoEdit.contractContextMap.c_11_2.stringValue}" size="5"/>份、乙方<h:inputText styleClass="form-control" value="#{houseSaleInfoEdit.contractContextMap.c_11_3.stringValue}" size="5"/>份，具有同等效力。
+               </p>
+               <p>
+                   本合同自甲乙双方签订之日起生效。
+               </p>
+
+           </div>
+
+       </div>
+
+       <div class="col-md-3" role="complementary" >
+
+           <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" style="margin-top:40px">
+               <ul class="nav bs-docs-sidenav">
+
+                   <li>
+                       <a href="#overview">房屋出售经纪服务合同</a>
+                   </li>
+
+                   <li>
+                       <a href="#section1">第一条  房屋基本状况</a>
+                   </li>
+                   <li>
+                       <a href="#section2">第二条  委托挂牌价格</a>
+                   </li>
+                   <li>
+                       <a href="#section3">第三条  经纪服务内容</a>
+                   </li>
+                   <li>
+                       <a href="#section4">第四条  服务期限和完成标准</a>
+                   </li>
+                   <li>
+                       <a href="#section5">第五条  委托权限</a>
+                   </li>
+                   <li>
+                       <a href="#section6">第六条  经纪服务费用</a>
+                   </li>
+                   <li>
+                       <a href="#section7">第七条  资料提供和退还</a>
+                   </li>
+                   <li>
+                       <a href="#section8">第八条  违约责任</a>
+                   </li>
+                   <li>
+                       <a href="#section9">第九条  合同变更和解除</a>
+                   </li>
+                   <li>
+                       <a href="#section10">第十条  争议处理</a>
+                   </li>
+                   <li>
+                       <a href="#section11">第十一条  合同生效</a>
+                   </li>
+               </ul>
+           </nav>
+
+       </div>
+
+   </div>
+    </b:container>
+
+
+    <b:container styleClass="site-footer-container">
+        <div class="site-footer" role="contentinfo">
+
+
+            <span class="site-footer-mark">
+                <b:iconAwesome name="home" size="lg"/>
+            </span>
+
+            <ul class="site-footer-links">
+                <li>© 2016 <span title="Cooper's soft">Cooper's soft</span>, Studio.</li>
+            </ul>
+        </div>
+    </b:container>
+
+
+
+
+</h:body>
+
+</html>

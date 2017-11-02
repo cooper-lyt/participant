@@ -16,6 +16,10 @@
         <h:outputScript library="bsf" name="js/dropdown.js"/>
         <h:outputScript library="bootstrap-select" name="js/bootstrap-select.min.js"/>
         <h:outputScript library="bootstrap-select" name="js/i18n/defaults-zh_CN.min.js"/>
+
+
+        <h:outputScript library="bootstrap-datepicker" name="js/bootstrap-datetimepicker.min.js"/>
+        <h:outputScript library="bootstrap-datepicker" name="js/locales/bootstrap-datetimepicker.zh-CN.js"/>
     </ui:define>
 
     <h:outputStylesheet>
@@ -34,118 +38,247 @@
                 <div class="setup-header setup-gift">
                     <h1 class="subhead-heading">房源审核申请</h1>
 
-                    <ol class="steps steps-4">
+                    <ol class="steps steps-5">
                         <li class="complete">
                             <b:iconAwesome name="check" size="2x"/>
                             <strong class="step">产权:</strong>
                             产权验证
                         </li>
+
                         <li class="current">
+                            <b:iconAwesome name="id-card-o" size="2x"/>
+                            <strong class="step">委托:</strong>
+                            委托信息
+                        </li>
+                        <li>
                             <b:iconAwesome name="bookmark" size="2x"/>
                             <strong class="step">描述:</strong>
-                            房屋描述
+                            房源描述
                         </li>
                         <li>
                             <b:iconAwesome name="photo" size="2x"/>
                             <strong class="step">图片:</strong>
                             图片上传
                         </li>
+
                         <li>
                             <b:iconAwesome name="university" size="2x"/>
                             <strong class="step">提交:</strong>
-                            房源提交
+                            提交房源
                         </li>
                     </ol>
                 </div>
 
                 <b:messages globalOnly="false" styleClass="top-messages"/>
 
-                <div class="Subhead mt-3 mb-5">
-                    <h2 class="Subhead-heading">#{houseSourceHome.instance.houseSaleInfo.address}</h2>
-                    <p class="Subhead-description">
-                        请如实填写房屋销售挂牌信息
-                    </p>
-                </div>
 
-                <b:inputText value="#{houseSourceHome.instance.saleTitle}" label="房源标题" placeholder="不会显示在挂牌信息中" required="true"/>
+                <b:inputText required="true" id="showToTimeInput" fieldId="showToTimeEdit" value="#{houseSourceHome.instance.houseSaleInfo.endTime}"
+                             styleClass="js-datepicker js-show-time-input" label="委托期限" renderLabel="true">
+                    <f:convertDateTime pattern="yyyy-mm-dd"/>
+                    <f:facet name="prepend">
+                        <h:selectOneMenu converter="omnifaces.GenericEnumConverter"
+                                         pt:data-width="170px" value="#{houseSourceHome.instance.houseSaleInfo.showAreaType}"
+                                         styleClass="selectpicker form-control select-theme js-show-type-input">
+                            <f:selectItems var="_type" value="#{houseShowAreaTypeValues}" itemValue="#{_type}"
+                                           itemLabel="#{enumHelper.getLabel(_type)}"/>
+                        </h:selectOneMenu>
+                    </f:facet>
+                </b:inputText>
                 <b:message/>
 
-                <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.title}" label="挂牌标题" placeholder="挂牌显示的标题" required="true"/>
+                <b:inputText update="priceDisplay" process="priceInput" onchange="ajax:houseSourceHome.calcPrice()"
+                             placeholder="房屋总价"
+                             id="priceInput" label="挂牌价格" required="true" renderLabel="true" value="#{houseSourceHome.instance.houseSaleInfo.sumPrice}">
+                    <f:facet name="prepend">
+
+                        <h:outputText value="#{houseSourceHome.instance.houseSaleInfo.houseArea}">
+                            <f:convertNumber pattern="#0.00"/>
+                        </h:outputText> m<sup>2</sup>
+
+                    </f:facet>
+                    <f:facet name="append">
+
+                        <h:outputText id="priceDisplay" value="#{houseSourceHome.instance.houseSaleInfo.price}" >
+                            <f:convertNumber pattern="#0.00"/>
+                        </h:outputText> 元/m<sup>2</sup>
+
+                    </f:facet>
+                </b:inputText>
                 <b:message/>
-
-                <b:inputText tags="true" value="#{houseSourceHome.instance.houseSaleInfo.tags}" placeholder="房源标签" style="width:100%"/>
-                <b:message/>
-
-                <b:inputTextarea value="#{houseSourceHome.instance.houseSaleInfo.description}" label="描述" />
-                <b:message/>
-
-                <b:inputTextarea value="#{houseSourceHome.instance.houseSaleInfo.environment}" label="环境"/>
-                <b:message/>
-
-                <b:selectMultiMenu nonSelectedText="请选择房屋朝向" numberDisplayed="9" value="#{houseSourceHome.instance.houseSaleInfo.direction}" label="朝向" id="typeID" required="true">
-                    <f:selectItem itemLabel="东" itemValue="东"/>
-                    <f:selectItem itemLabel="东南" itemValue="东南"/>
-                    <f:selectItem itemLabel="南" itemValue="南"/>
-                    <f:selectItem itemLabel="西南" itemValue="西南"/>
-                    <f:selectItem itemLabel="西" itemValue="西"/>
-                    <f:selectItem itemLabel="西北" itemValue="西北"/>
-                    <f:selectItem itemLabel="北" itemValue="北"/>
-                    <f:selectItem itemLabel="东北" itemValue="东北"/>
-                </b:selectMultiMenu>
-
-
-                <div class="form-group">
-                    <label>
-                        区域
-                    </label>
-                <div class="input-group">
-                    <span class="input-group-addon">销售区域<span class="required">*</span></span>
-                <h:selectOneMenu styleClass="selectpicker from-control edit-select" value="#{houseSourceHome.instance.houseSaleInfo.localArea}" label="销售区域" >
-                    <f:selectItems value="#{houseSourceHome.saleLocalAreaList}" var="_area" itemLabel="#{_area.name}" itemValue="#{_area.id}"/>
-                    <f:selectItem noSelectionOption="true" itemLabel="-请选择销售区域-"/>
-                </h:selectOneMenu>
-                    <span class="input-group-addon">学区<span class="required">*</span></span>
-                <h:selectOneMenu styleClass="selectpicker from-control edit-select" value="#{houseSourceHome.instance.houseSaleInfo.schoolArea}" label="学区" >
-                    <f:selectItems value="#{houseSourceHome.schoolAreaList}" var="_area" itemLabel="#{_area.name}" itemValue="#{_area.id}"/>
-                    <f:selectItem noSelectionOption="true" itemLabel="-请选择学区-"/>
-                </h:selectOneMenu>
-                </div>
-                </div>
-
-
-                <div class="input-group">
-                    <span class="input-group-addon">层<span class="required">*</span></span>
-                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.inFloor}"
-                                 required="true" renderLabel="false" autocomplete="false" label="所在层" />
-                    <span class="input-group-addon">室<span class="required">*</span></span>
-
-                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.roomCount}"
-                             required="true" renderLabel="false" autocomplete="false" label="室" />
-
-                    <span class="input-group-addon">厅<span class="required">*</span></span>
-                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.livingRoom}" renderLabel="false"
-                                 required="true" label="厅" autocomplete="false"/>
-
-                </div>
 
 
                 <hr/>
 
+                <div class="form-checkbox unchecked">
+                    <label>
+                        <h:selectBooleanCheckbox value="#{houseSourceHome.instance.allowJoin}"/>
+                        委托人【放弃】自己出售及委托其他机构出售房屋的权利
+                    </label>
+                    <span class="note">
+                        如果勾选【放弃】，则房屋在经纪服务期限内即使不是由本经济机构出售，委托人仍可能须向乙方支付经纪服务费用。因此，当勾选【放弃】时，委托人应谨慎考虑，并关注合同第八条的违约责任
+                    </span>
+                </div>
 
-                <b:commandButton rendered="#{not houseSourceHome.idDefined}" action="#{houseValid.saveHouseSource}" look="success" value="建立房源">
+                <label>委托人</label>
+                <p:outputPanel layout="block" styleClass="input-group" >
+                    <p:outputPanel layout="block" styleClass="input-group-btn">
+
+                        <h:selectOneMenu label="证件类型" id="personCredentialsTypeInput"
+                                         disabled="true" readonly="true"
+                                         styleClass="selectpicker form-control select-theme"
+                                         converter="omnifaces.GenericEnumConverter" pt:data-width="170px"
+                                         value="#{houseSourceHome.instance.credentialsType}" required="true">
+
+                            <f:selectItems var="_type" value="#{allCredentialsTypes}" itemValue="#{_type}" itemLabel="#{enumHelper.getLabel(_type)}"/>
+
+                        </h:selectOneMenu>
+
+                    </p:outputPanel>
+
+                    <b:inputText label="证件编号"
+                                 styleClass="form-control"
+                                 required="true"
+                                 size="25"
+                                 readonly="true"
+                                 maxlength="100"
+                                 renderLabel="false"
+                                 p:placeholder="证件编号"
+                                 autocomplete="false"
+                                 disabled="true"
+                                 value="#{houseSourceHome.instance.credentialsNumber}">
+                    </b:inputText>
+
+
+
+                    <div class="input-group-addon">
+                        @
+                    </div>
+                    <b:inputText value="#{houseSourceHome.instance.personName}"
+                                 p:placeholder="姓名" renderLabel="false" autocomplete="false"
+                                 readonly="true" disabled="true"
+                                 required="true" styleClass="form-control person-name" label="姓名">
+
+                    </b:inputText>
+
+                </p:outputPanel>
+
+                <p:outputPanel styleClass="upgrade-upsell">
+
+                    <b:inputText value="#{houseSourceHome.instance.tel}" validatorMessage="电话号格式不正确"
+                                 label="联系电话" required="true" renderLabel="true">
+                        <f:validateRegex pattern="\+?(\d{2})?((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)"/>
+                        <p:clientValidator event="blur"/>
+                    </b:inputText>
+                    <b:message/>
+
+                    <b:inputText value="#{houseSourceHome.instance.address}" label="住址" renderLabel="true" maxlength="200"/>
+                    <b:message/>
+
+                </p:outputPanel>
+
+
+                <div class="form-group" style="margin-bottom: 15px">
+                    <h:selectOneMenu id="proxyPersonTypeInput" converter="omnifaces.GenericEnumConverter" pt:data-width="170px"
+                                     styleClass="selectpicker form-control "
+                                     value="#{houseSourceHome.sellPerson.proxyType}">
+
+                        <f:selectItems var="_type" value="#{proxyTypeValues}" itemValue="#{_type}"
+                                       itemLabel="#{enumHelper.getLabel(_type)}"/>
+
+                        <f:selectItem noSelectionOption="true" itemValue="#{null}" itemLabel="无代理人"/>
+                        <p:ajax event="change" update="proxyPersonPanel"  process="proxyPersonTypeInput"/>
+
+                    </h:selectOneMenu>
+
+                </div>
+
+                <p:outputPanel id="proxyPersonPanel">
+                    <c:if test="#{not empty houseSourceHome.sellPerson.proxyType}">
+                        <f:subview id="p_#{houseSourceHome.sellPerson.proxyPersonHelper.uuid}">
+                            <ui:decorate template="/frame/personInput.xhtml">
+                                <ui:param name="_person" value="#{houseSourceHome.sellPerson.proxyPersonHelper}"/>
+                                <ui:param name="allowCredentialsTypeList" value="#{personCredentialsTypes}"/>
+
+                                <b:inputText value="#{houseSourceHome.sellPerson.proxyPersonHelper.personEntity.phone}"
+                                             validatorMessage="电话号格式不正确" renderLabel="true" required="true" label="联系电话" >
+                                    <f:validateRegex pattern="\+?(\d{2})?((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)"/>
+                                    <p:clientValidator event="blur"/>
+                                </b:inputText>
+                                <b:message/>
+                                <b:inputText value="#{houseSourceHome.sellPerson.proxyPersonHelper.personEntity.address}"
+                                             maxlength="200"
+                                             renderLabel="true" label="住址"/>
+                                <b:message/>
+                            </ui:decorate>
+                        </f:subview>
+                    </c:if>
+
+                </p:outputPanel>
+
+
+                <hr/>
+
+                <b:commandButton  action="#{houseSourceCreate.toShowInfo}" look="success" value="下一步">
                     <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
+
                 </b:commandButton>
 
-
-
-                <b:commandButton rendered="#{houseSourceHome.idDefined}" action="#{houseSaleInfoEdit.saveHouseSource}" look="success" value="保存房源">
-
-                    <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
-                </b:commandButton>
 
             </b:column>
 
-
         </b:row>
+
     </h:form>
+
+
+
+    <p:outputPanel autoUpdate="true">
+        <h:outputScript>
+            $('.selectpicker').selectpicker();
+            $('.js-datepicker').datetimepicker({
+            language: "zh-CN",
+            format: 'yyyy-mm-dd',
+            weekStart: 1,
+            todayBtn:  1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0
+            });
+        </h:outputScript>
+
+    </p:outputPanel>
+
+    <h:outputScript>
+        $(function(){
+
+
+
+        if ($('#houes-valid\\:showToTimeInput select').val() == 'TO_END_TIME'){
+
+        $('.js-show-time-input').prop( "disabled", false );
+        }else{
+        $('.js-show-time-input').val('');
+        $('.js-show-time-input').prop( "disabled", true );
+        }
+
+
+
+
+        $('#houes-valid\\:showToTimeInput').find('select').change(function () {
+        if ($(this).val() == 'TO_END_TIME'){
+
+        $('#showToTimeEdit').prop( "disabled", false );
+        }else{
+        $('#showToTimeEdit').val('');
+        $('#showToTimeEdit').prop( "disabled", true );
+        }
+        });
+
+
+        });
+
+    </h:outputScript>
+
 </ui:composition>

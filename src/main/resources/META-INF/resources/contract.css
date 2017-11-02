@@ -1,0 +1,18 @@
+.input-line{
+    border-bottom: 2px solid #eee;
+    padding: 0 10px;
+    display: inline-block;
+}
+
+.bs-docs-section input , .bs-docs-section select{
+    border-width: 0 0 2px 0 !important;
+    display: inline-block !important;
+    width: inherit !important;
+    box-shadow: inherit !important;
+    -webkit-box-shadow: inherit !important;
+    border-radius: 0 !important;
+}
+
+.bs-docs-section .form-group {
+    display: inline-block; !important;
+}

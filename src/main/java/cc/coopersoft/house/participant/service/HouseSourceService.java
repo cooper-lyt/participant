@@ -37,7 +37,7 @@ public class HouseSourceService {
         houseValidInfo.setCredentialsNumber(houseSource.getCredentialsNumber());
         houseValidInfo.setPowerCardNumber(houseSource.getPowerCardNumber());
         houseValidInfo.setPersonName(houseSource.getPersonName());
-        houseValidInfo.setTel(houseSource.getTel());
+
 
         return validHouseSource(houseValidInfo);
     }

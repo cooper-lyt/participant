@@ -6,6 +6,7 @@ import cc.coopersoft.house.SaleLimitType;
 import cc.coopersoft.house.participant.AttrUser;
 import cc.coopersoft.house.participant.Messages;
 import cc.coopersoft.house.participant.annotations.Seller;
+import cc.coopersoft.house.participant.data.ContractContextMap;
 import cc.coopersoft.house.participant.service.HouseSourceService;
 import cc.coopersoft.house.sale.data.*;
 import com.dgsoft.developersale.wsinterface.DESUtil;
@@ -14,6 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.deltaspike.core.api.config.view.ViewConfig;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.deltaspike.jsf.api.message.JsfMessage;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.omnifaces.cdi.Param;
 
 import javax.enterprise.context.RequestScoped;
@@ -22,9 +25,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,6 +41,8 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
 
     @Inject
     private HouseSourceHome houseSourceHome;
+
+
 
     @Inject @Param(name = "fid")
     private String fid;
@@ -68,6 +71,9 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
     @Inject
     private HouseSourceService houseSourceService;
 
+
+    private ContractContextMap contractContextMap;
+
     private String orderStr;
 
     public String getOrderStr() {
@@ -76,6 +82,29 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
 
     public void setOrderStr(String orderStr) {
         this.orderStr = orderStr;
+    }
+
+
+
+    public ContractContextMap getContractContextMap() {
+        if (contractContextMap == null){
+            HouseSourceCompany hsc = houseSourceHome.getHouseSourceCompany();
+            if (hsc == null){
+                throw new IllegalArgumentException("not company info");
+            }else {
+                try {
+                    if (hsc.getContext() == null || hsc.getContext().trim().equals("")) {
+                        contractContextMap = new ContractContextMap();
+                    } else
+                        contractContextMap = new ContractContextMap(new JSONObject(hsc.getContext()));
+                } catch (JSONException e) {
+                    throw new IllegalArgumentException(e.getMessage(), e);
+                }
+
+            }
+
+        }
+        return contractContextMap;
     }
 
     @Seller
@@ -155,26 +184,54 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
         throw new IllegalArgumentException("unknow valid status");
     }
 
-
     @Seller
     @Transactional
     public Class<? extends ViewConfig> saveHouseSource(){
         //houseSaleInfo = houseSellRepository.save(houseSaleInfo);
 
-        try {
-            if (validSource()){
-                houseSourceHome.save();
-                return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSalePicUpload.class;
-            }else{
-                return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
+
+            try {
+                if (validSource()){
+
+
+                    getContractContextMap().put("house_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getAddress()));
+                    getContractContextMap().put("house_area",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getHouseArea()));
+                    getContractContextMap().put("house_in_floor",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getInFloor())));
+                    getContractContextMap().put("house_floor_count",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getFloorCount())));
+                    getContractContextMap().put("house_elevator",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().isElevator()?"有":"无"));
+                    getContractContextMap().put("house_living_count",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getLivingRoom())));
+                    getContractContextMap().put("house_room_count",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getRoomCount())));
+                    getContractContextMap().put("house_kitchen_count",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getKitchenCount())));
+                    getContractContextMap().put("house_toilet_count",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getToiletCount())));
+                    getContractContextMap().put("house_direction",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getDirection()));
+                    getContractContextMap().put("house_price",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getSumPrice()));
+
+                    getContractContextMap().put("time_limit_type",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getShowAreaType().toString()));
+                    getContractContextMap().put("time_limit_end",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getEndTime()));
+
+
+                    try {
+                        houseSourceHome.getHouseSourceCompany().setContext(getContractContextMap().toJson().toString());
+                    } catch (JSONException e) {
+                        throw new IllegalArgumentException(e.getMessage(),e);
+                    }
+
+                    houseSourceHome.save();
+                    return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSalePicUpload.class;
+                }else{
+                    return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
+                }
+            } catch (HttpApiServerException e) {
+                logger.log(Level.WARNING,e.getMessage(),e);
+                messages.addError().serverFail();
+                return null;
             }
-        } catch (HttpApiServerException e) {
-            logger.log(Level.WARNING,e.getMessage(),e);
-            messages.addError().serverFail();
-            return null;
-        }
 
+    }
 
+    @Seller
+    public Class<? extends ViewConfig> saveLocation(){
+        return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSourceContract.class;
     }
 
     @Seller

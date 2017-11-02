@@ -14,7 +14,17 @@ public interface Seller {
 
     class HouseList implements ViewConfig{}
 
-    class ContractEdit implements ViewConfig{}
+
+    interface Contract extends ViewConfig{
+
+        interface Dg extends Contract{
+
+            class OldEdit implements Dg {}
+
+
+        }
+
+    }
 
     interface Apply extends ViewConfig{
 
@@ -22,7 +32,12 @@ public interface Seller {
 
         class HouseSellInfo implements Apply {}
 
+        class HouseShowInfo implements Apply{}
+
         class HouseSalePicUpload implements Apply{}
+
+
+        class HouseSourceContract implements Apply{}
 
         class HouseSourceSubmit implements Apply{}
 

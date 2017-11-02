@@ -7,6 +7,7 @@ import cc.coopersoft.house.participant.AttrUser;
 import cc.coopersoft.house.participant.data.model.HouseFilterType;
 import cc.coopersoft.house.participant.data.repository.HouseSourceRepository;
 import cc.coopersoft.house.sale.data.HouseSource;
+import cc.coopersoft.house.sale.data.HouseSourceCompany;
 import org.omnifaces.cdi.Param;
 
 import javax.enterprise.context.RequestScoped;
@@ -98,7 +99,7 @@ public class HouseSourceList {
         this.dateTo = i18n.getDayEndTime(dateTo);
     }
 
-    private PageResultData<HouseSource> resultData;
+    private PageResultData<HouseSourceCompany> resultData;
 
     private List<HouseFilterType> houseSourceFilterTypeList;
 
@@ -109,7 +110,7 @@ public class HouseSourceList {
         return houseSourceFilterTypeList;
     }
 
-    public PageResultData<HouseSource> getResultData() {
+    public PageResultData<HouseSourceCompany> getResultData() {
         if (resultData == null){
             findResultData();
         }
@@ -120,7 +121,7 @@ public class HouseSourceList {
 
     protected void findResultData(){
 
-        resultData =  new PageResultData<HouseSource>(houseSourceRepository.searchResultData(attrUser.getLoginData().getCorpInfo().getId(),  getConditionAdapter().getCondition(),getConditionAdapter().getContains(),getConditionAdapter().isEmpty(),getDateFrom(),getDateFrom() != null, getDateTo(),getDateTo() != null , filterType == null ? EnumSet.allOf(HouseSource.HouseSourceStatus.class) : EnumSet.of(filterType),getFirstResult(),PAGE_SIZE), getFirstResult(),
+        resultData =  new PageResultData<HouseSourceCompany>(houseSourceRepository.searchResultData(attrUser.getLoginData().getCorpInfo().getId(),  getConditionAdapter().getCondition(),getConditionAdapter().getContains(),getConditionAdapter().isEmpty(),getDateFrom(),getDateFrom() != null, getDateTo(),getDateTo() != null , filterType == null ? EnumSet.allOf(HouseSource.HouseSourceStatus.class) : EnumSet.of(filterType),getFirstResult(),PAGE_SIZE), getFirstResult(),
                 houseSourceRepository.searchResultCount(attrUser.getLoginData().getCorpInfo().getId(),getConditionAdapter().getCondition(),getConditionAdapter().getContains(),getConditionAdapter().isEmpty(),getDateFrom(),getDateFrom() != null, getDateTo(),getDateTo() != null , filterType == null ? EnumSet.allOf(HouseSource.HouseSourceStatus.class) : EnumSet.of(filterType)),PAGE_SIZE);
         this.firstResult = resultData.getFirstResult();
 

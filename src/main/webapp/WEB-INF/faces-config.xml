@@ -22,6 +22,12 @@
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
               version="2.0">
 
+
+    <converter>
+        <converter-id>cooper.faces.BigMoneyConverter</converter-id>
+        <converter-class>cc.coopersoft.common.tools.faces.convert.BigMoneyConverter</converter-class>
+    </converter>
+
     <application>
 
         <!--

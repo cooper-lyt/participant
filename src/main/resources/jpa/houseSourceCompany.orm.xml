@@ -15,7 +15,22 @@
                 <column name="GROUP_ID" nullable="false" length="32"/>
             </basic>
 
-            <many-to-one name="houseSource">
+            <basic name="title">
+                <column name="TITLE" nullable="false" length="200"/>
+            </basic>
+
+            <basic name="context">
+                <column name="CONTRACT" nullable="false" />
+                <lob/>
+            </basic>
+
+            <basic name="memo">
+                <column name="MEMO" nullable="true" />
+                <lob/>
+            </basic>
+
+
+            <many-to-one name="houseSource" fetch="LAZY">
                 <join-column name="HOUSE_SOURCE" nullable="false"/>
             </many-to-one>
 

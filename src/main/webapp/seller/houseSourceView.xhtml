@@ -7,6 +7,39 @@
                 xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:o="http://omnifaces.org/ui">
 
+    <h:outputStylesheet>
+        .head-title-panel.panel{
+            margin-top: 20px;
+            background-color: #fafafa;
+        }
+
+
+        .head-title-panel h2{
+            color: #4078c0;
+            margin-top: 9px;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+    </h:outputStylesheet>
+
+
+    <b:panel styleClass="head-title-panel">
+
+
+        <b:buttonGroup styleClass="right" style="margin-left:5px">
+            <b:button iconAwesome="plus"/>
+
+            <b:button iconAwesome="tag"/>
+            <b:button iconAwesome="pencil"/>
+
+            <b:button iconAwesome="trash"/>
+
+        </b:buttonGroup>
+        <h2>#{houseSourceHome.houseSourceCompany.title}</h2>
+    </b:panel>
+
 
     <div class="container repohead-details-container">
 
@@ -25,10 +58,11 @@
             <li>
 
 
-                <h:outputLink value="#{request.contextPath}/seller/apply/houseSellInfo.xhtml" styleClass="btn btn-sm">
+                <h:outputLink value="#{request.contextPath}/seller/apply/houseShowInfo.xhtml" styleClass="btn btn-sm">
                     <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
                     修改
                 </h:outputLink>
+
             </li>
 
             <li>

@@ -2,12 +2,18 @@ package cc.coopersoft.house.participant.controller;
 
 import cc.coopersoft.comm.HttpJsonDataGet;
 import cc.coopersoft.common.EntityHome;
+import cc.coopersoft.house.participant.AttrUser;
 import cc.coopersoft.house.participant.Messages;
+import cc.coopersoft.house.participant.data.ContractContextMap;
 import cc.coopersoft.house.participant.data.repository.HouseSourceRepository;
 import cc.coopersoft.house.sale.data.*;
+import com.dgsoft.common.system.OwnerPersonHelper;
+import com.dgsoft.common.system.PersonHelper;
+import com.dgsoft.common.system.ProxyPersonEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.deltaspike.data.api.EntityRepository;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.deltaspike.jsf.api.message.JsfMessage;
 
 import javax.annotation.PostConstruct;
@@ -17,10 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -43,7 +46,19 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
     private RunParam runParam;
 
     @Inject
+    private AttrUser attrUser;
+
+    @Inject
     private JsfMessage<Messages> messages;
+
+    public HouseSourceCompany getHouseSourceCompany(){
+        for(HouseSourceCompany hsc: getInstance().getHouseSourceCompanies()) {
+            if (attrUser.getLoginData().getCorpInfo().getId().equals(hsc.getGroupId())) {
+                return hsc;
+            }
+        }
+        return null;
+    }
 
     public BigDecimal getLng(){
         if (getInstance().getHouseSaleInfo() != null) {
@@ -108,6 +123,17 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
         return saleAreaCache.getSaleAreas(SaleArea.SaleAreaType.SALE,getInstance().getHouseSaleInfo().getDistrict(),false);
     }
 
+    public void calcPrice(){
+        HouseSaleInfo hsi = getInstance().getHouseSaleInfo();
+        if (hsi != null){
+            if (hsi.getSumPrice() != null) {
+                hsi.setPrice(hsi.getSumPrice().divide(hsi.getHouseArea(), 2, BigDecimal.ROUND_HALF_EVEN));
+            }else{
+                hsi.setPrice(null);
+            }
+        }
+    }
+
     public void addLimitMessages(SellLimit limit){
         List<SellLimit> result = getSellLimitMessages();
         result.add(limit);
@@ -147,4 +173,31 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
         }
     }
 
+
+
+    @Override
+    @Transactional
+    public void save(){
+        calcPrice();
+        getInstance().setUpdateTime(new Date());
+        logger.config("" + getInstance().getProxyPerson());
+        logger.config(getInstance().getId());
+        if (getInstance().getProxyPerson() != null){
+            getInstance().getProxyPerson().setId(getInstance().getId());
+        }
+        super.save();
+    }
+
+    private OwnerPersonHelper<HouseSource> sellPerson;
+
+    public OwnerPersonHelper<HouseSource> getSellPerson() {
+        if (sellPerson == null){
+            sellPerson = new OwnerPersonHelper<HouseSource>(getInstance()) {
+                protected ProxyPersonEntity createProxyPerson() {
+                    return new HouseSourceProxyPerson(getInstance().getId());
+                }
+            };
+        }
+        return sellPerson;
+    }
 }

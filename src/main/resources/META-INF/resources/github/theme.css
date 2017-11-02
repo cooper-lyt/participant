@@ -828,6 +828,10 @@ table.floatThead-table {
     width: 20%;
 }
 
+.steps.steps-7 li{
+    width: 14.3%;
+}
+
 .steps li {
     display: table-cell;
     width: 33.3%;
@@ -1001,7 +1005,13 @@ table.floatThead-table {
     border-radius: 3px
 }
 
-.form-checkbox input[type=checkbox], .form-checkbox input[type=radio] {
+.form-checkbox input[type=checkbox]{
+    float: left;
+    margin: 5px 0 0 -20px;
+    vertical-align: middle
+}
+
+.form-checkbox input[type=radio] {
     float: left;
     margin: 5px 0 0 -55px;
     vertical-align: middle

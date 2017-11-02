@@ -25,13 +25,19 @@
                 <column name="PERSON_NAME" nullable="false" length="50"/>
             </basic>
 
-            <basic name="tel">
+            <basic name="phone">
                 <column name="TEL" nullable="false" length="16"/>
             </basic>
 
-            <one-to-one fetch="LAZY" name="houseSource">
-                <join-column name="HOUSE_SOURCE" nullable="false" />
-            </one-to-one>
+            <basic name="address">
+                <column name="ADDRESS" nullable="true" length="200"/>
+            </basic>
+
+            <basic name="proxyType">
+                <column name="TYPE" nullable="false" length="16"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+
 
         </attributes>
 

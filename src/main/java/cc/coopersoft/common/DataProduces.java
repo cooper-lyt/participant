@@ -1,6 +1,8 @@
 package cc.coopersoft.common;
 
+import cc.coopersoft.house.HousePowerCard;
 import cc.coopersoft.house.ProxyType;
+import cc.coopersoft.house.sale.data.HouseSaleInfo;
 import com.dgsoft.common.system.PersonEntity;
 import com.dgsoft.common.system.PowerPersonEntity;
 import com.dgsoft.common.system.Sex;
@@ -72,4 +74,25 @@ public class DataProduces {
     public PowerPersonEntity.LegalType[] legalTypeValues(){
         return PowerPersonEntity.LegalType.values();
     }
+
+    @Named
+    @Produces
+    @ApplicationScoped
+    public List<HousePowerCard> ownerPowerCards(){
+        List<HousePowerCard> result = new ArrayList<HousePowerCard>();
+        for(HousePowerCard hpc: HousePowerCard.values()){
+            if (hpc.isOwnerCer()){
+                result.add(hpc);
+            }
+        }
+        return result;
+    }
+
+    @Named
+    @Produces
+    @ApplicationScoped
+    public HouseSaleInfo.ShowAreaType[] houseShowAreaTypeValues(){
+        return HouseSaleInfo.ShowAreaType.values();
+    }
+
 }

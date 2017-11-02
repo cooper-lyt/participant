@@ -1,0 +1,23 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:b="http://bootsfaces.net/ui"
+
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <div class="btn-group select-edit-group">
+        <button type="button" class="select-edit-input-toggle" style="display: none;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
+
+
+        <h:inputText styleClass="form-control select-edit-input #{inputStyleClass}" size="#{size}" pt:placeholder="#{placeholder}" style="#{inputStyle}" value="#{inputValue}"  data-toggle="dropdown"/>
+
+        <ul class="dropdown-menu">
+            <ui:insert/>
+        </ul>
+    </div>
+
+</ui:composition>

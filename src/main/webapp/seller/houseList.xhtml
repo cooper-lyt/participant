@@ -73,30 +73,30 @@
                    <b:column styleClass="pr-3" span="12">
                        <h3>
                            <h:outputLink value="#{request.contextPath}/seller/houseSourceView.xhtml"  styleClass="v-align-middle" >
-                               <f:param name="houseSaleInfoId" value="#{_data.id}"/>
-                               #{_data.sourceId}/<em>#{_data.houseCode}</em>
+                               <f:param name="houseSaleInfoId" value="#{_data.houseSource.id}"/>
+                               #{_data.houseSource.sourceId}/<em>#{_data.houseSource.houseCode}</em>
                            </h:outputLink>
-                           <span class="label #{_data.status}">#{enumHelper.getLabel(_data.status)}</span>
+                           <span class="label #{_data.houseSource.status}">#{enumHelper.getLabel(_data.houseSource.status)}</span>
                        </h3>
-                        <c:if test="#{_data.status.name() eq 'CHECK_FAIL'}">
+                        <c:if test="#{_data.houseSource.status.name() eq 'CHECK_FAIL'}">
                             <p class="mb-2 pr-4 text-danger">
-                                #{_data.checkView}
+                                #{_data.houseSource.checkView}
                             </p>
                         </c:if>
 
 
                        <p class="col-9 d-inline-block mb-2 pr-4">
-                           #{_data.saleTitle}
+                           #{_data.title}
                        </p>
                        <p class="mb-2 pr-4 ">
-                           产权人:<strong>#{_data.personName}</strong>  证件号:<strong>#{_data.powerCardNumber}</strong>   联系电话:<strong>#{_data.tel}</strong>
+                           产权人:<strong>#{_data.houseSource.personName}</strong>  证件号:<strong>#{_data.houseSource.powerCardNumber}</strong>   联系电话:<strong>#{_data.houseSource.tel}</strong>
                        </p>
 
 
                        <p class="f6 text-gray mb-0 mt-2">
-                           建立时间:<h:outputText value="#{_data.applyTime}"><f:convertDateTime locale="#{i18n.locale}" timeZone="#{i18n.timeZone}" pattern="#{messages.datetime_pattern}"/></h:outputText>
-                           更新时间:<h:outputText value="#{_data.updateTime}"><f:convertDateTime locale="#{i18n.locale}" timeZone="#{i18n.timeZone}" pattern="#{messages.datetime_pattern}"/></h:outputText>
-                           审核时间:<h:outputText value="#{_data.checkTime}"><f:convertDateTime locale="#{i18n.locale}" timeZone="#{i18n.timeZone}" pattern="#{messages.datetime_pattern}"/></h:outputText>
+                           建立时间:<h:outputText value="#{_data.houseSource.applyTime}"><f:convertDateTime locale="#{i18n.locale}" timeZone="#{i18n.timeZone}" pattern="#{messages.datetime_pattern}"/></h:outputText>
+                           更新时间:<h:outputText value="#{_data.houseSource.updateTime}"><f:convertDateTime locale="#{i18n.locale}" timeZone="#{i18n.timeZone}" pattern="#{messages.datetime_pattern}"/></h:outputText>
+                           审核时间:<h:outputText value="#{_data.houseSource.checkTime}"><f:convertDateTime locale="#{i18n.locale}" timeZone="#{i18n.timeZone}" pattern="#{messages.datetime_pattern}"/></h:outputText>
                        </p>
                    </b:column>
                </b:row>
@@ -131,10 +131,12 @@
                                     <span class="fa fa-times float-right" aria-hidden="true"></span>
 
                                     <f:param name="filterType" value=""/>
+                                    <f:param name="firstResult" value="0"/>
                                 </c:if>
                                 <c:if test="#{not (_type.filterType eq houseSourceList.filterType)}">
                                     <span class="count">#{_type.count}</span>
                                     <f:param name="filterType" value="#{_type.filterType}"/>
+                                    <f:param name="firstResult" value="0"/>
                                 </c:if>
 
 

@@ -26,16 +26,21 @@
                 <div class="setup-header setup-gift">
                     <h1 class="subhead-heading">房源审核申请</h1>
 
-                    <ol class="steps steps-4">
+                    <ol class="steps steps-5">
                         <li class="current">
                             <b:iconAwesome name="stethoscope" size="2x"/>
                             <strong class="step">产权:</strong>
                             产权验证
                         </li>
                         <li>
+                            <b:iconAwesome name="id-card-o" size="2x"/>
+                            <strong class="step">委托:</strong>
+                            委托信息
+                        </li>
+                        <li>
                             <b:iconAwesome name="bookmark" size="2x"/>
                             <strong class="step">描述:</strong>
-                            房屋描述
+                            房源描述
                         </li>
                         <li>
                             <b:iconAwesome name="photo" size="2x"/>
@@ -45,19 +50,14 @@
                         <li>
                             <b:iconAwesome name="university" size="2x"/>
                             <strong class="step">提交:</strong>
-                            房源提交
+                            提交房源
                         </li>
+
                     </ol>
                 </div>
 
                 <b:messages globalOnly="false" styleClass="top-messages"/>
 
-                <b:inputText label="权证编号" renderLabel="true"  value="#{houseValidInfo.powerCardNumber}"
-                             required="true">
-                </b:inputText>
-                <b:message tooltip="true"/>
-
-                <hr/>
 
                 <p:outputPanel id="valid_radio_panel" >
 
@@ -132,19 +132,33 @@
 
                 <hr/>
 
+                <b:inputText label="权证编号" renderLabel="true"  value="#{houseValidInfo.powerCardNumber}"
+                             required="true">
+                    <f:facet name="prepend">
+                        <h:selectOneMenu pt:data-width="170px" styleClass="selectpicker form-control select-theme" value="#{houseValidInfo.powerCardType}"
+                                         label="权证类型" >
+                            <f:selectItems value="#{ownerPowerCards}" var="_type" itemLabel="#{enumHelper.getLabel(_type)}" itemValue="#{_type}"/>
+
+                        </h:selectOneMenu>
+                    </f:facet>
+                </b:inputText>
+
+
+                <b:message tooltip="true"/>
+
+
                 <label for="cardNumber">产权人</label>
-                <ui:decorate template="/frame/personInput.xhtml">
-                    <ui:param name="_person" value="#{houseValid.houseValidInfo}"/>
+                <ui:include src="/frame/personInput.xhtml">
+                    <ui:param name="_person" value="#{houseValidInfo}"/>
                     <ui:param name="allowCredentialsTypeList" value="#{allCredentialsTypes}"/>
 
-                    <b:inputText value="#{houseValidInfo.tel}" required="true" label="联系电话" renderLabel="true"/>
-                    <b:message/>
-                </ui:decorate>
 
+                </ui:include>
 
                 <hr/>
 
-                <b:commandButton  action="#{houseValid.validHouse}" look="success" value="产权验证"/>
+
+                <b:commandButton  action="#{houseSourceCreate.validHouse}" look="success" value="产权验证"/>
 
             </b:column>
 

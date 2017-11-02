@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:define name="custom-header">
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select.min.css"/>
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select-plug.css"/>
+        <h:outputScript library="bsf" name="js/dropdown.js"/>
+        <h:outputScript library="bootstrap-select" name="js/bootstrap-select.min.js"/>
+        <h:outputScript library="bootstrap-select" name="js/i18n/defaults-zh_CN.min.js"/>
+
+
+        <h:outputScript library="bootstrap-datepicker" name="js/bootstrap-datetimepicker.min.js"/>
+        <h:outputScript library="bootstrap-datepicker" name="js/locales/bootstrap-datetimepicker.zh-CN.js"/>
+    </ui:define>
+
+    <h:outputStylesheet>
+        .bootstrap-tagsinput{
+            width: 100%;
+        }
+
+        .bootstrap-tagsinput input{
+            width: 100%;
+        }
+    </h:outputStylesheet>
+
+    <h:form id="houes-valid"  styleClass="page-form">
+        <b:row>
+            <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
+                <div class="setup-header setup-gift">
+                    <h1 class="subhead-heading">房源审核申请</h1>
+
+                    <ol class="steps steps-5">
+                        <li class="complete">
+                            <b:iconAwesome name="check" size="2x"/>
+                            <strong class="step">产权:</strong>
+                            产权验证
+                        </li>
+
+
+                        <li class="complete">
+                            <b:iconAwesome name="check" size="2x"/>
+                            <strong class="step">委托:</strong>
+                            委托信息
+                        </li>
+                        <li class="current">
+                            <b:iconAwesome name="bookmark" size="2x"/>
+                            <strong class="step">描述:</strong>
+                            房源描述
+                        </li>
+                        <li>
+                            <b:iconAwesome name="photo" size="2x"/>
+                            <strong class="step">图片:</strong>
+                            图片上传
+                        </li>
+                        <li>
+                            <b:iconAwesome name="university" size="2x"/>
+                            <strong class="step">提交:</strong>
+                            提交房源
+                        </li>
+                    </ol>
+                </div>
+
+                <b:messages globalOnly="false" styleClass="top-messages"/>
+
+
+                <div class="Subhead mt-3 mb-5">
+                    <h2 class="Subhead-heading">#{houseSourceHome.instance.houseSaleInfo.address}</h2>
+                    <p class="Subhead-description">
+                        请如实填写房屋销售挂牌信息
+                    </p>
+                </div>
+
+
+                <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.title}" maxlength="64" label="挂牌标题" placeholder="挂牌显示的标题" required="true"/>
+                <b:message/>
+
+
+
+
+
+                <b:inputText tags="true" value="#{houseSourceHome.instance.houseSaleInfo.tags}" maxlength="512" placeholder="房源标签" style="width:100%"/>
+                <b:message/>
+
+                <b:inputTextarea value="#{houseSourceHome.instance.houseSaleInfo.description}" maxlength="512" label="描述" />
+                <b:message/>
+
+                <b:inputTextarea value="#{houseSourceHome.instance.houseSaleInfo.environment}" maxlength="512" label="环境"/>
+                <b:message/>
+
+                <b:selectMultiMenu nonSelectedText="请选择房屋朝向" numberDisplayed="9" value="#{houseSourceHome.instance.houseSaleInfo.direction}" label="朝向" id="typeID" required="true">
+                    <f:selectItem itemLabel="东" itemValue="东"/>
+                    <f:selectItem itemLabel="东南" itemValue="东南"/>
+                    <f:selectItem itemLabel="南" itemValue="南"/>
+                    <f:selectItem itemLabel="西南" itemValue="西南"/>
+                    <f:selectItem itemLabel="西" itemValue="西"/>
+                    <f:selectItem itemLabel="西北" itemValue="西北"/>
+                    <f:selectItem itemLabel="北" itemValue="北"/>
+                    <f:selectItem itemLabel="东北" itemValue="东北"/>
+                </b:selectMultiMenu>
+
+
+
+                <label>楼层信息</label>
+                <div class="input-group" style="margin-bottom: 15px">
+
+                    <span class="input-group-addon">总层数<span class="required">*</span></span>
+                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.floorCount}"
+                                 required="true" renderLabel="false" autocomplete="false" label="总层数" />
+                    <span class="input-group-addon">所在层<span class="required">*</span></span>
+                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.inFloor}"
+                                 required="true" renderLabel="false" autocomplete="false" label="所在层" />
+
+                    <p:outputPanel layout="block" styleClass="input-group-btn">
+
+                        <h:selectOneMenu label="电梯"
+                                         styleClass="selectpicker form-control select-theme"
+                                         pt:data-width="100px"
+                                         value="#{houseSourceHome.instance.houseSaleInfo.elevator}" required="true">
+
+                            <f:selectItem itemValue="#{true}" itemLabel="有电梯"/>
+                            <f:selectItem itemValue="#{false}" itemLabel="无电梯"/>
+
+                        </h:selectOneMenu>
+
+                    </p:outputPanel>
+
+                </div>
+
+
+
+                <label>套型</label>
+                <div class="input-group" style="margin-bottom: 15px">
+
+
+
+                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.roomCount}"
+                                 required="true" renderLabel="false" autocomplete="false" label="室" />
+                    <span class="input-group-addon">室<span class="required">*</span></span>
+
+
+                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.livingRoom}" renderLabel="false"
+                                 required="true" label="厅" autocomplete="false"/>
+                    <span class="input-group-addon">厅<span class="required">*</span></span>
+
+                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.kitchenCount}" renderLabel="false"
+                                 required="true" label="厨" autocomplete="false"/>
+                    <span class="input-group-addon">厨<span class="required">*</span></span>
+                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.toiletCount}" renderLabel="false"
+                                 required="true" label="卫" autocomplete="false"/>
+
+                    <span class="input-group-addon">卫<span class="required">*</span></span>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label>
+                        区域
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">销售区域<span class="required">*</span></span>
+                        <h:selectOneMenu styleClass="selectpicker from-control edit-select" value="#{houseSourceHome.instance.houseSaleInfo.localArea}" label="销售区域" >
+                            <f:selectItems value="#{houseSourceHome.saleLocalAreaList}" var="_area" itemLabel="#{_area.name}" itemValue="#{_area.id}"/>
+                            <f:selectItem noSelectionOption="true" itemLabel="-请选择销售区域-"/>
+                        </h:selectOneMenu>
+                        <span class="input-group-addon">学区<span class="required">*</span></span>
+                        <h:selectOneMenu styleClass="selectpicker from-control edit-select" value="#{houseSourceHome.instance.houseSaleInfo.schoolArea}" label="学区" >
+                            <f:selectItems value="#{houseSourceHome.schoolAreaList}" var="_area" itemLabel="#{_area.name}" itemValue="#{_area.id}"/>
+                            <f:selectItem noSelectionOption="true" itemLabel="-请选择学区-"/>
+                        </h:selectOneMenu>
+                    </div>
+                </div>
+
+
+                <hr/>
+
+                <b:inputText value="#{houseSourceHome.houseSourceCompany.title}" label="房源标题" placeholder="内部标识，不会显示在挂牌信息中" maxlength="100" required="true"/>
+                <b:message/>
+
+                <b:inputTextarea value="#{houseSourceHome.houseSourceCompany.memo}" label="房源备注" placeholder="内部标识，不会显示在挂牌信息中" />
+                <b:message/>
+
+
+                <hr/>
+
+                <b:commandButton rendered="#{not houseSourceHome.idDefined}" action="#{houseSourceCreate.createHouseSource}" look="success" value="建立房源">
+                    <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
+                </b:commandButton>
+
+
+
+                <b:commandButton rendered="#{houseSourceHome.idDefined}" action="#{houseSaleInfoEdit.saveHouseSource}" look="success" value="保存房源">
+
+                    <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                </b:commandButton>
+
+            </b:column>
+
+
+        </b:row>
+    </h:form>
+
+
+
+
+</ui:composition>

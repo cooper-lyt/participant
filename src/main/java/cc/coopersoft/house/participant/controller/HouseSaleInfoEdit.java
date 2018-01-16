@@ -151,7 +151,9 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
         HouseSource passHouseSource = houseSourceService.existsPassHouseSource(houseSourceHome.getInstance().getHouseCode());
         if (passHouseSource != null){
             //messages.addInfo().houseSourceExists();
-            houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.CANCEL);
+            houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.PREPARE);
+            houseSourceHome.getInstance().setMessageType(HouseSource.MessageType.CANCEL);
+
             houseSourceHome.addLimitMessages(new SellLimit(SaleLimitType.OTHER_SALE,"",new Date()));
             houseSourceHome.save();
             houseSourceHome.setId(passHouseSource.getId());
@@ -166,14 +168,16 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
                 if (result.getLimits().isEmpty()){
                     return true;
                 }else{
-                    houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.CANCEL);
+                    houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.PREPARE);
+                    houseSourceHome.getInstance().setMessageType(HouseSource.MessageType.CANCEL);
                     houseSourceHome.addLimitMessages(result.getLimits());
                     houseSourceHome.save();
                     return false;
                 }
             case HOUSE_NOT_FOUND:
             case OWNER_FAIL:
-                houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.CANCEL);
+                houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.PREPARE);
+                houseSourceHome.getInstance().setMessageType(HouseSource.MessageType.CANCEL);
                 houseSourceHome.addLimitMessages(new SellLimit(SaleLimitType.OWNER_CHANGE,"",new Date()));
                 houseSourceHome.save();
                 return false;
@@ -195,7 +199,7 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
 
 
                     getContractContextMap().put("house_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getAddress()));
-                    getContractContextMap().put("house_area",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getHouseArea()));
+                    getContractContextMap().put("house_area",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea()));
                     getContractContextMap().put("house_in_floor",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getInFloor())));
                     getContractContextMap().put("house_floor_count",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getFloorCount())));
                     getContractContextMap().put("house_elevator",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().isElevator()?"有":"无"));

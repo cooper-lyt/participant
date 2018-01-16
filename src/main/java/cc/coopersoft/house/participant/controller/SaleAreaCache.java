@@ -32,17 +32,40 @@ public class SaleAreaCache implements java.io.Serializable{
         }
     }
 
-    public List<SaleArea> getSaleAreas(SaleArea.SaleAreaType type, String district, boolean isAll){
+    private List<SaleArea> getSaleAreas(){
         if (saleAreas == null){
             initSaleArea();
         }
+        return saleAreas;
+    }
+
+    public List<SaleArea> getSaleAreas(SaleArea.SaleAreaType type, String district, boolean isAll){
+
         List<SaleArea> result = new ArrayList<SaleArea>();
-        for (SaleArea area: saleAreas){
+        for (SaleArea area: getSaleAreas()){
             if (area.getType().equals(type) && area.getDistrict().equals(district) && (isAll || area.isEnable())){
                 result.add(area);
             }
         }
         return result;
+    }
+
+    public SaleArea getSaleAreaById(String id){
+        for (SaleArea saleArea : getSaleAreas()){
+            if (saleArea.getId().equals(id)){
+                return saleArea;
+            }
+        }
+        return null;
+    }
+
+    public String getSaleAreaNameById(String id){
+        SaleArea saleArea = getSaleAreaById(id);
+        if (saleArea == null){
+            return "";
+        }else{
+            return saleArea.getName();
+        }
     }
 
 }

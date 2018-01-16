@@ -9,6 +9,7 @@ import javax.ejb.Startup;
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Created by cooper on 13/10/2017.
@@ -40,19 +41,22 @@ public class NumberPool implements java.io.Serializable{
             ut.setTime(ns.getUpdateTime());
 
             if (
-                    (NumberSequence.SequenceType.DAY.equals(ns.getType()) && (now.get(Calendar.YEAR) != ut.get(Calendar.YEAR)) && (now.get(Calendar.MONTH) != ut.get(Calendar.MONTH)) && (now.get(Calendar.DAY_OF_MONTH) != ut.get(Calendar.DAY_OF_MONTH)) ) ||
-                            (NumberSequence.SequenceType.MONTH.equals(ns.getType()) && (now.get(Calendar.YEAR) != ut.get(Calendar.YEAR)) && (now.get(Calendar.MONTH) != ut.get(Calendar.MONTH))) ||
+                    (NumberSequence.SequenceType.DAY.equals(ns.getType()) && ((now.get(Calendar.YEAR) != ut.get(Calendar.YEAR)) || (now.get(Calendar.MONTH) != ut.get(Calendar.MONTH)) || (now.get(Calendar.DAY_OF_MONTH) != ut.get(Calendar.DAY_OF_MONTH)))) ||
+                            (NumberSequence.SequenceType.MONTH.equals(ns.getType()) && ((now.get(Calendar.YEAR) != ut.get(Calendar.YEAR)) || (now.get(Calendar.MONTH) != ut.get(Calendar.MONTH)))) ||
                             (NumberSequence.SequenceType.YEAR.equals(ns.getType()) && (now.get(Calendar.YEAR) != ut.get(Calendar.YEAR)))
                     ){
                 ns.setNumber(1l);
-            }else
+            }else {
                 ns.setNumber(ns.getNumber() + 1l);
+            }
+            ns.setUpdateTime(now.getTime());
         }
 
         String resultNumber = String.valueOf(ns.getNumber());
         while (resultNumber.length() < ns.getMinLength()){
             resultNumber = "0" + resultNumber;
         }
+
         numberSequenceRepository.save(ns);
         SimpleDateFormat numberDateFormat;
         switch (ns.getType()){

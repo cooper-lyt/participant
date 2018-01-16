@@ -3,11 +3,13 @@ package cc.coopersoft.house.participant.controller;
 import cc.coopersoft.comm.District;
 import cc.coopersoft.comm.exception.HttpApiServerException;
 import cc.coopersoft.house.sale.HouseSellService;
+import cc.coopersoft.house.sale.data.Word;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by cooper on 04/03/2017.
@@ -21,6 +23,8 @@ public class ServerWord implements java.io.Serializable {
 
     private List<District> districts;
 
+    private Map<String ,Map<String,Word>> words;
+
     public List<District> getDistricts(){
         if (districts == null){
             try {
@@ -33,7 +37,7 @@ public class ServerWord implements java.io.Serializable {
     }
 
     public String getDistrictName(String id){
-        for (District d: districts){
+        for (District d: getDistricts()){
             if (d.getId().equals(id)){
                 return d.getName();
             }

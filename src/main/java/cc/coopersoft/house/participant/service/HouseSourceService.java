@@ -64,7 +64,7 @@ public class HouseSourceService {
 
     public HouseSource existsEditHouseSource(String houseCode, String corpId){
         ArrayList<HouseSource.HouseSourceStatus> allowStatus = new ArrayList<HouseSource.HouseSourceStatus>(
-                EnumSet.of(HouseSource.HouseSourceStatus.PREPARE,HouseSource.HouseSourceStatus.CHECK_FAIL)
+                EnumSet.of(HouseSource.HouseSourceStatus.PREPARE)
         );
         return getSingleHouseSource(houseSourceRepository.houseSourceByStatus(allowStatus,houseCode,corpId));
     }

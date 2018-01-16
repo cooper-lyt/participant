@@ -22,6 +22,7 @@ public class HttpSecurityConfiguration {
                     .errorPage("/login.xhtml?type=fail")
                     .restoreOriginalRequest()
                 .forPath("/javax.faces.resource/*").unprotected()
+                .forPath("/favicon.ico").unprotected()
                 .forPath("/logout")
                     .logout()
                     .redirectTo("/index.html")

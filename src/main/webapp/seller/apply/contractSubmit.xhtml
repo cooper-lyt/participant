@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                    xmlns:h="http://java.sun.com/jsf/html"
+                    xmlns:f="http://java.sun.com/jsf/core"
+                    xmlns:b="http://bootsfaces.net/ui"
+                    xmlns:o="http://omnifaces.org/ui"
+                    xmlns:p="http://primefaces.org/ui"
+                    xmlns:c="http://java.sun.com/jstl/core"
+                    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                    xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:form id="addActionForm">
+        <div class="subhead">
+            <b:commandButton styleClass="btn btn-primary right"
+                           render="numberForm,addActionForm">
+
+
+            </b:commandButton>
+
+            <h2 class="subhead-heading">#{houseContractHome.instance.id}</h2>
+
+            <p class="subhead-description">
+                合同即将完成，这是最后一步，您可以在此打印合同，也可在合同提交到产权登记部门后打印合同。
+            </p>
+        </div>
+    </h:form>
+    <h:form id="numberForm">
+
+
+
+        <hr/>
+        <a id="commit-link" class="btn btn-success">
+            提交合同
+        </a>
+
+    </h:form>
+
+</ui:composition>

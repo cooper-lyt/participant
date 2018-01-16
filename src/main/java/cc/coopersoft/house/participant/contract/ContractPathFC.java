@@ -1,9 +1,11 @@
 package cc.coopersoft.house.participant.contract;
 
+import cc.coopersoft.house.participant.data.ContractContextMap;
 import com.dgsoft.house.SaleType;
 import org.apache.deltaspike.core.api.config.view.ViewConfig;
 
 import javax.enterprise.inject.Any;
+import java.io.OutputStream;
 
 /**
  * Created by cooper on 19/10/2017.
@@ -15,7 +17,12 @@ public class ContractPathFC implements ContractPath {
         return "";
     }
 
-    public Class<? extends ViewConfig> getEditPath(SaleType saleType) {
+
+    public Class<? extends ViewConfig> getEditPath(SaleType saleType, int ver) {
         return null;
+    }
+
+    public void pdf(ContractContextMap contractContextMap, OutputStream outputStream, int ver) {
+
     }
 }

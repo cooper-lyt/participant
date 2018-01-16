@@ -107,6 +107,7 @@ public class HouseSourceCreate {
                         houseSourceHome.setInstance(result.getHouseSource());
 
                         houseSourceHome.getInstance().setId(UUID.randomUUID().toString().replace("-",""));
+                        houseSourceHome.getInstance().setHouseSaleInfo(new HouseSaleInfo());
                         houseSourceHome.getInstance().getHouseSaleInfo().setId(houseSourceHome.getInstance().getId());
                         houseSourceHome.getInstance().getHouseSaleInfo().setShowAreaType(HouseSaleInfo.ShowAreaType.TO_SELL);
                         houseSourceHome.getInstance().setGroupId(attrUser.getLoginData().getCorpInfo().getId());
@@ -216,10 +217,10 @@ public class HouseSourceCreate {
 
                             contractContextMap.put("house_card_type", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getPowerCardType())));
                             contractContextMap.put("house_card_number",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getCredentialsNumber()));
-                            contractContextMap.put("house_design_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getHouseSaleInfo().getUseType())));
+                            contractContextMap.put("house_design_type",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getDesignUseType()));
 
                             contractContextMap.put("house_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getAddress()));
-                            contractContextMap.put("house_area",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getHouseArea()));
+                            contractContextMap.put("house_area",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea()));
                             contractContextMap.put("house_in_floor",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getInFloor())));
                             contractContextMap.put("house_floor_count",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getFloorCount())));
                             contractContextMap.put("house_elevator",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().isElevator()?"有":"无"));

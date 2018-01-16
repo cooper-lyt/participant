@@ -1,6 +1,7 @@
 package cc.coopersoft.house.participant.controller;
 
 import cc.coopersoft.common.EntityHome;
+import cc.coopersoft.common.EnumHelper;
 import cc.coopersoft.house.participant.AttrUser;
 import cc.coopersoft.house.participant.data.ContractContextMap;
 import cc.coopersoft.house.participant.data.ContractPowerPersonHelper;
@@ -9,6 +10,8 @@ import cc.coopersoft.house.sale.data.*;
 import com.dgsoft.common.system.PersonHelper;
 import com.dgsoft.house.PoolType;
 import org.apache.deltaspike.data.api.EntityRepository;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ConversationScoped;
@@ -42,6 +45,8 @@ public class ContractHome extends EntityHome<HouseContract,String> {
 
     @Inject
     private FacesContext facesContext;
+
+
 
     private int buyerCount;
 
@@ -96,16 +101,31 @@ public class ContractHome extends EntityHome<HouseContract,String> {
     }
 
     public ContractContextMap getContractContextMap() {
+        if (contractContextMap == null) {
+            try {
+                if (getInstance().getContext() == null || "".equals(getInstance().getContext().trim())) {
+                    contractContextMap = new ContractContextMap();
+                } else
+                    contractContextMap = new ContractContextMap(new JSONObject(getInstance().getContext()));
+            } catch (JSONException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
         return contractContextMap;
     }
 
-    public void setContractContextMap(ContractContextMap contractContextMap) {
-        this.contractContextMap = contractContextMap;
+
+    public void putContractContext(){
+        try {
+            getInstance().setContext(getContractContextMap().toJson().toString());
+        } catch (JSONException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @PostConstruct
     private void postConstruct(){
-        setId(facesContext.getExternalContext().getRequestParameterMap().get("houseSaleInfoId"));
+        setId(facesContext.getExternalContext().getRequestParameterMap().get("contractId"));
     }
 
     private List<PowerPerson> getPowerPersonList(PowerPerson.ContractPersonType type){
@@ -123,11 +143,20 @@ public class ContractHome extends EntityHome<HouseContract,String> {
         return result;
     }
 
+    public void save(){
+        if (!HouseContract.ContractStatus.PREPARE.equals(getInstance().getStatus()))
+            throw new IllegalArgumentException("contract status is error!");
+        putContractContext();
+        super.save();
+    }
+
     @Override
     protected void initInstance(){
         super.initInstance();
         proxyPersonHelper = new PersonHelper<SaleProxyPerson>(getInstance().getSaleProxyPerson());
         contractContextMap = null;
+
+
         buyerCount = 0;
         buyerEditList = new ArrayList<ContractPowerPersonHelper>();
         sellerEditList = new ArrayList<ContractPowerPersonHelper>();
@@ -177,6 +206,7 @@ public class ContractHome extends EntityHome<HouseContract,String> {
         HouseContract houseContractEntity = new HouseContract("C" +runParam.getStringParam(ZONE_CODE_PARAM_NAME) + numberPool.getNumber(CONTRACT_NUMBER_ID),
                 attrUser.getLoginData().getCorpInfo().getId(), new Date(),
                 HouseContract.ContractStatus.PREPARE, attrUser.getLoginData().getAttrEmp().getId(), attrUser.getLoginData().getAttrEmp().getName(), PoolType.SINGLE_OWNER);
+
 
         OldHouseContract oldHouseContract = new OldHouseContract(houseContractEntity);
         houseContractEntity.setOldHouseContract(oldHouseContract);

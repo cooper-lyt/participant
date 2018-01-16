@@ -4,11 +4,9 @@ import cc.coopersoft.comm.HttpJsonDataGet;
 import cc.coopersoft.common.EntityHome;
 import cc.coopersoft.house.participant.AttrUser;
 import cc.coopersoft.house.participant.Messages;
-import cc.coopersoft.house.participant.data.ContractContextMap;
 import cc.coopersoft.house.participant.data.repository.HouseSourceRepository;
 import cc.coopersoft.house.sale.data.*;
 import com.dgsoft.common.system.OwnerPersonHelper;
-import com.dgsoft.common.system.PersonHelper;
 import com.dgsoft.common.system.ProxyPersonEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,13 +49,61 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
     @Inject
     private JsfMessage<Messages> messages;
 
-    public HouseSourceCompany getHouseSourceCompany(){
+    private HouseSourceCompany houseSourceCompany;
+
+    private Boolean join;
+
+    private Boolean contracted;
+
+    private void initHouseSourceCompany(){
+        join = false;
+        houseSourceCompany = null;
         for(HouseSourceCompany hsc: getInstance().getHouseSourceCompanies()) {
             if (attrUser.getLoginData().getCorpInfo().getId().equals(hsc.getGroupId())) {
-                return hsc;
+                join = true;
+                houseSourceCompany = hsc;
+                return ;
             }
         }
-        return null;
+    }
+
+    public HouseSourceCompany getHouseSourceCompany(){
+        if (join == null){
+            initHouseSourceCompany();
+        }
+
+        return houseSourceCompany;
+    }
+
+    public boolean isJoin(){
+        if (join == null){
+            initHouseSourceCompany();
+        }
+        return join;
+    }
+
+    public boolean isAllowEdit(){
+        return isJoin() && HouseSource.HouseSourceStatus.PREPARE.equals(getInstance().getStatus());
+    }
+
+    public boolean isAllowShow(){
+        return isJoin() && HouseSource.HouseSourceStatus.CHECK_PASS.equals(getInstance().getStatus());
+    }
+
+
+    public boolean isAllowCancel(){
+        return isJoin() && HouseSource.HouseSourceStatus.SHOWING.equals(getInstance().getStatus());
+    }
+
+    public boolean isAllowDelete(){
+        return isJoin() && HouseSource.HouseSourceStatus.PREPARE.equals(getInstance().getStatus());
+    }
+
+    public boolean isContracted(){
+        if (contracted == null){
+            contracted = (getInstance().getHouseContract() != null) && attrUser.getLoginData().getCorpInfo().getId().equals(getInstance().getHouseContract().getGroupId());
+        }
+        return contracted;
     }
 
     public BigDecimal getLng(){
@@ -80,24 +126,36 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
         return runParam.getDecimalParam("map.lat");
     }
 
-    public String getPicJsonData(){
+    public List<HouseSalePic> getHouseSalePicList(){
         HouseSaleInfo hsi = getInstance().getHouseSaleInfo();
-        if (hsi != null){
-           List<HouseSalePic> pics = new ArrayList<HouseSalePic>(hsi.getHouseSalePics());
-           Collections.sort(pics, new Comparator<HouseSalePic>() {
-               public int compare(HouseSalePic o1, HouseSalePic o2) {
-                   return Integer.valueOf(o2.getPri()).compareTo(o1.getPri()) ;
-               }
-           });
-           ObjectMapper mapper = new ObjectMapper();
-            try {
-                return mapper.writeValueAsString(pics);
-            } catch (JsonProcessingException e) {
-                throw new IllegalArgumentException(e.getMessage(),e);
-            }
-
+        List<HouseSalePic> pics = new ArrayList<HouseSalePic>(hsi.getHouseSalePics());
+        if (hsi != null) {
+            Collections.sort(pics, new Comparator<HouseSalePic>() {
+                public int compare(HouseSalePic o1, HouseSalePic o2) {
+                    return Integer.valueOf(o2.getPri()).compareTo(o1.getPri());
+                }
+            });
+            return  pics;
 
         }
+        return null;
+    }
+
+    public String getPicJsonData(){
+
+
+           List<HouseSalePic> pics = getHouseSalePicList();
+           if (pics != null) {
+
+               ObjectMapper mapper = new ObjectMapper();
+               try {
+                   return mapper.writeValueAsString(pics);
+               } catch (JsonProcessingException e) {
+                   throw new IllegalArgumentException(e.getMessage(), e);
+               }
+
+           }
+
         return "[]";
     }
 
@@ -116,18 +174,18 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
     }
 
     public List<SaleArea> getSchoolAreaList(){
-        return saleAreaCache.getSaleAreas(SaleArea.SaleAreaType.SCHOOL,getInstance().getHouseSaleInfo().getDistrict(),false);
+        return saleAreaCache.getSaleAreas(SaleArea.SaleAreaType.SCHOOL,getInstance().getDistrict(),false);
     }
 
     public List<SaleArea> getSaleLocalAreaList(){
-        return saleAreaCache.getSaleAreas(SaleArea.SaleAreaType.SALE,getInstance().getHouseSaleInfo().getDistrict(),false);
+        return saleAreaCache.getSaleAreas(SaleArea.SaleAreaType.SALE,getInstance().getDistrict(),false);
     }
 
     public void calcPrice(){
         HouseSaleInfo hsi = getInstance().getHouseSaleInfo();
         if (hsi != null){
             if (hsi.getSumPrice() != null) {
-                hsi.setPrice(hsi.getSumPrice().divide(hsi.getHouseArea(), 2, BigDecimal.ROUND_HALF_EVEN));
+                hsi.setPrice(hsi.getSumPrice().divide(getInstance().getHouseArea(), 2, BigDecimal.ROUND_HALF_EVEN));
             }else{
                 hsi.setPrice(null);
             }

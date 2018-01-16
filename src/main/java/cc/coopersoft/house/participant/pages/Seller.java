@@ -48,5 +48,7 @@ public interface Seller {
         class ContractBuyerInfo implements Apply{}
 
         class ContractSellerInfo implements Apply{}
+
+        class ContractSubmit implements Apply{}
     }
 }

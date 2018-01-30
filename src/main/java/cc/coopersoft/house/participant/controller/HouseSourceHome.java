@@ -128,8 +128,9 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
 
     public List<HouseSalePic> getHouseSalePicList(){
         HouseSaleInfo hsi = getInstance().getHouseSaleInfo();
-        List<HouseSalePic> pics = new ArrayList<HouseSalePic>(hsi.getHouseSalePics());
         if (hsi != null) {
+            List<HouseSalePic> pics = new ArrayList<HouseSalePic>(hsi.getHouseSalePics());
+
             Collections.sort(pics, new Comparator<HouseSalePic>() {
                 public int compare(HouseSalePic o1, HouseSalePic o2) {
                     return Integer.valueOf(o2.getPri()).compareTo(o1.getPri());
@@ -165,6 +166,7 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
         logger.config("set HouseSaleInfo Home ID form param:" + getId());
     }
 
+
     protected HouseSource createInstance() {
         return new HouseSource();
     }
@@ -181,16 +183,7 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
         return saleAreaCache.getSaleAreas(SaleArea.SaleAreaType.SALE,getInstance().getDistrict(),false);
     }
 
-    public void calcPrice(){
-        HouseSaleInfo hsi = getInstance().getHouseSaleInfo();
-        if (hsi != null){
-            if (hsi.getSumPrice() != null) {
-                hsi.setPrice(hsi.getSumPrice().divide(getInstance().getHouseArea(), 2, BigDecimal.ROUND_HALF_EVEN));
-            }else{
-                hsi.setPrice(null);
-            }
-        }
-    }
+
 
     public void addLimitMessages(SellLimit limit){
         List<SellLimit> result = getSellLimitMessages();
@@ -236,7 +229,7 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
     @Override
     @Transactional
     public void save(){
-        calcPrice();
+
         getInstance().setUpdateTime(new Date());
         logger.config("" + getInstance().getProxyPerson());
         logger.config(getInstance().getId());

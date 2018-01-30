@@ -71,44 +71,6 @@
 
                 <b:messages globalOnly="false" styleClass="top-messages"/>
 
-
-                <b:inputText required="true" id="showToTimeInput" fieldId="showToTimeEdit" value="#{houseSourceHome.instance.houseSaleInfo.endTime}"
-                             styleClass="js-datepicker js-show-time-input" label="委托期限" renderLabel="true">
-                    <f:convertDateTime pattern="yyyy-mm-dd"/>
-                    <f:facet name="prepend">
-                        <h:selectOneMenu converter="omnifaces.GenericEnumConverter"
-                                         pt:data-width="170px" value="#{houseSourceHome.instance.houseSaleInfo.showAreaType}"
-                                         styleClass="selectpicker form-control select-theme js-show-type-input">
-                            <f:selectItems var="_type" value="#{houseShowAreaTypeValues}" itemValue="#{_type}"
-                                           itemLabel="#{enumHelper.getLabel(_type)}"/>
-                        </h:selectOneMenu>
-                    </f:facet>
-                </b:inputText>
-                <b:message/>
-
-                <b:inputText update="priceDisplay" process="priceInput" onchange="ajax:houseSourceHome.calcPrice()"
-                             placeholder="房屋总价"
-                             id="priceInput" label="挂牌价格" required="true" renderLabel="true" value="#{houseSourceHome.instance.houseSaleInfo.sumPrice}">
-                    <f:facet name="prepend">
-
-                        <h:outputText value="#{houseSourceHome.instance.houseSaleInfo.houseArea}">
-                            <f:convertNumber pattern="#0.00"/>
-                        </h:outputText> m<sup>2</sup>
-
-                    </f:facet>
-                    <f:facet name="append">
-
-                        <h:outputText id="priceDisplay" value="#{houseSourceHome.instance.houseSaleInfo.price}" >
-                            <f:convertNumber pattern="#0.00"/>
-                        </h:outputText> 元/m<sup>2</sup>
-
-                    </f:facet>
-                </b:inputText>
-                <b:message/>
-
-
-                <hr/>
-
                 <div class="form-checkbox unchecked">
                     <label>
                         <h:selectBooleanCheckbox value="#{houseSourceHome.instance.allowJoin}"/>
@@ -118,6 +80,18 @@
                         如果勾选【放弃】，则房屋在经纪服务期限内即使不是由本经济机构出售，委托人仍可能须向乙方支付经纪服务费用。因此，当勾选【放弃】时，委托人应谨慎考虑，并关注合同第八条的违约责任
                     </span>
                 </div>
+
+                <hr/>
+                <b:inputText value="#{houseSourceHome.houseSourceCompany.title}" label="房源标题" placeholder="内部标识，不会显示在挂牌信息中" maxlength="100" required="true"/>
+                <b:message/>
+
+                <b:inputTextarea value="#{houseSourceHome.houseSourceCompany.memo}" label="房源备注" placeholder="内部标识，不会显示在挂牌信息中" />
+                <b:message/>
+
+
+
+
+
 
                 <label>委托人</label>
                 <p:outputPanel layout="block" styleClass="input-group" >
@@ -218,7 +192,12 @@
 
                 <hr/>
 
-                <b:commandButton  action="#{houseSourceCreate.toShowInfo}" look="success" value="下一步">
+                <b:commandButton  action="#{houseSourceCreate.toShowInfo}" look="success" value="挂牌">
+                    <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
+
+                </b:commandButton>
+
+                <b:commandButton  action="#{houseSourceCreate.toShowInfo}" look="success" value="签约">
                     <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
 
                 </b:commandButton>
@@ -229,8 +208,6 @@
         </b:row>
 
     </h:form>
-
-
 
     <p:outputPanel autoUpdate="true">
         <h:outputScript>
@@ -250,35 +227,6 @@
 
     </p:outputPanel>
 
-    <h:outputScript>
-        $(function(){
 
-
-
-        if ($('#houes-valid\\:showToTimeInput select').val() == 'TO_END_TIME'){
-
-        $('.js-show-time-input').prop( "disabled", false );
-        }else{
-        $('.js-show-time-input').val('');
-        $('.js-show-time-input').prop( "disabled", true );
-        }
-
-
-
-
-        $('#houes-valid\\:showToTimeInput').find('select').change(function () {
-        if ($(this).val() == 'TO_END_TIME'){
-
-        $('#showToTimeEdit').prop( "disabled", false );
-        }else{
-        $('#showToTimeEdit').val('');
-        $('#showToTimeEdit').prop( "disabled", true );
-        }
-        });
-
-
-        });
-
-    </h:outputScript>
 
 </ui:composition>

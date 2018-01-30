@@ -73,30 +73,75 @@
 
 
                 <div class="Subhead mt-3 mb-5">
-                    <h2 class="Subhead-heading">#{houseSourceHome.instance.houseSaleInfo.address}</h2>
+                    <h2 class="Subhead-heading">#{houseSaleInfoEdit.houseSaleInfo.address}</h2>
                     <p class="Subhead-description">
                         请如实填写房屋销售挂牌信息
                     </p>
                 </div>
 
+                <h:inputHidden id="houseSourceId" value="#{houseSourceHome.id}"/>
 
-                <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.title}" maxlength="64" label="挂牌标题" placeholder="挂牌显示的标题" required="true"/>
+
+                <b:inputText value="#{houseSaleInfoEdit.houseSaleInfo.title}" maxlength="64" label="挂牌标题" placeholder="挂牌显示的标题" required="true"/>
+                <b:message/>
+
+                <b:inputText tags="true" value="#{houseSaleInfoEdit.houseSaleInfo.tags}" maxlength="512" placeholder="房源标签" style="width:100%"/>
+                <b:message/>
+
+
+
+                <b:inputText required="true" id="showToTimeInput" fieldId="showToTimeEdit" value="#{houseSaleInfoEdit.houseSaleInfo.endTime}"
+                             styleClass="js-datepicker js-show-time-input" label="委托期限" renderLabel="true">
+                    <f:convertDateTime pattern="yyyy-mm-dd"/>
+                    <f:facet name="prepend">
+                        <h:selectOneMenu converter="omnifaces.GenericEnumConverter"
+                                         pt:data-width="170px" value="#{houseSaleInfoEdit.houseSaleInfo.showAreaType}"
+                                         styleClass="selectpicker form-control select-theme js-show-type-input">
+                            <f:selectItems var="_type" value="#{houseShowAreaTypeValues}" itemValue="#{_type}"
+                                           itemLabel="#{enumHelper.getLabel(_type)}"/>
+                        </h:selectOneMenu>
+                    </f:facet>
+                </b:inputText>
+                <b:message/>
+
+
+
+                <b:inputText update="priceDisplay" process="houseSourceId,priceInput" onchange="ajax:houseSaleInfoEdit.calcPrice()"
+                             placeholder="房屋总价"
+                             id="priceInput" label="挂牌价格" required="true" renderLabel="true" value="#{houseSaleInfoEdit.houseSaleInfo.sumPrice}">
+                    <f:facet name="prepend">
+
+                        <h:outputText value="#{houseSourceHome.instance.houseArea}">
+                            <f:convertNumber pattern="#0.00"/>
+                        </h:outputText> m<sup>2</sup>
+
+                    </f:facet>
+                    <f:facet name="append">
+
+
+                        <h:outputText id="priceDisplay" value="#{houseSaleInfoEdit.houseSaleInfo.price}" >
+                            <f:convertNumber pattern="#0.00"/>
+                        </h:outputText> 元/m<sup>2</sup>
+
+                    </f:facet>
+                </b:inputText>
+                <b:message/>
+
+                <b:inputTextarea required="true" value="#{houseSaleInfoEdit.houseSaleInfo.address}" rows="2" maxlength="200" label="位置"/>
+                <b:message/>
+
+
+
+                <b:inputTextarea value="#{houseSaleInfoEdit.houseSaleInfo.description}" maxlength="512" label="描述" />
+                <b:message/>
+
+                <b:inputTextarea value="#{houseSaleInfoEdit.houseSaleInfo.environment}" maxlength="512" label="环境"/>
                 <b:message/>
 
 
 
 
-
-                <b:inputText tags="true" value="#{houseSourceHome.instance.houseSaleInfo.tags}" maxlength="512" placeholder="房源标签" style="width:100%"/>
-                <b:message/>
-
-                <b:inputTextarea value="#{houseSourceHome.instance.houseSaleInfo.description}" maxlength="512" label="描述" />
-                <b:message/>
-
-                <b:inputTextarea value="#{houseSourceHome.instance.houseSaleInfo.environment}" maxlength="512" label="环境"/>
-                <b:message/>
-
-                <b:selectMultiMenu nonSelectedText="请选择房屋朝向" numberDisplayed="9" value="#{houseSourceHome.instance.houseSaleInfo.direction}" label="朝向" id="typeID" required="true">
+                <b:selectMultiMenu nonSelectedText="请选择房屋朝向" numberDisplayed="9" value="#{houseSaleInfoEdit.houseSaleInfo.direction}" label="朝向" id="typeID" required="true">
                     <f:selectItem itemLabel="东" itemValue="东"/>
                     <f:selectItem itemLabel="东南" itemValue="东南"/>
                     <f:selectItem itemLabel="南" itemValue="南"/>
@@ -113,10 +158,10 @@
                 <div class="input-group" style="margin-bottom: 15px">
 
                     <span class="input-group-addon">总层数<span class="required">*</span></span>
-                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.floorCount}"
+                    <b:inputText value="#{houseSaleInfoEdit.houseSaleInfo.floorCount}"
                                  required="true" renderLabel="false" autocomplete="false" label="总层数" />
                     <span class="input-group-addon">所在层<span class="required">*</span></span>
-                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.inFloor}"
+                    <b:inputText value="#{houseSaleInfoEdit.houseSaleInfo.inFloor}"
                                  required="true" renderLabel="false" autocomplete="false" label="所在层" />
 
                     <p:outputPanel layout="block" styleClass="input-group-btn">
@@ -124,7 +169,7 @@
                         <h:selectOneMenu label="电梯"
                                          styleClass="selectpicker form-control select-theme"
                                          pt:data-width="100px"
-                                         value="#{houseSourceHome.instance.houseSaleInfo.elevator}" required="true">
+                                         value="#{houseSaleInfoEdit.houseSaleInfo.elevator}" required="true">
 
                             <f:selectItem itemValue="#{true}" itemLabel="有电梯"/>
                             <f:selectItem itemValue="#{false}" itemLabel="无电梯"/>
@@ -142,19 +187,19 @@
 
 
 
-                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.roomCount}"
+                    <b:inputText value="#{houseSaleInfoEdit.houseSaleInfo.roomCount}"
                                  required="true" renderLabel="false" autocomplete="false" label="室" />
                     <span class="input-group-addon">室<span class="required">*</span></span>
 
 
-                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.livingRoom}" renderLabel="false"
+                    <b:inputText value="#{houseSaleInfoEdit.houseSaleInfo.livingRoom}" renderLabel="false"
                                  required="true" label="厅" autocomplete="false"/>
                     <span class="input-group-addon">厅<span class="required">*</span></span>
 
-                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.kitchenCount}" renderLabel="false"
+                    <b:inputText value="#{houseSaleInfoEdit.houseSaleInfo.kitchenCount}" renderLabel="false"
                                  required="true" label="厨" autocomplete="false"/>
                     <span class="input-group-addon">厨<span class="required">*</span></span>
-                    <b:inputText value="#{houseSourceHome.instance.houseSaleInfo.toiletCount}" renderLabel="false"
+                    <b:inputText value="#{houseSaleInfoEdit.houseSaleInfo.toiletCount}" renderLabel="false"
                                  required="true" label="卫" autocomplete="false"/>
 
                     <span class="input-group-addon">卫<span class="required">*</span></span>
@@ -168,12 +213,12 @@
                     </label>
                     <div class="input-group">
                         <span class="input-group-addon">销售区域<span class="required">*</span></span>
-                        <h:selectOneMenu styleClass="selectpicker from-control edit-select" value="#{houseSourceHome.instance.houseSaleInfo.localArea}" label="销售区域" >
+                        <h:selectOneMenu styleClass="selectpicker from-control edit-select" value="#{houseSaleInfoEdit.houseSaleInfo.localArea}" label="销售区域" >
                             <f:selectItems value="#{houseSourceHome.saleLocalAreaList}" var="_area" itemLabel="#{_area.name}" itemValue="#{_area.id}"/>
                             <f:selectItem noSelectionOption="true" itemLabel="-请选择销售区域-"/>
                         </h:selectOneMenu>
                         <span class="input-group-addon">学区<span class="required">*</span></span>
-                        <h:selectOneMenu styleClass="selectpicker from-control edit-select" value="#{houseSourceHome.instance.houseSaleInfo.schoolArea}" label="学区" >
+                        <h:selectOneMenu styleClass="selectpicker from-control edit-select" value="#{houseSaleInfoEdit.houseSaleInfo.schoolArea}" label="学区" >
                             <f:selectItems value="#{houseSourceHome.schoolAreaList}" var="_area" itemLabel="#{_area.name}" itemValue="#{_area.id}"/>
                             <f:selectItem noSelectionOption="true" itemLabel="-请选择学区-"/>
                         </h:selectOneMenu>
@@ -183,22 +228,10 @@
 
                 <hr/>
 
-                <b:inputText value="#{houseSourceHome.houseSourceCompany.title}" label="房源标题" placeholder="内部标识，不会显示在挂牌信息中" maxlength="100" required="true"/>
-                <b:message/>
-
-                <b:inputTextarea value="#{houseSourceHome.houseSourceCompany.memo}" label="房源备注" placeholder="内部标识，不会显示在挂牌信息中" />
-                <b:message/>
-
-
-                <hr/>
-
-                <b:commandButton rendered="#{not houseSourceHome.idDefined}" action="#{houseSourceCreate.createHouseSource}" look="success" value="建立房源">
-                    <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
-                </b:commandButton>
 
 
 
-                <b:commandButton rendered="#{houseSourceHome.idDefined}" action="#{houseSaleInfoEdit.saveHouseSource}" look="success" value="保存房源">
+                <b:commandButton action="#{houseSaleInfoEdit.saveHouseSource}" look="success" value="保存房源">
 
                     <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
                 </b:commandButton>
@@ -209,7 +242,54 @@
         </b:row>
     </h:form>
 
+    <p:outputPanel autoUpdate="true">
+        <h:outputScript>
+            $('.selectpicker').selectpicker();
+            $('.js-datepicker').datetimepicker({
+            language: "zh-CN",
+            format: 'yyyy-mm-dd',
+            weekStart: 1,
+            todayBtn:  1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0
+            });
+        </h:outputScript>
 
+    </p:outputPanel>
+
+    <h:outputScript>
+        $(function(){
+
+
+
+        if ($('#houes-valid\\:showToTimeInput select').val() == 'TO_END_TIME'){
+
+        $('.js-show-time-input').prop( "disabled", false );
+        }else{
+        $('.js-show-time-input').val('');
+        $('.js-show-time-input').prop( "disabled", true );
+        }
+
+
+
+
+        $('#houes-valid\\:showToTimeInput').find('select').change(function () {
+        if ($(this).val() == 'TO_END_TIME'){
+
+        $('#showToTimeEdit').prop( "disabled", false );
+        }else{
+        $('#showToTimeEdit').val('');
+        $('#showToTimeEdit').prop( "disabled", true );
+        }
+        });
+
+
+        });
+
+    </h:outputScript>
 
 
 </ui:composition>

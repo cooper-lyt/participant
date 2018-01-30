@@ -188,6 +188,27 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
         throw new IllegalArgumentException("unknow valid status");
     }
 
+    private HouseSaleInfo houseSaleInfo;
+
+    public HouseSaleInfo getHouseSaleInfo() {
+        if (houseSourceHome.getInstance().getHouseSaleInfo() != null){
+            return houseSourceHome.getInstance().getHouseSaleInfo();
+        }else if (houseSaleInfo == null){
+            houseSaleInfo = new HouseSaleInfo();
+            houseSaleInfo.setShowAreaType(HouseSaleInfo.ShowAreaType.TO_SELL);
+        }
+        return houseSaleInfo;
+    }
+
+    public void calcPrice(){
+            if (getHouseSaleInfo().getSumPrice() != null) {
+                getHouseSaleInfo().setPrice(getHouseSaleInfo().getSumPrice().divide(houseSourceHome.getInstance().getHouseArea(), 2, BigDecimal.ROUND_HALF_EVEN));
+            }else{
+                getHouseSaleInfo().setPrice(null);
+            }
+
+    }
+
     @Seller
     @Transactional
     public Class<? extends ViewConfig> saveHouseSource(){
@@ -196,10 +217,10 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
 
             try {
                 if (validSource()){
-
-
-                    getContractContextMap().put("house_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getAddress()));
-                    getContractContextMap().put("house_area",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea()));
+                    if (houseSourceHome.getInstance().getHouseSaleInfo() == null){
+                        houseSaleInfo.setId(houseSourceHome.getInstance().getId());
+                        houseSourceHome.getInstance().setHouseSaleInfo(houseSaleInfo);
+                    }
                     getContractContextMap().put("house_in_floor",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getInFloor())));
                     getContractContextMap().put("house_floor_count",new ContractContextMap.ContarctContextItem(String.valueOf(houseSourceHome.getInstance().getHouseSaleInfo().getFloorCount())));
                     getContractContextMap().put("house_elevator",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().isElevator()?"有":"无"));
@@ -211,8 +232,11 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
                     getContractContextMap().put("house_price",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getSumPrice()));
 
                     getContractContextMap().put("time_limit_type",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getShowAreaType().toString()));
-                    getContractContextMap().put("time_limit_end",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getEndTime()));
 
+                    if(HouseSaleInfo.ShowAreaType.TO_END_TIME.equals(houseSourceHome.getInstance().getHouseSaleInfo().getShowAreaType())){
+
+                        getContractContextMap().put("time_limit_end",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseSaleInfo().getEndTime()));
+                    }
 
                     try {
                         houseSourceHome.getHouseSourceCompany().setContext(getContractContextMap().toJson().toString());
@@ -220,6 +244,8 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
                         throw new IllegalArgumentException(e.getMessage(),e);
                     }
 
+
+                    calcPrice();
                     houseSourceHome.save();
                     return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSalePicUpload.class;
                 }else{
@@ -278,17 +304,7 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
     @Transactional
     public Class<? extends ViewConfig> commitHouseSource(){
 
-        try {
-            if (!validSource()){
-                return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSalePicUpload.class;
-            }
-        } catch (HttpApiServerException e) {
-            logger.log(Level.WARNING,e.getMessage(),e);
-            messages.addError().serverFail();
-            return null;
-        }
 
-        //TODO check
         ObjectMapper mapper = new ObjectMapper();
         try {
             Map<String,String> params = new HashMap<String, String>(1);
@@ -308,7 +324,7 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
                     houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.CHECK);
                     houseSourceHome.getInstance().setMessages(null);
                     houseSourceHome.save();
-                    return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSourceComited.class;
+                    return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSourceCommitted.class;
                 case FAIL:
 
                     facesContext.addMessage(null,

@@ -59,7 +59,7 @@
 
                 </b:buttonGroup>
                 </h:form>
-                <h2><h:outputText value="#{houseSourceHome.instance.houseSaleInfo.title}"/>/#{houseSourceHome.instance.sourceId}</h2>
+                <h2><h:outputText rendered="#{not empty houseSourceHome.instance.houseSaleInfo}" value="#{houseSourceHome.instance.houseSaleInfo.title}/"/>#{houseSourceHome.instance.sourceId}</h2>
                 <p>
                     <h:outputText value="#{houseSourceHome.instance.address}"/>
                 </p>
@@ -70,6 +70,10 @@
                     签约时间:<h:outputText value="#{houseSourceHome.instance.checkTime}"><f:convertDateTime locale="#{i18n.locale}" timeZone="#{i18n.timeZone}" pattern="#{messages.datetime_pattern}"/></h:outputText>
                 </p>
             </b:panel>
+        </b:column>
+
+        <b:column>
+            <b:messages globalOnly="true" styleClass="top-messages"/>
         </b:column>
 
         <b:column rendered="#{houseSourceHome.join and (houseSourceHome.instance.status.name() eq 'CHECK_FAIL')}">

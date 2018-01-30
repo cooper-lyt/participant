@@ -1,23 +1,39 @@
 package cc.coopersoft.house.participant.controller;
 
 
+import cc.coopersoft.comm.HttpJsonDataGet;
+import cc.coopersoft.comm.exception.HttpApiServerException;
 import cc.coopersoft.common.EnumHelper;
+import cc.coopersoft.house.SubmitType;
+import cc.coopersoft.house.participant.AttrUser;
+import cc.coopersoft.house.participant.Messages;
 import cc.coopersoft.house.participant.data.ContractContextMap;
 import cc.coopersoft.house.participant.pages.Seller;
 import cc.coopersoft.house.sale.data.HouseContract;
 import cc.coopersoft.house.sale.data.PowerPerson;
+import cc.coopersoft.house.sale.data.SubmitResult;
+import com.dgsoft.developersale.wsinterface.DESUtil;
 import com.dgsoft.house.OwnerShareCalcType;
 import com.dgsoft.house.SaleType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.deltaspike.core.api.config.view.ViewConfig;
+import org.apache.deltaspike.jsf.api.message.JsfMessage;
 
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Default;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by cooper on 27/09/2017.
@@ -29,6 +45,13 @@ public class ContractCreate implements java.io.Serializable{
     @Inject
     @Default
     private Conversation conversation;
+
+    @Inject
+    protected Logger logger;
+
+
+    @Inject
+    private JsfMessage<Messages> messages;
 
     @Inject
     private HouseSourceHome houseSourceHome;
@@ -44,6 +67,9 @@ public class ContractCreate implements java.io.Serializable{
 
     @Inject
     private LocalContractConfig localContractConfig;
+
+    @Inject
+    private AttrUser attrUser;
 
     @Inject
     private FacesContext facesContext;
@@ -66,10 +92,51 @@ public class ContractCreate implements java.io.Serializable{
     }
 
     public Class<? extends ViewConfig> submitContract(){
+        //TODO file
+
         contractHome.save();
 
-        //TODO submit;
-        return Seller.Apply.ContractSubmit.class;
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String,String> params = new HashMap<String, String>(1);
+        try {
+            String data = mapper.writeValueAsString(contractHome.getInstance());
+            //logger.config(data);
+            params.put("data", DESUtil.encrypt(data, attrUser.getLoginData().getToken()));
+            SubmitResult result = HttpJsonDataGet.postData(runParam.getStringParam("server_address") + "interfaces/extends/contract/" + SubmitType.SALE_CONTRACT.name() + "/" + attrUser.getLoginData().getKey(),params, SubmitResult.class);
+
+
+
+            switch (result.getStatus()){
+
+                case SUCCESS:
+                    contractHome.getInstance().setStatus(HouseContract.ContractStatus.SUBMIT);
+                    contractHome.getInstance().setCommitTime(new Date());
+
+
+                    return Seller.Apply.ContractCommitted.class;
+                case FAIL:
+
+                    facesContext.addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, result.getMessages(), result.getMessages()));
+
+                    break;
+                case ERROR:
+                    facesContext.addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, result.getMessages(), result.getMessages()));
+
+                    break;
+            }
+
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        } catch (HttpApiServerException e) {
+            logger.log(Level.WARNING,e.getMessage(),e);
+            messages.addError().serverFail();
+            return null;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+        return null;
     }
 
     public void printPdf(){

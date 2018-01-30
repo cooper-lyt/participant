@@ -41,7 +41,7 @@ public interface Seller {
 
         class HouseSourceSubmit implements Apply{}
 
-        class HouseSourceComited implements Apply{}
+        class HouseSourceCommitted implements Apply{}
 
         class ContractBaseInfo implements Apply{}
 
@@ -49,6 +49,6 @@ public interface Seller {
 
         class ContractSellerInfo implements Apply{}
 
-        class ContractSubmit implements Apply{}
+        class ContractCommitted implements Apply{}
     }
 }

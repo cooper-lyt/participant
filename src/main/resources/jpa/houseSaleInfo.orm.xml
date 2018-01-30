@@ -105,7 +105,7 @@
             <basic name="address">
                 <column name="ADDRESS" nullable="false" length="200"/>
             </basic>
-            
+
             <basic name="showAreaType" optional="false">
                 <column name="TIME_AREA_TYPE" nullable="false"/>
                 <enumerated>STRING</enumerated>

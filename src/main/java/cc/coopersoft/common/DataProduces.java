@@ -3,6 +3,7 @@ package cc.coopersoft.common;
 import cc.coopersoft.house.HousePowerCard;
 import cc.coopersoft.house.ProxyType;
 import cc.coopersoft.house.sale.data.HouseSaleInfo;
+import cc.coopersoft.house.sale.data.HouseSource;
 import com.dgsoft.common.system.PersonEntity;
 import com.dgsoft.common.system.PowerPersonEntity;
 import com.dgsoft.common.system.Sex;

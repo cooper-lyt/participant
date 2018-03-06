@@ -53,7 +53,7 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
 
     private Boolean join;
 
-    private Boolean contracted;
+    //private Boolean contracted;
 
     private void initHouseSourceCompany(){
         join = false;
@@ -83,28 +83,26 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
     }
 
     public boolean isAllowEdit(){
-        return isJoin() && HouseSource.HouseSourceStatus.PREPARE.equals(getInstance().getStatus());
+        return isAllowContract() && HouseSource.HouseSourceStatus.PREPARE.equals(getInstance().getStatus())
+                && getInstance().getGroupId().equals(attrUser.getLoginData().getCorpInfo().getId());
     }
 
-    public boolean isAllowShow(){
-        return isJoin() && HouseSource.HouseSourceStatus.CHECK_PASS.equals(getInstance().getStatus());
-    }
-
-
-    public boolean isAllowCancel(){
-        return isJoin() && HouseSource.HouseSourceStatus.SHOWING.equals(getInstance().getStatus());
-    }
 
     public boolean isAllowDelete(){
-        return isJoin() && HouseSource.HouseSourceStatus.PREPARE.equals(getInstance().getStatus());
+        return isAllowContract() && HouseSource.HouseSourceStatus.PREPARE.equals(getInstance().getStatus());
     }
 
-    public boolean isContracted(){
-        if (contracted == null){
-            contracted = (getInstance().getHouseContract() != null) && attrUser.getLoginData().getCorpInfo().getId().equals(getInstance().getHouseContract().getGroupId());
-        }
-        return contracted;
+    public boolean isAllowContract(){
+        return isJoin() &&
+                ((getHouseSourceCompany().getHouseContract() == null)
+                || HouseContract.ContractStatus.PREPARE.equals(getHouseSourceCompany().getHouseContract().getStatus()));
     }
+
+
+
+
+
+
 
     public BigDecimal getLng(){
         if (getInstance().getHouseSaleInfo() != null) {

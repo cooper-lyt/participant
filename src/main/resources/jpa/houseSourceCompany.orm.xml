@@ -34,6 +34,11 @@
                 <join-column name="HOUSE_SOURCE" nullable="false"/>
             </many-to-one>
 
+            <one-to-one fetch="LAZY" orphan-removal="true" name="houseContract">
+                <join-column name="SALE_CONTRACT" nullable="true" />
+                <cascade> <cascade-all/></cascade>
+            </one-to-one>
+
         </attributes>
 
     </entity>

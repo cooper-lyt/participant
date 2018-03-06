@@ -80,11 +80,6 @@
             </basic>
 
 
-
-            <basic name="searchKey">
-                <column name="SEARCH_KEY" length="1024"/>
-            </basic>
-
             <basic name="businessId">
                 <column name="BUSINESS_ID" length="32"/>
             </basic>
@@ -143,6 +138,10 @@
                 <column name="DISTRICT" nullable="false" length="32"/>
             </basic>
 
+            <basic name="address">
+                <column name="ADDRESS" nullable="true" length="200"/>
+            </basic>
+
 
 
             <basic name="powerCardType" optional="false">
@@ -169,10 +168,7 @@
                 <cascade> <cascade-all/></cascade>
             </one-to-one>
 
-            <one-to-one fetch="LAZY" orphan-removal="true" name="houseContract">
-                <join-column name="CONTRACT" nullable="true" />
-                <cascade> <cascade-all/></cascade>
-            </one-to-one>
+
 
         </attributes>
     </entity>

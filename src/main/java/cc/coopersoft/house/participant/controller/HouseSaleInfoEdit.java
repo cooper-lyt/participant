@@ -143,7 +143,7 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
     }
 
 
-    private boolean validSource() throws HttpApiServerException {
+    private boolean validSource()  {
         if (!HouseSource.HouseSourceStatus.PREPARE.equals(houseSourceHome.getInstance().getStatus()) ){
             throw new IllegalArgumentException("can't edit status");
         }
@@ -160,30 +160,39 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
             return false;
         }
 
-        HouseValidResult result = houseSourceService.validHouseSource(houseSourceHome.getInstance());
 
-        switch (result.getValidStatus()){
+        try {
+            HouseValidResult result = houseSourceService.validHouseSource(houseSourceHome.getInstance());
+            switch (result.getValidStatus()){
 
-            case SUCCESS:
-                if (result.getLimits().isEmpty()){
-                    return true;
-                }else{
+                case SUCCESS:
+                    if (result.getLimits().isEmpty()){
+                        return true;
+                    }else{
+                        houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.PREPARE);
+                        houseSourceHome.getInstance().setMessageType(HouseSource.MessageType.CANCEL);
+                        houseSourceHome.addLimitMessages(result.getLimits());
+                        houseSourceHome.save();
+                        return false;
+                    }
+                case HOUSE_NOT_FOUND:
+                case OWNER_FAIL:
                     houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.PREPARE);
                     houseSourceHome.getInstance().setMessageType(HouseSource.MessageType.CANCEL);
-                    houseSourceHome.addLimitMessages(result.getLimits());
+                    houseSourceHome.addLimitMessages(new SellLimit(SaleLimitType.OWNER_CHANGE,"",new Date()));
                     houseSourceHome.save();
                     return false;
-                }
-            case HOUSE_NOT_FOUND:
-            case OWNER_FAIL:
-                houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.PREPARE);
-                houseSourceHome.getInstance().setMessageType(HouseSource.MessageType.CANCEL);
-                houseSourceHome.addLimitMessages(new SellLimit(SaleLimitType.OWNER_CHANGE,"",new Date()));
-                houseSourceHome.save();
-                return false;
-            case ERROR:
-                throw new HttpApiServerException(505);
+                case ERROR:
+                    throw new HttpApiServerException(505);
+            }
+
+        } catch (HttpApiServerException e) {
+            logger.log(Level.WARNING,e.getMessage(),e);
+            messages.addError().serverFail();
+            throw new IllegalArgumentException(e.getMessage(),e);
         }
+
+
 
         throw new IllegalArgumentException("unknow valid status");
     }
@@ -215,7 +224,7 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
         //houseSaleInfo = houseSellRepository.save(houseSaleInfo);
 
 
-            try {
+
                 if (validSource()){
                     if (houseSourceHome.getInstance().getHouseSaleInfo() == null){
                         houseSaleInfo.setId(houseSourceHome.getInstance().getId());
@@ -251,11 +260,7 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
                 }else{
                     return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
                 }
-            } catch (HttpApiServerException e) {
-                logger.log(Level.WARNING,e.getMessage(),e);
-                messages.addError().serverFail();
-                return null;
-            }
+
 
     }
 
@@ -265,18 +270,27 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
     }
 
     @Seller
+    public void updateContext(){
+        HouseSourceCompany hsc = houseSourceHome.getHouseSourceCompany();
+
+        try {
+            hsc.setContext(getContractContextMap().toJson().toString());
+            houseSourceHome.save();
+        } catch (JSONException e) {
+            throw new IllegalArgumentException();
+        }
+
+    }
+
+    @Seller
     @Transactional
     public Class<? extends ViewConfig> savePics(){
         logger.config("order str is:" + orderStr);
-        try {
-            if (!validSource()){
-                return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSalePicUpload.class;
-            }
-        } catch (HttpApiServerException e) {
-            logger.log(Level.WARNING,e.getMessage(),e);
-            messages.addError().serverFail();
-            return null;
+
+        if (!validSource()){
+            return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
         }
+
 
 
         if (orderStr != null && !orderStr.trim().equals("")){
@@ -297,60 +311,68 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
             }
             houseSourceHome.save();
         }
-        return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSourceSubmit.class;
+        return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSourceContract.class;
     }
 
     @Seller
     @Transactional
     public Class<? extends ViewConfig> commitHouseSource(){
 
-
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            Map<String,String> params = new HashMap<String, String>(1);
-
-
-            String data = mapper.writeValueAsString(houseSourceHome.getInstance());
-            logger.config(data);
-            params.put("data", DESUtil.encrypt(data, attrUser.getLoginData().getToken()));
-            SubmitResult result = HttpJsonDataGet.postData(runParam.getStringParam("server_address") + "interfaces/extends/contract/HOUSE_SOURCE/" + attrUser.getLoginData().getKey(),params, SubmitResult.class);
+        if (validSource()){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                Map<String,String> params = new HashMap<String, String>(1);
 
 
-            switch (result.getStatus()){
+                String data = mapper.writeValueAsString(houseSourceHome.getInstance());
+                logger.config(data);
+                params.put("data", DESUtil.encrypt(data, attrUser.getLoginData().getToken()));
+                SubmitResult result = HttpJsonDataGet.postData(runParam.getStringParam("server_address") + "interfaces/extends/contract/HOUSE_SOURCE/" + attrUser.getLoginData().getKey(),params, SubmitResult.class);
 
-                case SUCCESS:
-                    houseSourceHome.getInstance().setBusinessId(result.getBusinessId());
-                    houseSourceHome.getInstance().setCheckTime(new Date());
-                    houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.CHECK);
-                    houseSourceHome.getInstance().setMessages(null);
-                    houseSourceHome.save();
-                    return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSourceCommitted.class;
-                case FAIL:
 
-                    facesContext.addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, result.getMessages(), result.getMessages()));
+                switch (result.getStatus()){
 
-                    return null;
-                case ERROR:
-                    facesContext.addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, result.getMessages(), result.getMessages()));
+                    case SUCCESS:
+                        houseSourceHome.getInstance().setBusinessId(result.getBusinessId());
+                        houseSourceHome.getInstance().setCheckTime(new Date());
+                        houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.CHECK);
+                        houseSourceHome.getInstance().setMessages(null);
+                        houseSourceHome.save();
+                        messages.addInfo().contractCommited();
+                        return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
+                    case FAIL:
 
-                    return null;
+                        facesContext.addMessage(null,
+                                new FacesMessage(FacesMessage.SEVERITY_ERROR, result.getMessages(), result.getMessages()));
+
+                        return null;
+                    case ERROR:
+                        facesContext.addMessage(null,
+                                new FacesMessage(FacesMessage.SEVERITY_ERROR, result.getMessages(), result.getMessages()));
+
+                        return null;
+                }
+
+
+
+            } catch (JsonProcessingException e) {
+                throw new IllegalArgumentException(e.getMessage(), e);
+
+            } catch (HttpApiServerException e) {
+                logger.log(Level.WARNING,e.getMessage(),e);
+                messages.addError().serverFail();
+                return null;
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e.getMessage(), e);
             }
 
+            throw new IllegalArgumentException("unknow result status");
 
+        }else{
 
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
+            return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
 
-        } catch (HttpApiServerException e) {
-            logger.log(Level.WARNING,e.getMessage(),e);
-            messages.addError().serverFail();
-            return null;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
         }
 
-        throw new IllegalArgumentException("unknow result status");
     }
 }

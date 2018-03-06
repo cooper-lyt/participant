@@ -27,8 +27,16 @@ public interface Messages{
     @MessageTemplate("{house_source_exists}")
     String houseSourceExists();
 
+    @MessageTemplate("{house_source_only_exists}")
+    String houseSourceOnlyExists();
+
     @MessageTemplate("{house_exists_to_edit}")
     String houseSourceToEdit();
 
+    @MessageTemplate("{contract_commited}")
+    String contractCommited();
+
+    @MessageTemplate("{house_source_committed}")
+    String houseSourceCommitted();
 
 }

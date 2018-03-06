@@ -43,8 +43,6 @@ public class ParticipantAuthenticator extends BaseAuthenticator{
     @Inject
     private AttrUser attrUser;
 
-    @Inject
-    private HouseSourceService houseSourceService;
 
     public void authenticate() {
 
@@ -61,8 +59,6 @@ public class ParticipantAuthenticator extends BaseAuthenticator{
                 }
                 attrUser.setKeyId(credentials.getUserId());
                 if (attrUser.getLoginData().getCorpInfo() instanceof Seller){
-                    //TODO 异步
-                    houseSourceService.updateHouseSourceByCorp(attrUser.getLoginData().getCorpInfo().getId());
                     BasicModel.grantRole(relationshipManager,user,BasicModel.getRole(identityManager,"seller"));
                 }else if (attrUser.getLoginData().getCorpInfo() instanceof Developer){
                     BasicModel.grantRole(relationshipManager,user,BasicModel.getRole(identityManager,"developer"));

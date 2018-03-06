@@ -50,22 +50,6 @@
                             <strong class="step">委托:</strong>
                             委托信息
                         </li>
-                        <li>
-                            <b:iconAwesome name="bookmark" size="2x"/>
-                            <strong class="step">描述:</strong>
-                            房源描述
-                        </li>
-                        <li>
-                            <b:iconAwesome name="photo" size="2x"/>
-                            <strong class="step">图片:</strong>
-                            图片上传
-                        </li>
-
-                        <li>
-                            <b:iconAwesome name="university" size="2x"/>
-                            <strong class="step">提交:</strong>
-                            提交房源
-                        </li>
                     </ol>
                 </div>
 
@@ -190,14 +174,14 @@
                 </p:outputPanel>
 
 
-                <hr/>
+                <hr />
 
                 <b:commandButton  action="#{houseSourceCreate.toShowInfo}" look="success" value="挂牌">
                     <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
 
                 </b:commandButton>
 
-                <b:commandButton  action="#{houseSourceCreate.toShowInfo}" look="success" value="签约">
+                <b:commandButton  style="margin-left: 10px" action="#{contractCreate.saveSourceAndCreateContract}" look="primary" value="签约">
                     <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
 
                 </b:commandButton>

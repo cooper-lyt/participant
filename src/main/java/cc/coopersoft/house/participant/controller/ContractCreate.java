@@ -10,6 +10,7 @@ import cc.coopersoft.house.participant.Messages;
 import cc.coopersoft.house.participant.data.ContractContextMap;
 import cc.coopersoft.house.participant.pages.Seller;
 import cc.coopersoft.house.sale.data.HouseContract;
+import cc.coopersoft.house.sale.data.HouseSource;
 import cc.coopersoft.house.sale.data.PowerPerson;
 import cc.coopersoft.house.sale.data.SubmitResult;
 import com.dgsoft.developersale.wsinterface.DESUtil;
@@ -74,12 +75,15 @@ public class ContractCreate implements java.io.Serializable{
     @Inject
     private FacesContext facesContext;
 
+    @Inject
+    private HouseSourceCreate houseSourceCreate;
+
     private OwnerShareCalcType ownerShareCalcType;
 
     public Class<? extends ViewConfig> deleteContract(){
-        if (HouseContract.ContractStatus.PREPARE.equals(houseSourceHome.getInstance().getHouseContract().getStatus())){
-            contractHome.setId(houseSourceHome.getInstance().getHouseContract().getId());
-            houseSourceHome.getInstance().setHouseContract(null);
+        if (HouseContract.ContractStatus.PREPARE.equals(houseSourceHome.getHouseSourceCompany().getHouseContract().getStatus())){
+            contractHome.setId(houseSourceHome.getHouseSourceCompany().getHouseContract().getId());
+            houseSourceHome.getHouseSourceCompany().setHouseContract(null);
 
             houseSourceHome.save();
             contractHome.remove();
@@ -94,7 +98,9 @@ public class ContractCreate implements java.io.Serializable{
     public Class<? extends ViewConfig> submitContract(){
         //TODO file
 
+        houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.SUBMIT);
         contractHome.save();
+        houseSourceHome.save();
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String,String> params = new HashMap<String, String>(1);
@@ -112,8 +118,8 @@ public class ContractCreate implements java.io.Serializable{
                     contractHome.getInstance().setStatus(HouseContract.ContractStatus.SUBMIT);
                     contractHome.getInstance().setCommitTime(new Date());
 
-
-                    return Seller.Apply.ContractCommitted.class;
+                    messages.addInfo().contractCommited();
+                    return Seller.HouseSourceView.class;
                 case FAIL:
 
                     facesContext.addMessage(null,
@@ -157,28 +163,38 @@ public class ContractCreate implements java.io.Serializable{
 
     public Class<? extends ViewConfig> sourceToContract(){
 
-        if (houseSourceHome.getInstance().getHouseContract() != null){
+        if (houseSourceHome.getHouseSourceCompany().getHouseContract() != null){
             contractHome.clearInstance();
-            contractHome.setId(houseSourceHome.getInstance().getHouseContract().getId());
+            contractHome.setId(houseSourceHome.getHouseSourceCompany().getHouseContract().getId());
             if (HouseContract.ContractStatus.PREPARE.equals(contractHome.getInstance().getStatus())){
                 return localContractConfig.getConfig().getEditPath(contractHome.getInstance().getType(),contractHome.getInstance().getContractVersion());
             }else{
-                //TODO print contract
-                return null;
+                throw new IllegalArgumentException("contract status error!");
             }
 
         }else{
             beginConversation();
 
-            contractHome.clearInstance();
-            contractHome.getInstance().setHouseArea(houseSourceHome.getInstance().getHouseArea());
-            contractHome.getInstance().setHouseCode(houseSourceHome.getInstance().getHouseCode());
-            contractHome.getInstance().setHouseDescription(houseSourceHome.getInstance().getHouseSaleInfo().getAddress());
-            contractHome.getInstance().setType(SaleType.OLD_SELL);
-            contractHome.getInstance().setContractVersion(SaleType.OLD_SELL.getCurrentVersion());
+            createAndInitContract();
             return Seller.Apply.ContractBaseInfo.class;
         }
 
+    }
+
+    private void createAndInitContract(){
+        contractHome.clearInstance();
+        contractHome.getInstance().setHouseArea(houseSourceHome.getInstance().getHouseArea());
+        contractHome.getInstance().setHouseCode(houseSourceHome.getInstance().getHouseCode());
+        contractHome.getInstance().setHouseDescription(houseSourceHome.getInstance().getAddress());
+        contractHome.getInstance().setType(SaleType.OLD_SELL);
+        contractHome.getInstance().setContractVersion(SaleType.OLD_SELL.getCurrentVersion());
+    }
+
+    @cc.coopersoft.house.participant.annotations.Seller
+    public Class<? extends ViewConfig> saveSourceAndCreateContract(){
+        houseSourceCreate.saveHouseSourceInfo();
+        createAndInitContract();
+        return Seller.Apply.ContractBaseInfo.class;
 
     }
 
@@ -246,7 +262,7 @@ public class ContractCreate implements java.io.Serializable{
 
         contractHome.putContractContext();
 
-        houseSourceHome.getInstance().setHouseContract(contractHome.getInstance());
+        houseSourceHome.getHouseSourceCompany().setHouseContract(contractHome.getInstance());
 
         houseSourceHome.save();
         endConversation();

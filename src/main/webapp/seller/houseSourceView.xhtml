@@ -38,7 +38,7 @@
 
 
                     <b:commandButton action="#{contractCreate.sourceToContract}"
-                                     disabled="#{not houseSourceHome.join}" iconAwesome="file-pdf-o" tooltip="签约">
+                                     disabled="#{not houseSourceHome.allowContract}" iconAwesome="file-pdf-o" tooltip="签约">
                         <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
                     </b:commandButton>
 
@@ -49,13 +49,13 @@
 
                     </b:button>
 
-                    <b:button tooltip="上架" iconAwesome="tag" disabled="#{not houseSourceHome.allowShow}"/>
-
-
-                    <b:button tooltip="下架" iconAwesome="minus-circle" disabled="#{not houseSourceHome.allowCancel}"/>
-
 
                     <b:button tooltip="删除" iconAwesome="trash" disabled="#{not houseSourceHome.allowDelete}"/>
+
+                    <b:dropButton icon="print" value="打印" >
+                        <b:navLink value="委托合同" disabled="true"/>
+                        <b:navLink value="交易合同" disabled="true"/>
+                    </b:dropButton>
 
                 </b:buttonGroup>
                 </h:form>
@@ -412,12 +412,6 @@
                     </p:outputPanel>
                 </b:tab>
 
-
-
-                <b:tab title="合同信息" disabled="#{not houseSourceHome.contracted}">
-                    <f:facet name="anchor"><b:iconAwesome name="cog" spin="true" /></f:facet>
-
-                </b:tab>
 
             </b:tabView>
 

@@ -84,25 +84,38 @@ public class HouseSourceCreate {
             switch (result.getValidStatus()){
 
                 case SUCCESS:
-                    houseSourceService.updateHouseSourceByHouse(result.getHouseSource().getHouseCode());
 
-                    HouseSource passHouseSource = houseSourceService.existsPassHouseSource(result.getHouseSource().getHouseCode());
-                    if (passHouseSource != null ){
-                        messages.addInfo().houseSourceExists();
-                        houseSourceHome.setId(passHouseSource.getId());
+
+                    HouseSource editHouseSource = houseSourceService.existsHouseSource(result.getHouseSource().getHouseCode(),attrUser.getLoginData().getCorpInfo().getId());
+                    if (editHouseSource != null){
+                        houseSourceHome.setId(editHouseSource.getId());
+                        messages.addInfo().houseSourceToEdit();
                         return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
                     }
 
 
+                    HouseSource passHouseSource = houseSourceService.existsPassHouseSource(result.getHouseSource().getHouseCode());
+                    if (passHouseSource != null ){
+
+
+
+                        houseSourceHome.setId(passHouseSource.getId());
+
+                        if (passHouseSource.isAllowJoin()) {
+                            houseSourceHome.getInstance().getHouseSourceCompanies().add(new HouseSourceCompany(UUID.randomUUID().toString().replace("-", ""), attrUser.getLoginData().getCorpInfo().getId(), houseSourceHome.getInstance()));
+                            houseSourceHome.save();
+                            messages.addInfo().houseSourceExists();
+                        }else{
+                            messages.addInfo().houseSourceOnlyExists();
+                        }
+
+                        return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
+                    }
+
 
                     if (result.getLimits().isEmpty()) {
 
-                        HouseSource editHouseSource = houseSourceService.existsEditHouseSource(result.getHouseSource().getHouseCode(),attrUser.getLoginData().getCorpInfo().getId());
-                        if (editHouseSource != null){
-                            houseSourceHome.setId(editHouseSource.getId());
-                            messages.addInfo().houseSourceToEdit();
-                            return cc.coopersoft.house.participant.pages.Seller.Apply.HouseShowInfo.class;
-                        }
+
 
                         houseSourceHome.setInstance(result.getHouseSource());
 
@@ -158,70 +171,62 @@ public class HouseSourceCreate {
 
     }
 
+    public void saveHouseSourceInfo(){
+
+        ContractContextMap contractContextMap = new ContractContextMap();
+        contractContextMap.put("seller_name",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getPersonName()));
+        contractContextMap.put("seller_id_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getCredentialsType())));
+        contractContextMap.put("seller_id_number",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getCredentialsNumber()));
+        contractContextMap.put("seller_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getAddress()));
+        contractContextMap.put("seller_tel",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getTel()));
+
+        if (houseSourceHome.getInstance().getProxyPerson() != null){
+            contractContextMap.put("seller_proxy_name",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getProxyPerson().getPersonName()));
+            contractContextMap.put("seller_proxy_id_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getProxyPerson().getCredentialsType())));
+            contractContextMap.put("seller_proxy_id_number",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getProxyPerson().getCredentialsNumber()));
+            contractContextMap.put("seller_proxy_tel",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getProxyPerson().getPhone()));
+            contractContextMap.put("seller_proxy_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getProxyPerson().getAddress()));
+        }
+
+        contractContextMap.put("group_name",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getName()));
+        contractContextMap.put("group_owner",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getOwnerName()));
+        contractContextMap.put("group_owner_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(attrUser.getLoginData().getCorpInfo().getLegalType())));
+        contractContextMap.put("group_cer_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(attrUser.getLoginData().getCorpInfo().getCredentialsType())));
+        contractContextMap.put("group_cer_number",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getCredentialsNumber()));
+        contractContextMap.put("group_id",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getId()));
+        contractContextMap.put("group_address",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getAddress()));
+        contractContextMap.put("group_tel",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getTel()));
+        contractContextMap.put("allow_join", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().isAllowJoin()?"放弃":"保留"));
+
+        contractContextMap.put("house_card_type", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getPowerCardType())));
+        contractContextMap.put("house_card_number",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getCredentialsNumber()));
+        contractContextMap.put("house_design_type",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getDesignUseType()));
+
+        contractContextMap.put("house_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getAddress()));
+        contractContextMap.put("house_area",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea()));
+
+
+        contractContextMap.put("time_limit_begin", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getApplyTime()));
+
+
+
+
+        try {
+            houseSourceHome.getHouseSourceCompany().setContext(contractContextMap.toJson().toString());
+        } catch (JSONException e) {
+            throw new IllegalArgumentException(e.getMessage(),e);
+        }
+
+        houseSourceHome.save();
+    }
+
     @Seller
     @Transactional
     public Class<? extends ViewConfig> toShowInfo(){
-        houseSourceService.updateHouseSourceByHouse(houseSourceHome.getInstance().getHouseCode());
 
-        Class<? extends ViewConfig> resultPath ;
-        HouseSource passHouseSource = houseSourceService.existsPassHouseSource(houseSourceHome.getInstance().getHouseCode());
-        if (passHouseSource != null ){
-            messages.addInfo().houseSourceExists();
-            houseSourceHome.clearInstance();
-            houseSourceHome.setId(passHouseSource.getId());
-
-            resultPath = cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
-        }else {
-
-            ContractContextMap contractContextMap = new ContractContextMap();
-            contractContextMap.put("seller_name",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getPersonName()));
-            contractContextMap.put("seller_id_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getCredentialsType())));
-            contractContextMap.put("seller_id_number",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getCredentialsNumber()));
-            contractContextMap.put("seller_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getAddress()));
-            contractContextMap.put("seller_tel",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getTel()));
-
-            if (houseSourceHome.getInstance().getProxyPerson() != null){
-                contractContextMap.put("seller_proxy_name",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getProxyPerson().getPersonName()));
-                contractContextMap.put("seller_proxy_id_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getProxyPerson().getCredentialsType())));
-                contractContextMap.put("seller_proxy_id_number",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getProxyPerson().getCredentialsNumber()));
-                contractContextMap.put("seller_proxy_tel",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getProxyPerson().getPhone()));
-                contractContextMap.put("seller_proxy_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getProxyPerson().getAddress()));
-            }
-
-            contractContextMap.put("group_name",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getName()));
-            contractContextMap.put("group_owner",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getOwnerName()));
-            contractContextMap.put("group_owner_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(attrUser.getLoginData().getCorpInfo().getLegalType())));
-            contractContextMap.put("group_cer_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(attrUser.getLoginData().getCorpInfo().getCredentialsType())));
-            contractContextMap.put("group_cer_number",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getCredentialsNumber()));
-            contractContextMap.put("group_id",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getId()));
-            contractContextMap.put("group_address",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getAddress()));
-            contractContextMap.put("group_tel",new ContractContextMap.ContarctContextItem(attrUser.getLoginData().getCorpInfo().getTel()));
-            contractContextMap.put("allow_join", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().isAllowJoin()?"放弃":"保留"));
-
-            contractContextMap.put("house_card_type", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getPowerCardType())));
-            contractContextMap.put("house_card_number",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getCredentialsNumber()));
-            contractContextMap.put("house_design_type",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getDesignUseType()));
-
-            contractContextMap.put("house_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getAddress()));
-            contractContextMap.put("house_area",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea()));
-            contractContextMap.put("time_limit_begin", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getApplyTime()));
-
-
-
-
-            try {
-                houseSourceHome.getHouseSourceCompany().setContext(contractContextMap.toJson().toString());
-            } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage(),e);
-            }
-
-            houseSourceHome.save();
-            resultPath = cc.coopersoft.house.participant.pages.Seller.Apply.HouseShowInfo.class;
-
-        }
-
+        saveHouseSourceInfo();
         endConversation();
-        return resultPath;
+        return cc.coopersoft.house.participant.pages.Seller.Apply.HouseShowInfo.class;
     }
 
 

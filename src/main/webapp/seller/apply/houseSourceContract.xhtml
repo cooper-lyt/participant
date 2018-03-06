@@ -34,25 +34,41 @@
 
 <h:body style="padding-top: 50px;" pt:data-spy="scroll" pt:data-target=".bs-docs-sidebar" pt:data-offset="60">
 
+
+
+    <h:form>
+
+
+        <b:modal id="submodal" size="modal-sm" title="提交确认" styleClass="submodalModalClass">
+            <p>您确认要提交房源#{' '}<strong>#{houseSourceHome.instance.sourceId}</strong>#{' '} 到房屋交易备案部门 </p>
+            <p>房源将提交管理部门审核，在审核完成前房源信息将不可修改！</p>
+            <f:facet name="footer">
+
+
+                <b:commandButton action="#{houseSaleInfoEdit.commitHouseSource}" look="success" style="width:100%" value="我确认要提交此房源">
+                    <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                </b:commandButton>
+
+            </f:facet>
+        </b:modal>
+
+
     <b:navBar brandImg="#{request.contextPath}/img/logo-icon.png" brand-href="#{request.contextPath}/home.xhtml" position="top" sticky="true">
         <b:container>
 
-            <h:form  styleClass="navbar-form navbar-left " pt:role="search">
-                <div class="form-group">
-                    <h:inputText size="40" value="#{houseSourceList.condition}" styleClass="form-control" pt:placeholder="房源或合同查询">
-                        <f:param name="firstResult" value="0"/>
-                        <f:param name="filterType" value=""/>
-                    </h:inputText>
-                </div>
-                <h:commandButton  style="display: none;" action="/seller/houseList.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
-
-
-            </h:form>
 
             <b:navbarLinks>
 
-                <b:navLink value="交易挂牌" href="#{request.contextPath}/erp/hr/employeeList.xhtml"></b:navLink>
-                <b:navLink value="租赁挂牌"  styleClass="todo-disable" href="#"></b:navLink>
+                <b:navCommandLink value="保存" action="#{houseSaleInfoEdit.updateContext}" ajax="true" update="@none">
+                    <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                </b:navCommandLink>
+
+                <b:navLink value="提交房源" onclick="$('.submodalModalClass').modal();return false;"  href="#"></b:navLink>
+
+
+                <b:navLink value="打印合同" onclick="$('.pdfmodalModalClass').modal();return false;"  href="#"></b:navLink>
+
+
 
             </b:navbarLinks>
 
@@ -185,10 +201,10 @@
 
                <p>
                    经纪服务期限
-                   <c:if test="#{not empty houseSaleInfoEdit.contractContextMap.time_limit_begin.dateValue}">
+                   <c:if test="#{not empty houseSaleInfoEdit.contractContextMap.time_limit_end.dateValue}">
                        【自<span class="input-line"><h:outputText value="#{houseSaleInfoEdit.contractContextMap.time_limit_begin.dateValue}"><f:convertDateTime pattern="yyyy年mm日dd日" /></h:outputText></span> 起至 <span class="input-line"><h:outputText value="#{houseSaleInfoEdit.contractContextMap.time_limit_end.dateValue}"><f:convertDateTime pattern="yyyy年mm日dd日" /></h:outputText></span>】
                    </c:if>
-                   <c:if test="#{empty houseSaleInfoEdit.contractContextMap.time_limit_begin.dateValue}">
+                   <c:if test="#{empty houseSaleInfoEdit.contractContextMap.time_limit_end.dateValue}">
                        【自本合同签订之日起至甲方与房屋购买人签订房屋买卖合同之日止】
                    </c:if>。
                </p>
@@ -402,7 +418,7 @@
    </div>
     </b:container>
 
-
+    </h:form>
     <b:container styleClass="site-footer-container">
         <div class="site-footer" role="contentinfo">
 

@@ -66,6 +66,7 @@
 
                 <b:commandButton action="#{contractCreate.submitContract}" look="success" style="width:100%" value="我确认要提交此合同">
                     <f:param name="contractId" value="#{contractHome.instance.id}"/>
+                    <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
                 </b:commandButton>
 
             </f:facet>

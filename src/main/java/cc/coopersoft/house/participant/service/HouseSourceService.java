@@ -55,30 +55,18 @@ public class HouseSourceService {
 
     public HouseSource existsPassHouseSource(String houseCode){
         ArrayList<HouseSource.HouseSourceStatus> allowStatus = new ArrayList<HouseSource.HouseSourceStatus>(
-            EnumSet.of(HouseSource.HouseSourceStatus.CHECK,HouseSource.HouseSourceStatus.SUBMIT,
-                    HouseSource.HouseSourceStatus.CHECK_PASS,HouseSource.HouseSourceStatus.SHOWING)
+            EnumSet.of(HouseSource.HouseSourceStatus.SHOWING)
         );
 
         return getSingleHouseSource(houseSourceRepository.houseSourceByStatus(allowStatus,houseCode));
     }
 
-    public HouseSource existsEditHouseSource(String houseCode, String corpId){
+    public HouseSource existsHouseSource(String houseCode, String corpId){
         ArrayList<HouseSource.HouseSourceStatus> allowStatus = new ArrayList<HouseSource.HouseSourceStatus>(
-                EnumSet.of(HouseSource.HouseSourceStatus.PREPARE)
+                EnumSet.of(HouseSource.HouseSourceStatus.PREPARE,HouseSource.HouseSourceStatus.SHOWING,HouseSource.HouseSourceStatus.CHECK)
         );
         return getSingleHouseSource(houseSourceRepository.houseSourceByStatus(allowStatus,houseCode,corpId));
     }
 
-    public void updateHouseSourceByHouse(String houseCode){
-
-    }
-
-    public void updateHouseSourceByCorp(String attrCorpId){
-
-    }
-
-    public void updateHouseSourceById(String sourceId){
-
-    }
 
 }

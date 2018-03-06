@@ -32,6 +32,11 @@
         }
     </h:outputStylesheet>
 
+    <h:form>
+        <p:remoteCommand name="updateMapLocation" update="@none" actionListener="#{houseSaleInfoEdit.updateLocation}"/>
+    </h:form>
+
+
     <h:form id="houes-valid"  styleClass="page-form">
         <b:row>
             <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
@@ -46,11 +51,6 @@
                         </li>
 
 
-                        <li class="complete">
-                            <b:iconAwesome name="check" size="2x"/>
-                            <strong class="step">委托:</strong>
-                            委托信息
-                        </li>
                         <li class="current">
                             <b:iconAwesome name="bookmark" size="2x"/>
                             <strong class="step">描述:</strong>
@@ -63,8 +63,8 @@
                         </li>
                         <li>
                             <b:iconAwesome name="university" size="2x"/>
-                            <strong class="step">提交:</strong>
-                            提交房源
+                            <strong class="step">合同:</strong>
+                            委拖合同
                         </li>
                     </ol>
                 </div>
@@ -224,6 +224,49 @@
                         </h:selectOneMenu>
                     </div>
                 </div>
+
+                <div style="width: 100%;height: 500px;" id="local-map"></div>
+
+                <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&amp;ak=hbl1cUkMyAG2kzFGmZWdztMt"></script>
+                <h:outputScript>
+                    // 百度地图API功能
+
+                    var map = new BMap.Map("local-map");    // 创建Map实例
+
+                    var point = new BMap.Point(#{runParam.getStringParam('map.lng')},#{runParam.getStringParam('map.lat')});
+
+                    var geolocation = new BMap.Geolocation();
+                    geolocation.getCurrentPosition(function(r){
+                    if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                    point = r.point;
+                    }
+                    },{enableHighAccuracy: true})
+                    map.centerAndZoom(point, #{runParam.getStringParam('map.zoom')});  // 初始化地图,设置中心点坐标和地图级别
+
+                    // 添加带有定位的导航控件
+                    var navigationControl = new BMap.NavigationControl({
+                    // 靠左上角位置
+                    anchor: BMAP_ANCHOR_TOP_LEFT,
+                    // LARGE类型
+                    type: BMAP_NAVIGATION_CONTROL_LARGE,
+                    // 启用显示定位
+                    enableGeolocation: true
+                    });
+                    map.addControl(navigationControl);
+
+                    map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
+
+
+
+                    var maker_point = new BMap.Point(#{houseSourceHome.lng},#{houseSourceHome.lat});
+                    var marker = new BMap.Marker(maker_point);// 创建标注
+                    marker.addEventListener("dragend",function(e){updateMapLocation([{name:'houseSaleInfoId',value: '#{houseSourceHome.instance.id}'},{name:'lat',value: e.point.lat},{name:'lng',value: e.point.lng}]) });
+
+                    map.addOverlay(marker);             // 将标注添加到地图中
+
+                    marker.enableDragging(); // 不可拖拽
+
+                </h:outputScript>
 
 
                 <hr/>

@@ -211,10 +211,25 @@ public class HouseSaleInfoEdit implements java.io.Serializable{
 
     public void calcPrice(){
             if (getHouseSaleInfo().getSumPrice() != null) {
+                logger.config("calc price area:" + houseSourceHome.getInstance().getHouseArea());
+                logger.config("calc price id:" + houseSourceHome.getId());
                 getHouseSaleInfo().setPrice(getHouseSaleInfo().getSumPrice().divide(houseSourceHome.getInstance().getHouseArea(), 2, BigDecimal.ROUND_HALF_EVEN));
             }else{
                 getHouseSaleInfo().setPrice(null);
             }
+
+    }
+
+    @Seller
+    @Transactional
+    public Class<? extends ViewConfig> deleteHouseSource(){
+        if (houseSourceHome.isAllowDelete()){
+
+            houseSourceHome.remove();
+            return cc.coopersoft.house.participant.pages.Seller.HouseList.class;
+        }else
+            return null;
+
 
     }
 

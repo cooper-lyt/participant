@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+
+    <entity class="cc.coopersoft.house.sale.data.MoneyManager" access="FIELD">
+        <table name="MONEY_MANAGER" catalog="CONTRACT"/>
+
+        <attributes>
+
+            <id name="id">
+                <column name="ID" unique="true" nullable="false" length="32"/>
+            </id>
+
+
+
+            <basic name="bank">
+                <column name="BANK" length="32"/>
+            </basic>
+
+            <basic name="bankName">
+                <column name="BANK_NAME" length="128"/>
+            </basic>
+
+            <basic name="account">
+                <column name="ACCOUNT" length="32"/>
+            </basic>
+
+            <basic name="money">
+                <column name="MONEY"/>
+            </basic>
+
+            <one-to-one name="oldHouseMoney" orphan-removal="true" fetch="LAZY">
+                <primary-key-join-column/>
+                <cascade><cascade-all/></cascade>
+            </one-to-one>
+
+
+        </attributes>
+    </entity>
+
+
+</entity-mappings>

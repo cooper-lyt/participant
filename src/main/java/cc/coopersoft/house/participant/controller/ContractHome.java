@@ -144,8 +144,6 @@ public class ContractHome extends EntityHome<HouseContract,String> {
     }
 
     public void save(){
-        if (!HouseContract.ContractStatus.PREPARE.equals(getInstance().getStatus()))
-            throw new IllegalArgumentException("contract status is error!");
         putContractContext();
         super.save();
     }
@@ -178,12 +176,12 @@ public class ContractHome extends EntityHome<HouseContract,String> {
         }
     }
 
-    private void genEditPowerPerson(List<ContractPowerPersonHelper> list, int count){
+    private void genEditPowerPerson(List<ContractPowerPersonHelper> list, int count, PowerPerson.ContractPersonType type){
         while (list.size() != count) {
             if (list.size() > count) {
                 getInstance().getPowerPersons().remove(list.remove(0).getPersonEntity());
             } else {
-                PowerPerson pool = new PowerPerson(UUID.randomUUID().toString().replace("-",""), getInstance(), PowerPerson.ContractPersonType.BUYER, list.size() + 1);
+                PowerPerson pool = new PowerPerson(UUID.randomUUID().toString().replace("-",""), getInstance(),type, list.size() + 1);
                 list.add(new ContractPowerPersonHelper(pool, getInstance().getHouseArea()));
                 getInstance().getPowerPersons().add(pool);
             }
@@ -197,9 +195,12 @@ public class ContractHome extends EntityHome<HouseContract,String> {
         if (PoolType.SINGLE_OWNER.equals(getInstance().getOldHouseContract().getSellerPoolType())){
             sellerCount = 1;
         }
-        genEditPowerPerson(buyerEditList,buyerCount);
-        genEditPowerPerson(sellerEditList,sellerCount);
+        genEditPowerPerson(buyerEditList,buyerCount,PowerPerson.ContractPersonType.BUYER);
+        genEditPowerPerson(sellerEditList,sellerCount,PowerPerson.ContractPersonType.SELLER);
     }
+
+
+
 
     protected HouseContract createInstance() {
 
@@ -220,6 +221,7 @@ public class ContractHome extends EntityHome<HouseContract,String> {
 
 
     }
+
 
     protected EntityRepository<HouseContract, String> getEntityRepository() {
         return houseContractRepository;

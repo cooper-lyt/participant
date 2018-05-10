@@ -194,6 +194,20 @@
                     <p>6、<h:inputText style="width: 92% !important;" styleClass="form-control" value="#{contractHome.contractContextMap.c_5_6_1.stringValue}"/>
                     </p>
 
+                    <c:if test="#{not contractHome.contractContextMap.bank_name.emptyData}">
+                        <p>
+                            买卖双方约定监管银行为：<span class="input-line">#{contractHome.contractContextMap.bank_name.stringValue} </span> 账号为：<span class="input-line">#{ contractHome.contractContextMap.bank_account.stringValue} </span>监管资金为:人民币<h:outputText styleClass="input-line" value="#{contractHome.contractContextMap.protected_money.numberValue}"><f:convertNumber groupingUsed="true" pattern="#0.00"/></h:outputText>元（大写）：<h:outputText styleClass="input-line" value="#{contractHome.contractContextMap.protected_money.numberValue}"><f:converter converterId="cooper.faces.BigMoneyConverter"/></h:outputText>
+                        </p>
+
+                        <p>
+                            出卖人确认的监管资金收款账户为：
+                        </p>
+                        <p>
+                            收款人姓名：<span class="input-line">#{contractHome.contractContextMap.card_name.stringValue}</span> 收款人账号<span class="input-line">#{contractHome.contractContextMap.card_number.stringValue}</span>开户银行：<span class="input-line">#{contractHome.contractContextMap.card_bank.stringValue}</span>
+                        </p>
+                    </c:if>
+
+
                 </div>
 
                 <div class="bs-docs-section">

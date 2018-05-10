@@ -38,7 +38,7 @@ public class ContractPdfDG1 {
 
     public static void pdf(ContractContextMap contractContextMap, OutputStream outputStream){
 
-        Document document = new Document(PageSize.A4,50,50,80,80);
+        Document document = new Document(PageSize.A4,40,40,60,60);
 
         try {
             PdfWriter pdfWriter = PdfWriter.getInstance(document,outputStream);
@@ -261,6 +261,29 @@ public class ContractPdfDG1 {
             p.add(new Phrase(pm(contractContextMap.get("c_5_6_1").getStringValue(),91),bi));
             document.add(p);
 
+            if (!contractContextMap.get("bank_name").isEmptyData()) {
+                p = new Paragraph(20);
+                p.add(new Phrase("        买卖双方约定监管银行为:", b2));
+                p.add(new Phrase(pm(contractContextMap.get("bank_name").getStringValue(), 20),bi));
+                p.add(new Phrase("账号为:",b2));
+                p.add(new Phrase(pm(contractContextMap.get("bank_account").getStringValue(),20),bi));
+                p.add(new Phrase("监管资金为:人民币",b2));
+                p.add(new Phrase(dfMoney.format(contractContextMap.get("protected_money").getNumberValue()),bi));
+                p.add(new Phrase("元（大写）:",b2));
+                p.add(new Phrase(BigMoneyConverter.numberToBigMoney(contractContextMap.get("protected_money").getNumberValue()),bi));
+                document.add(p);
+                document.add(new Paragraph(20,"        出卖人确认的监管资金收款账户为：",b2));
+                p = new Paragraph(20);
+                p.add(new Phrase("        收款人姓名:",b2));
+                p.add(new Phrase(contractContextMap.get("card_name").getStringValue(),bi));
+                p.add(new Phrase("收款人账号:",b2));
+                p.add(new Phrase(contractContextMap.get("card_number").getStringValue(),bi));
+                p.add(new Phrase("开户银行:",b2));
+                p.add(new Phrase(contractContextMap.get("card_bank").getStringValue(),bi));
+
+                document.add(p);
+            }
+
             document.add(new Paragraph(25,"        六、房屋交付",h3));
 
             p = new Paragraph(20);
@@ -412,7 +435,7 @@ public class ContractPdfDG1 {
             cel.setBorder(0);
             cel.setPaddingTop(10);
             table.addCell(cel);
-
+            table.setKeepTogether(true);
             document.add(table);
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");

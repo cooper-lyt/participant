@@ -145,6 +145,63 @@
                 </div>
 
 
+                <b:selectBooleanCheckbox value="#{oldHouseMoneyProtectedInfo.protectedMoney}" caption="是否使用资金监管服务" update="protected_money_panel"/>
+
+                <p:outputPanel id="protected_money_panel" layout="inline">
+                    <b:row rendered="#{oldHouseMoneyProtectedInfo.protectedMoney}">
+                        <b:column offsetMd="1" offsetLg="1" offsetSm="1" offsetXs="0" colMd="11" colLg="11" colSm="11" colXs="12">
+                            <label for="buyerCountInput">监管金额</label>
+                            <p:outputPanel layout="block" styleClass="input-group js-pool-type-edit"  style="margin-bottom: 15px">
+
+                                <p:outputPanel layout="block" styleClass="input-group-btn">
+
+                                    <h:selectOneMenu label="监管银行"
+                                                     styleClass="selectpicker-bank form-control select-theme"
+                                                     pt:data-width="170px"
+                                                     value="#{oldHouseMoneyProtectedInfo.protectedBankId}" required="true">
+
+                                        <f:selectItems var="_bank" value="#{serverWord.oldHouseMoneyProtectedBank}" itemValue="#{_bank.id}" itemLabel="#{_bank.bankName}"/>
+
+                                    </h:selectOneMenu>
+
+                                </p:outputPanel>
+
+
+                                <b:inputText label="监管金额"
+                                             styleClass="form-control"
+                                             required="true"
+                                             renderLabel="false"
+                                             p:placeholder="监管金额"
+                                             autocomplete="false"
+                                             value="#{contractHome.instance.moneyManager.money}">
+                                </b:inputText>
+
+                            </p:outputPanel>
+                        </b:column>
+                        <b:column offsetMd="1" offsetLg="1" offsetSm="1" offsetXs="0" colMd="11" colLg="11" colSm="11" colXs="12">
+                            <b:inputText value="#{contractHome.instance.moneyManager.oldHouseMoney.cardNumber}" label="收款卡号"
+                                         required="true" renderLabel="true" />
+                            <b:message/>
+                        </b:column>
+                        <b:column offsetMd="1" offsetLg="1" offsetSm="1" offsetXs="0" colMd="11" colLg="11" colSm="11" colXs="12">
+                            <b:inputText value="#{contractHome.instance.moneyManager.oldHouseMoney.cardName}" label="持卡人姓名"
+                                         required="true" renderLabel="true" />
+                            <b:message/>
+                        </b:column>
+                        <b:column offsetMd="1" offsetLg="1" offsetSm="1" offsetXs="0" colMd="11" colLg="11" colSm="11" colXs="12">
+                            <b:inputText value="#{contractHome.instance.moneyManager.oldHouseMoney.bankName}" label="开户行"
+                                         required="true" renderLabel="true" />
+                            <b:message/>
+                        </b:column>
+
+                    </b:row>
+                    <h:outputScript>
+                        $(document).ready(function () {
+                            $('.selectpicker-bank').selectpicker();
+                        });
+                    </h:outputScript>
+                </p:outputPanel>
+
                 <hr/>
 
                 <b:commandButton action="#{contractCreate.toSellerInfo}" look="success" value="下一步">

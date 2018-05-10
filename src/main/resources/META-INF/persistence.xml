@@ -21,6 +21,8 @@
         <mapping-file>jpa/houseContractEntity.xml</mapping-file>
         <mapping-file>jpa/powerProxyPerson.xml</mapping-file>
         <mapping-file>jpa/powerPersonEntity.xml</mapping-file>
+        <mapping-file>jpa/moneyManager.orm.xml</mapping-file>
+        <mapping-file>jpa/oldHouseMoney.orm.xml</mapping-file>
 
         <class>cc.coopersoft.house.participant.data.model.SystemParam</class>
         <class>cc.coopersoft.house.participant.data.model.NumberSequence</class>

@@ -123,6 +123,11 @@
 
             </one-to-one>
 
+            <one-to-one name="moneyManager" orphan-removal="true" fetch="LAZY">
+                <primary-key-join-column/>
+                <cascade><cascade-all/></cascade>
+            </one-to-one>
+
 
 
 

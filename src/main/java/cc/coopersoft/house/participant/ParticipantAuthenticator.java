@@ -2,7 +2,6 @@ package cc.coopersoft.house.participant;
 
 import cc.coopersoft.comm.exception.HttpApiServerException;
 import cc.coopersoft.house.participant.controller.RunParam;
-import cc.coopersoft.house.participant.service.HouseSourceService;
 import cc.coopersoft.house.sale.HouseSellService;
 import cc.coopersoft.house.sale.data.Developer;
 import cc.coopersoft.house.sale.data.Seller;

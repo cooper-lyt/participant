@@ -6,7 +6,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:o="http://omnifaces.org/ui">
 
     <h:outputStylesheet>
@@ -25,6 +25,20 @@
         }
 
     </h:outputStylesheet>
+
+
+    <b:modal id="delete-modal" size="modal-sm" title="删除确认" styleClass="modalDeleteClass">
+        <p>删除合同确认,房源及合同的所有信息将会丢失！</p>
+        <f:facet name="footer">
+            <h:form>
+
+                <b:commandButton action="#{houseSaleInfoEdit.deleteHouseSource}" look="danger" style="width:100%" value="我确认要删除此房源">
+                    <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                </b:commandButton>
+            </h:form>
+        </f:facet>
+    </b:modal>
+
 
     <b:row style="margin-top: 20px;">
 
@@ -50,11 +64,13 @@
                     </b:button>
 
 
-                    <b:button tooltip="删除" iconAwesome="trash" disabled="#{not houseSourceHome.allowDelete}"/>
+                    <b:button tooltip="删除" iconAwesome="trash"
+                              pt:data-target="#delete-modal" pt:data-toggle="modal"
+                              disabled="#{not houseSourceHome.allowDelete}"/>
 
                     <b:dropButton icon="print" value="打印" >
+                        <b:navLink value="交易合同" target="_blank" disabled="#{not houseSourceHome.allowPrintSellContract}" href="#{runParam.getStringParam('contract_address')}#{houseSourceHome.houseSourceCompany.houseContract.fileId}"/>
                         <b:navLink value="委托合同" disabled="true"/>
-                        <b:navLink value="交易合同" disabled="true"/>
                     </b:dropButton>
 
                 </b:buttonGroup>

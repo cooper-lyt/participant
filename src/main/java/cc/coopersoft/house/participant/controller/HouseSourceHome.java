@@ -49,6 +49,12 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
     @Inject
     private JsfMessage<Messages> messages;
 
+    @Override
+    protected String getInstaceId(){
+        return getInstance().getId();
+    }
+
+
     private HouseSourceCompany houseSourceCompany;
 
     private Boolean join;
@@ -98,7 +104,12 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
                 || HouseContract.ContractStatus.PREPARE.equals(getHouseSourceCompany().getHouseContract().getStatus()));
     }
 
+    public boolean isAllowPrintSellContract(){
+        return isJoin() && (getHouseSourceCompany().getHouseContract() != null) &&
+                HouseSource.HouseSourceStatus.SUBMIT.equals(getInstance().getStatus()) &&
+                HouseContract.ContractStatus.SUBMIT.equals(getHouseSourceCompany().getHouseContract().getStatus());
 
+    }
 
 
 

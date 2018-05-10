@@ -9,16 +9,14 @@ import cc.coopersoft.house.participant.AttrUser;
 import cc.coopersoft.house.participant.Messages;
 import cc.coopersoft.house.participant.data.ContractContextMap;
 import cc.coopersoft.house.participant.pages.Seller;
-import cc.coopersoft.house.sale.data.HouseContract;
-import cc.coopersoft.house.sale.data.HouseSource;
-import cc.coopersoft.house.sale.data.PowerPerson;
-import cc.coopersoft.house.sale.data.SubmitResult;
+import cc.coopersoft.house.sale.data.*;
 import com.dgsoft.developersale.wsinterface.DESUtil;
 import com.dgsoft.house.OwnerShareCalcType;
 import com.dgsoft.house.SaleType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.deltaspike.core.api.config.view.ViewConfig;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.deltaspike.jsf.api.message.JsfMessage;
 
 import javax.enterprise.context.Conversation;
@@ -29,7 +27,10 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,13 +74,22 @@ public class ContractCreate implements java.io.Serializable{
     private AttrUser attrUser;
 
     @Inject
+    private ServerToken serverToken;
+
+    @Inject
     private FacesContext facesContext;
+
+
 
     @Inject
     private HouseSourceCreate houseSourceCreate;
 
     private OwnerShareCalcType ownerShareCalcType;
 
+
+
+    @cc.coopersoft.house.participant.annotations.Seller
+    @Transactional
     public Class<? extends ViewConfig> deleteContract(){
         if (HouseContract.ContractStatus.PREPARE.equals(houseSourceHome.getHouseSourceCompany().getHouseContract().getStatus())){
             contractHome.setId(houseSourceHome.getHouseSourceCompany().getHouseContract().getId());
@@ -95,16 +105,30 @@ public class ContractCreate implements java.io.Serializable{
         }
     }
 
+    @cc.coopersoft.house.participant.annotations.Seller
+    @Transactional
     public Class<? extends ViewConfig> submitContract(){
-        //TODO file
 
-        houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.SUBMIT);
-        contractHome.save();
-        houseSourceHome.save();
+        contractHome.putContractContext();
+
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String,String> params = new HashMap<String, String>(1);
         try {
+
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+            localContractConfig.getConfig().pdf(contractHome.getContractContextMap(),buffer,contractHome.getInstance().getContractVersion());
+
+            buffer.close();
+            //logger.config("begin upload file;");
+
+            contractHome.getInstance().setFileId (HttpJsonDataGet.putFile(runParam.getStringParam("nginx_address") + "/api/protected/put-media",buffer.toByteArray(),attrUser.getKeyId(),serverToken.getRndData(),serverToken.getDigest()));
+
+
+
+
+
             String data = mapper.writeValueAsString(contractHome.getInstance());
             //logger.config(data);
             params.put("data", DESUtil.encrypt(data, attrUser.getLoginData().getToken()));
@@ -119,6 +143,13 @@ public class ContractCreate implements java.io.Serializable{
                     contractHome.getInstance().setCommitTime(new Date());
 
                     messages.addInfo().contractCommited();
+
+                    houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.SUBMIT);
+                    contractHome.getInstance().setCommitTime(new Date());
+                    contractHome.getInstance().setStatus(HouseContract.ContractStatus.SUBMIT);
+                    houseSourceHome.save();
+                    contractHome.save();
+
                     return Seller.HouseSourceView.class;
                 case FAIL:
 
@@ -145,6 +176,7 @@ public class ContractCreate implements java.io.Serializable{
         return null;
     }
 
+    @cc.coopersoft.house.participant.annotations.Seller
     public void printPdf(){
         contractHome.save();
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -160,7 +192,7 @@ public class ContractCreate implements java.io.Serializable{
         facesContext.responseComplete();
     }
 
-
+    @cc.coopersoft.house.participant.annotations.Seller
     public Class<? extends ViewConfig> sourceToContract(){
 
         if (houseSourceHome.getHouseSourceCompany().getHouseContract() != null){
@@ -259,6 +291,18 @@ public class ContractCreate implements java.io.Serializable{
         contractHome.getContractContextMap().put("power_card_type", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getPowerCardType())));
         contractHome.getContractContextMap().put("power_card_number", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getPowerCardNumber()));
         contractHome.getContractContextMap().put("house_area", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea()));
+
+        if (contractHome.getInstance().getMoneyManager() != null){
+            contractHome.getContractContextMap().put("bank_name" , new ContractContextMap.ContarctContextItem(contractHome.getInstance().getMoneyManager().getBankName()));
+            contractHome.getContractContextMap().put("bank_account", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getMoneyManager().getAccount()));
+            contractHome.getContractContextMap().put("card_bank",new ContractContextMap.ContarctContextItem(contractHome.getInstance().getMoneyManager().getOldHouseMoney().getBankName()));
+            contractHome.getContractContextMap().put("card_number",new ContractContextMap.ContarctContextItem(contractHome.getInstance().getMoneyManager().getOldHouseMoney().getCardNumber()));
+            contractHome.getContractContextMap().put("card_name", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getMoneyManager().getOldHouseMoney().getCardName()));
+            contractHome.getContractContextMap().put("protected_money", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getMoneyManager().getMoney()));
+        }else {
+            contractHome.getContractContextMap().remove("bank_name");
+        }
+
 
         contractHome.putContractContext();
 

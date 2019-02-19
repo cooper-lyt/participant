@@ -9,6 +9,7 @@ import cc.coopersoft.house.sale.data.Word;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ public class ServerWord implements java.io.Serializable {
     private List<District> districts;
 
     private List<MoneyProtectedBank> oldHouseMoneyProtectedBank;
+
+    private Map<String,List<Word>> words = new HashMap<String, List<Word>>();
 
     //private Map<String ,Map<String,Word>> words;
 

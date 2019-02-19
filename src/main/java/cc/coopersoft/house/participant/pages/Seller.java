@@ -24,6 +24,13 @@ public interface Seller {
 
         }
 
+        interface Fc extends Contract{
+            class OldEdit implements Fc{}
+        }
+
+        interface Xf extends Contract{
+            class OldEdit implements Xf {}
+        }
     }
 
     interface Apply extends ViewConfig{
@@ -35,6 +42,8 @@ public interface Seller {
         class HouseShowInfo implements Apply{}
 
         class HouseSalePicUpload implements Apply{}
+
+        class HouseSourceCreate implements Apply{}
 
 
         class HouseSourceContract implements Apply{}

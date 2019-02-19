@@ -1,0 +1,299 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+    <title>#{messages.application_title}</title>
+    <h:outputScript library="bsf" name="js/button.js"/>
+    <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
+
+    <h:outputStylesheet library="github" name="bootstrap.min.css"/>
+    <h:outputStylesheet library="github" name="theme.css" position="last"/>
+    <h:outputStylesheet name="style.css" />
+    <h:outputStylesheet>
+        .navbar .navbar-header .navbar-brand{
+            padding: 10px 15px;
+        }
+    </h:outputStylesheet>
+
+    <h:outputStylesheet name="doc.css"/>
+    <h:outputStylesheet name="patch.css"/>
+    <h:outputStylesheet name="contract.css"/>
+    <h:outputScript library="bsf" name="js/scrollspy.js"/>
+    <h:outputScript library="bsf" name="js/dropdown.js"/>
+    <h:outputScript name="select-edit.js"/>
+
+
+
+
+</h:head>
+
+<h:body style="padding-top: 50px;" pt:data-spy="scroll" pt:data-target=".bs-docs-sidebar" pt:data-offset="60">
+
+    <b:growl id="growl"
+             globalOnly="true"
+             showDetail="true"/>
+
+    <b:modal id="amodal" size="modal-sm" title="删除确认" styleClass="modalPseudoClass">
+        <p>删除合同确认,合同内所有信息将会丢失！</p>
+        <f:facet name="footer">
+            <h:form>
+
+                <b:commandButton action="#{contractCreate.deleteContract}" look="danger" style="width:100%" value="我确认要删除此合同">
+                    <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                </b:commandButton>
+            </h:form>
+        </f:facet>
+    </b:modal>
+
+
+
+
+
+
+    <h:form>
+
+        <b:modal id="submodal" size="modal-sm" title="提交确认" styleClass="submodalModalClass">
+            <p>您确认要提交合同#{' '}<strong>#{contractHome.instance.id}</strong>#{' '} 到房屋交易备案部门 </p>
+            <p>提交后合同将从草签状态转为签约状态，签约状态的合同将无法被修改，但您仍然可以打印合同。</p>
+            <f:facet name="footer">
+
+
+                <b:commandButton action="#{contractCreate.submitContract}" look="success" style="width:100%" value="我确认要提交此合同">
+                    <f:param name="contractId" value="#{contractHome.instance.id}"/>
+                    <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                </b:commandButton>
+
+            </f:facet>
+        </b:modal>
+
+        <b:modal id="pdfmodal" size="modal-sm" title="打印合同" styleClass="pdfmodalModalClass">
+            <p>在未提交前打印合同，请保证纸制合同内容与提交合同的内容一致。</p>
+            <f:facet name="footer">
+
+
+                <h:commandLink styleClass="btn btn-success" action="#{contractCreate.printPdf}"
+                               onclick="$('.pdfmodalModalClass').modal('hide');" target="_blank" look="success"
+                               style="width:100%" value="打印合同">
+                    <f:param name="contractId" value="#{contractHome.instance.id}"/>
+                </h:commandLink>
+
+            </f:facet>
+        </b:modal>
+
+
+        <b:navBar brandImg="#{request.contextPath}/img/logo-icon.png" brand-href="#{request.contextPath}/home.xhtml" position="top" sticky="true">
+            <b:container>
+
+
+                <b:navbarLinks>
+
+
+                    <b:navCommandLink value="保存" action="#{contractHome.save}" ajax="true" update="@none">
+                        <f:param name="contractId" value="#{contractHome.instance.id}"/>
+                    </b:navCommandLink>
+
+                    <b:navLink value="删除" onclick="$('.modalPseudoClass').modal();return false;"  href="#"></b:navLink>
+                    <b:navLink value="提交合同" onclick="$('.submodalModalClass').modal();return false;"  href="#"></b:navLink>
+
+
+                    <b:navLink value="打印合同" onclick="$('.pdfmodalModalClass').modal();return false;"  href="#"></b:navLink>
+
+
+
+
+
+                </b:navbarLinks>
+
+                <b:navbarLinks pull="right">
+                    <b:navLink iconAwesome="gear" tooltip="设置" value=" " href="#{request.contextPath}/logout"/>
+                    <b:navLink iconAwesome="sign-out" tooltip="退出" value=" " href="#{request.contextPath}/logout"/>
+                </b:navbarLinks>
+
+            </b:container>
+        </b:navBar>
+
+
+
+
+        <b:container >
+
+            <div class="row">
+
+                <div class="col-md-9" role="main">
+
+                    <div class="bs-docs-section">
+                        <h1 id="overview" class="page-header">
+                            <a class="anchorjs-link " href="#overview" aria-label="Anchor link for: overview" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            房地产买卖契约
+                        </h1>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <p>甲方（卖方）：#{contractHome.contractContextMap.seller_name.stringValue}  <span class="input-line">#{contractHome.contractContextMap.seller_card_type.stringValue}</span>证件号码：#{contractHome.contractContextMap.seller_card_number.stringValue}</p>
+                        <p>乙方（买方）：#{contractHome.contractContextMap.buyer_name.stringValue}   <span class="input-line">#{contractHome.contractContextMap.buyer_card_name.stringValue}</span>证件号码：#{contractHome.contractContextMap.buyer_card_number.stringValue}</p>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <p class="lead">
+                            甲、乙双方经过平等协商，一致同意就下列房地产买卖事项订立本契约，共同遵守。
+                        </p>
+                    </div>
+
+
+                    <div class="bs-docs-section">
+
+                        <h2 id="section1"><a class="anchorjs-link " href="#section1" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            一、</h2>
+
+                        <p>
+                            甲方自愿将座落在凤城市<span class="input-line">#{contractHome.contractContextMap.address.stringValue}</span>的房地产（房屋建筑面积<span class="input-line"><h:outputText value="#{contractHome.contractContextMap.house_area.numberValue}"><f:convertNumber pattern="#0.00"/></h:outputText></span>平方米；土地使用面积<h:inputText styleClass="form-control" size="10" value="#{contractHome.contractContextMap.land_area.stringValue}"/>平方米）出售给乙方。<span class="input-line">#{contractHome.contractContextMap.power_card_type.stringValue}</span>号<span class="input-line">#{contractHome.contractContextMap.power_card_number.stringValue}</span>，用途<span class="input-line">#{contractHome.contractContextMap.use_type.stringValue}</span>，结构<span class="input-line">#{contractHome.contractContextMap.structure.stringValue}</span>，所在层数<span class="input-line">#{contractHome.contractContextMap.in_floor.stringValue}</span>。四至界限为<h:inputText styleClass="form-control" size="30" value="#{contractHome.contractContextMap.c1_1_1.stringValue}"/>。
+                        </p>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section2"><a class="anchorjs-link " href="#section2" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            二、</h2>
+
+                        <p>甲乙双方议定上述房地产成交价格为人民币（大写）<h:outputText value="#{contractHome.contractContextMap.money.numberValue}" styleClass="input-line"><f:converter converterId="cooper.faces.BigMoneyConverter"/> </h:outputText>；¥ <h:outputText value="#{contractHome.contractContextMap.money.numberValue}" styleClass="input-line"><f:convertNumber pattern="#0.00"/></h:outputText>元。乙方由<h:inputText size="6" styleClass="form-control" value="#{contractHome.contractContextMap.c_2_1_1.stringValue}"/>年<h:inputText size="4" styleClass="form-control" value="#{contractHome.contractContextMap.c_2_1_2.stringValue}"/>月<h:inputText size="4" styleClass="form-control" value="#{contractHome.contractContextMap.c_2_1_3.stringValue}"/>日前<h:inputText size="4" styleClass="form-control" value="#{contractHome.contractContextMap.c_2_1_4.stringValue}"/>次付清给甲方房款。付款方式<span class="input-line">#{contractHome.contractContextMap.sale_pay_type.stringValue}</span>。</p>
+                        <c:if test="#{not contractHome.contractContextMap.bank_name.emptyData}">
+                            <p>
+                                买卖双方约定监管银行为：<span class="input-line">#{contractHome.contractContextMap.bank_name.stringValue} </span> 账号为：<span class="input-line">#{ contractHome.contractContextMap.bank_account.stringValue} </span>监管资金为:人民币<h:outputText styleClass="input-line" value="#{contractHome.contractContextMap.protected_money.numberValue}"><f:convertNumber groupingUsed="true" pattern="#0.00"/></h:outputText>元（大写）：<h:outputText styleClass="input-line" value="#{contractHome.contractContextMap.protected_money.numberValue}"><f:converter converterId="cooper.faces.BigMoneyConverter"/></h:outputText>
+                            </p>
+
+                            <p>
+                                出卖人确认的监管资金收款账户为：
+                            </p>
+                            <p>
+                                收款人姓名：<span class="input-line">#{contractHome.contractContextMap.card_name.stringValue}</span> 收款人账号<span class="input-line">#{contractHome.contractContextMap.card_number.stringValue}</span>开户银行：<span class="input-line">#{contractHome.contractContextMap.card_bank.stringValue}</span>
+                            </p>
+                        </c:if>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section3"><a class="anchorjs-link " href="#section3" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            三、</h2>
+
+                        <p>双方同意于<h:inputText size="6" styleClass="form-control" value="#{contractHome.contractContextMap.c_6_1_1.stringValue}"/>年<h:inputText size="4" styleClass="form-control" value="#{contractHome.contractContextMap.c_6_1_2.stringValue}"/>月<h:inputText size="4" styleClass="form-control" value="#{contractHome.contractContextMap.c_6_1_3.stringValue}"/>日由甲方将上述房地产正式交付给乙方。房屋移交给乙方时，其该建筑物范围内的土地使用权一并转移给乙方。</p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section4"><a class="anchorjs-link " href="#section4" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            四、</h2>
+                        <p>甲方保证上述房地产权属清楚，无纠纷，房地产无限制交易的情形。甲乙双方所提交的证件资料真实、合法、有效、无隐瞒、伪报。如有不实，甲乙双方愿负全部法律及经济责任。</p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section5"><a class="anchorjs-link " href="#section5" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            五、</h2>
+                        <p>上述房地产办理过户手续所需缴纳的税费，由<h:inputText size="6" styleClass="form-control" value="#{contractHome.contractContextMap.c_5_1_1.stringValue}"/>承担。甲方须协助乙方办理房地产买卖过户事宜。
+                        </p>
+
+
+
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section6"><a class="anchorjs-link " href="#section6" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            六、</h2>
+
+                        <p>
+                            本契约经甲乙双方签章后生效。任何一方违约，由违约方向对方给付上述房地产价款百分之<h:inputText size="6" styleClass="form-control" value="#{contractHome.contractContextMap.c_6_1_1.stringValue}"/>的违约金。
+                        </p>
+                    </div>
+
+
+                    <div class="bs-docs-section">
+                        <h2 id="section7"><a class="anchorjs-link " href="#section7" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            七、</h2>
+
+                        <p>
+                            本契约一式四份，甲乙双方各执一份，房地产交易中心和公证处各一份。
+                        </p>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section8"><a class="anchorjs-link " href="#section8" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            八、</h2>
+
+                        <p>双方约定的其他事项：
+                        </p>
+                        <p><h:inputText styleClass="form-control" style="width: 95% !important;" value="#{contractHome.contractContextMap.c8_1_1.stringValue}" rows="2"/></p>
+
+                    </div>
+
+
+
+                </div>
+
+                <div class="col-md-3" role="complementary" >
+
+                    <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" style="margin-top:40px">
+                        <ul class="nav bs-docs-sidenav">
+
+                            <li>
+                                <a href="#overview">房屋买卖协议</a>
+                            </li>
+
+                            <li>
+                                <a href="#section1">一</a>
+                            </li>
+                            <li>
+                                <a href="#section2">二</a>
+                            </li>
+                            <li>
+                                <a href="#section3">三</a>
+                            </li>
+                            <li>
+                                <a href="#section4">四</a>
+                            </li>
+                            <li>
+                                <a href="#section5">五</a>
+                            </li>
+                            <li>
+                                <a href="#section6">六</a>
+                            </li>
+                            <li>
+                                <a href="#section7">七</a>
+                            </li>
+                            <li>
+                                <a href="#section8">八</a>
+                            </li>
+
+                        </ul>
+                    </nav>
+
+                </div>
+
+            </div>
+        </b:container>
+
+    </h:form>
+    <b:container styleClass="site-footer-container">
+        <div class="site-footer" role="contentinfo">
+
+
+            <span class="site-footer-mark">
+                <b:iconAwesome name="home" size="lg"/>
+            </span>
+
+            <ul class="site-footer-links">
+                <li>© 2016 <span title="Cooper's soft">Cooper's soft</span>, Studio.</li>
+            </ul>
+        </div>
+    </b:container>
+
+
+
+
+</h:body>
+
+</html>

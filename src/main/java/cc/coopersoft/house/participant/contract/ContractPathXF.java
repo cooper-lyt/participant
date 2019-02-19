@@ -8,22 +8,18 @@ import org.apache.deltaspike.core.api.config.view.ViewConfig;
 import javax.enterprise.inject.Any;
 import java.io.OutputStream;
 
-/**
- * Created by cooper on 19/10/2017.
- */
 @Any
-public class ContractPathFC implements ContractPath {
+public class ContractPathXF implements ContractPath {
 
     public String getConfigName() {
-        return "fc";
+        return "xf";
     }
-
 
     public Class<? extends ViewConfig> getEditPath(SaleType saleType, int ver) {
         switch (ver) {
 
             case 1:
-                return Seller.Contract.Fc.OldEdit.class;
+                return Seller.Contract.Xf.OldEdit.class;
             default:
                 throw new IllegalArgumentException("unknow ver:" + ver);
 
@@ -34,7 +30,7 @@ public class ContractPathFC implements ContractPath {
         switch (ver) {
 
             case 1:
-                ContractPdfFC1.pdf(contractContextMap,outputStream);
+                ContractPdfXf1.pdf(contractContextMap,outputStream);
                 break;
             default:
                 throw new IllegalArgumentException("unknow ver:" + ver);

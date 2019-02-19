@@ -72,7 +72,7 @@
     <dependency>
       <groupId>local.house</groupId>
       <artifactId>HouseInterface</artifactId>
-      <version>2.0.126Bate</version>
+      <version>2.0.130Bate</version>
     </dependency>
 
     <dependency>
@@ -233,9 +233,6 @@
       <artifactId>picketlink-impl</artifactId>
       <scope>runtime</scope>
     </dependency>
-
-
-
 
 
     <dependency>

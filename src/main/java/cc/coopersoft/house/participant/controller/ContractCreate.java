@@ -31,9 +31,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -274,10 +273,40 @@ public class ContractCreate implements java.io.Serializable{
         contractHome.getContractContextMap().put("seller_card_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(seller.getCredentialsType())));
         contractHome.getContractContextMap().put("seller_card_number", new ContractContextMap.ContarctContextItem(seller.getCredentialsNumber()));
 
+        if (contractHome.getSellerEditList().size() > 1){
+            List<ContractContextMap> poolMapList = new ArrayList<ContractContextMap>(contractHome.getSellerEditList().size() - 1);
+            for (int i = 1 ; i < contractHome.getSellerEditList().size() ; i++){
+                ContractContextMap poolMap = new ContractContextMap();
+                PowerPerson pool =  contractHome.getSellerEditList().get(i).getPersonEntity();
+                poolMap.put("name", new ContractContextMap.ContarctContextItem(pool.getPersonName()));
+                poolMap.put("card_type", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(pool.getCredentialsType())));
+                poolMap.put("card_number", new ContractContextMap.ContarctContextItem(pool.getCredentialsNumber()));
+                poolMapList.add(poolMap);
+            }
+            contractHome.getContractContextMap().put("seller_pool", new ContractContextMap.ContarctContextItem(poolMapList));
+        }
+
+        if (contractHome.getBuyerEditList().size() > 1){
+            List<ContractContextMap> poolMapList = new ArrayList<ContractContextMap>(contractHome.getBuyerEditList().size() - 1);
+            for (int i = 1 ; i < contractHome.getBuyerEditList().size() ; i++){
+                ContractContextMap poolMap = new ContractContextMap();
+                PowerPerson pool =  contractHome.getBuyerEditList().get(i).getPersonEntity();
+                poolMap.put("name", new ContractContextMap.ContarctContextItem(pool.getPersonName()));
+                poolMap.put("card_type", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(pool.getCredentialsType())));
+                poolMap.put("card_number", new ContractContextMap.ContarctContextItem(pool.getCredentialsNumber()));
+                poolMapList.add(poolMap);
+            }
+            contractHome.getContractContextMap().put("buyer_pool", new ContractContextMap.ContarctContextItem(poolMapList));
+        }
+
         contractHome.getContractContextMap().put("buyer_name", new ContractContextMap.ContarctContextItem(buyer.getPersonName()));
         contractHome.getContractContextMap().put("buyer_card_name", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(buyer.getCredentialsType())));
         contractHome.getContractContextMap().put("buyer_card_number",new ContractContextMap.ContarctContextItem(buyer.getCredentialsNumber()));
         contractHome.getContractContextMap().put("money", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getPrice()));
+        contractHome.getContractContextMap().put("pay_type", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getSalePayType().name()));
+
+        contractHome.getContractContextMap().put("price_house_area", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getPrice().divide(houseSourceHome.getInstance().getHouseArea(),2, BigDecimal.ROUND_HALF_EVEN)));
+        contractHome.getContractContextMap().put("price_use_area", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getPrice().divide(houseSourceHome.getInstance().getUseArea(),2, BigDecimal.ROUND_HALF_EVEN)));
 
         contractHome.getContractContextMap().put("address", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getAddress()));
         contractHome.getContractContextMap().put("use_type", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getDesignUseType()));
@@ -291,6 +320,10 @@ public class ContractCreate implements java.io.Serializable{
         contractHome.getContractContextMap().put("power_card_type", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getPowerCardType())));
         contractHome.getContractContextMap().put("power_card_number", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getPowerCardNumber()));
         contractHome.getContractContextMap().put("house_area", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea()));
+        contractHome.getContractContextMap().put("use_area", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getUseArea()));
+        contractHome.getContractContextMap().put("comm_area", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea().subtract(houseSourceHome.getInstance().getUseArea())));
+
+        contractHome.getContractContextMap().put("sale_pay_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(contractHome.getInstance().getSalePayType())));
 
         if (contractHome.getInstance().getMoneyManager() != null){
             contractHome.getContractContextMap().put("bank_name" , new ContractContextMap.ContarctContextItem(contractHome.getInstance().getMoneyManager().getBankName()));

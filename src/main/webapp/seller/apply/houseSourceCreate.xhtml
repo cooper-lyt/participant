@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:define name="custom-header">
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select.min.css"/>
+        <h:outputStylesheet library="bootstrap-select" name="css/bootstrap-select-plug.css"/>
+        <h:outputScript library="bsf" name="js/dropdown.js"/>
+        <h:outputScript library="bootstrap-select" name="js/bootstrap-select.min.js"/>
+        <h:outputScript library="bootstrap-select" name="js/i18n/defaults-zh_CN.min.js"/>
+    </ui:define>
+
+
+
+    <h:form id="houes-valid"  styleClass="page-form">
+        <b:row>
+            <b:column offsetLg="2" offsetMd="2" offsetSm="1" offsetXs="0" colLg="8" colMd="8" colSm="10" colXs="12">
+                <div class="setup-header setup-gift">
+                    <h1 class="subhead-heading">房源审核申请</h1>
+
+                    <ol class="steps steps-5">
+                        <li class="current">
+                            <b:iconAwesome name="stethoscope" size="2x"/>
+                            <strong class="step">产权:</strong>
+                            产权验证
+                        </li>
+                        <li>
+                            <b:iconAwesome name="id-card-o" size="2x"/>
+                            <strong class="step">委托:</strong>
+                            委托信息
+                        </li>
+
+                    </ol>
+                </div>
+
+                <b:messages globalOnly="false" styleClass="top-messages"/>
+
+                <div class="form-group" style="margin-bottom: 15px">
+                    <label >区域</label>
+                <h:selectOneMenu  styleClass="selectpicker form-control " required="true" value="#{houseSourceHome.instance.district}">
+                    <f:selectItems value="#{serverWord.districts}" var="_district" itemLabel="#{_district.name}" itemValue="#{_district.id}"/>
+                </h:selectOneMenu>
+
+                </div>
+                    <b:inputText label="委" value="#{houseSourceHome.instance.wei}" renderLabel="true"/>
+                <b:message/>
+
+                <b:inputText label="小区" value="#{houseSourceHome.instance.sectionName}" renderLabel="true"/>
+                <b:message/>
+
+                <b:inputText label="栋号" required="true" value="#{houseSourceHome.instance.buildNumber}" renderLabel="true"/>
+                <b:message/>
+
+                <b:inputText label="房号" required="true" value="#{houseSourceHome.instance.houseOrder}" renderLabel="true"/>
+                <b:message/>
+
+
+                <b:inputText label="设计用途" renderLabel="true" placeholder="设计用途"  value="#{houseSourceHome.instance.designUseType}">
+                    <f:facet name="prepend">
+                        <h:selectOneMenu required="true" value="#{houseSourceHome.instance.useType}" converter="omnifaces.GenericEnumConverter"  styleClass="selectpicker form-control " >
+                            <f:selectItems value="#{allUseType}" var="_useType" itemLabel="#{enumHelper.getLabel(_useType)}" itemValue="#{_useType}"/>
+                        </h:selectOneMenu>
+                    </f:facet>
+                </b:inputText>
+
+                <b:message/>
+
+
+
+                <div class="form-group" style="margin-bottom: 15px">
+                    <label >建筑结构</label>
+                <h:selectOneMenu label="建筑结构" styleClass="selectpicker form-control "  value="#{houseSourceHome.instance.structure}">
+                    <f:selectItems value="#{wordProduces.getWordList('house.structure')}" var="_word" itemValue="#{_word.name}" itemLabel="#{_word.name}"/>
+                </h:selectOneMenu>
+                </div>
+
+                <b:inputText label="总层数" value="#{houseSourceHome.instance.floorCount}" renderLabel="true">
+                    <f:convertNumber pattern="#0"/>
+                </b:inputText>
+                <b:message/>
+
+                <b:inputText label="建筑面积" required="true" value="#{houseSourceHome.instance.houseArea}" renderLabel="true">
+                    <f:convertNumber pattern="#0.00"/>
+                </b:inputText>
+                <b:message/>
+
+                <b:inputText label="套内面积" value="#{houseSourceHome.instance.useArea}" renderLabel="true">
+                    <f:convertNumber pattern="#0.00"/>
+                </b:inputText>
+                <b:message/>
+
+
+                <hr/>
+
+
+                <b:commandButton  action="#{houseSourceCreate.createHouse}" look="success" value="建立房源"/>
+
+
+            </b:column>
+
+        </b:row>
+    </h:form>
+
+
+    <p:outputPanel autoUpdate="true">
+        <h:outputScript>
+            $('.selectpicker').selectpicker();
+            $('.js-datepicker').datetimepicker({
+                language: "zh-CN",
+                format: 'yyyy-mm-dd',
+                weekStart: 1,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 2,
+                forceParse: 0
+            });
+        </h:outputScript>
+
+    </p:outputPanel>
+</ui:composition>

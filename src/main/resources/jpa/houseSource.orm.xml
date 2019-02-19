@@ -142,7 +142,14 @@
                 <column name="ADDRESS" nullable="true" length="200"/>
             </basic>
 
+            <basic name="sectionName">
+                <column name="SECTION_NAME" nullable="true" length="128"/>
+            </basic>
 
+
+            <basic name="wei">
+                <column name="WEI" nullable="true" length="16"/>
+            </basic>
 
             <basic name="powerCardType" optional="false">
                 <column name="POWER_CARD_TYPE" nullable="false"/>

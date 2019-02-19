@@ -1,0 +1,651 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+    <title>#{messages.application_title}</title>
+    <h:outputScript library="bsf" name="js/button.js"/>
+    <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
+
+    <h:outputStylesheet library="github" name="bootstrap.min.css"/>
+    <h:outputStylesheet library="github" name="theme.css" position="last"/>
+    <h:outputStylesheet name="style.css" />
+    <h:outputStylesheet>
+        .navbar .navbar-header .navbar-brand{
+            padding: 10px 15px;
+        }
+    </h:outputStylesheet>
+
+    <h:outputStylesheet name="doc.css"/>
+    <h:outputStylesheet name="patch.css"/>
+    <h:outputStylesheet name="contract.css"/>
+    <h:outputScript library="bsf" name="js/scrollspy.js"/>
+    <h:outputScript library="bsf" name="js/dropdown.js"/>
+    <h:outputScript name="select-edit.js"/>
+
+
+
+
+</h:head>
+
+<h:body style="padding-top: 50px;" pt:data-spy="scroll" pt:data-target=".bs-docs-sidebar" pt:data-offset="60">
+
+    <b:growl id="growl"
+             globalOnly="true"
+             showDetail="true"/>
+
+    <b:modal id="amodal" size="modal-sm" title="删除确认" styleClass="modalPseudoClass">
+        <p>删除合同确认,合同内所有信息将会丢失！</p>
+        <f:facet name="footer">
+            <h:form>
+
+                <b:commandButton action="#{contractCreate.deleteContract}" look="danger" style="width:100%" value="我确认要删除此合同">
+                    <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                </b:commandButton>
+            </h:form>
+        </f:facet>
+    </b:modal>
+
+
+
+
+
+
+    <h:form>
+
+        <b:modal id="submodal" size="modal-sm" title="提交确认" styleClass="submodalModalClass">
+            <p>您确认要提交合同#{' '}<strong>#{contractHome.instance.id}</strong>#{' '} 到房屋交易备案部门 </p>
+            <p>提交后合同将从草签状态转为签约状态，签约状态的合同将无法被修改，但您仍然可以打印合同。</p>
+            <f:facet name="footer">
+
+
+                <b:commandButton action="#{contractCreate.submitContract}" look="success" style="width:100%" value="我确认要提交此合同">
+                    <f:param name="contractId" value="#{contractHome.instance.id}"/>
+                    <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                </b:commandButton>
+
+            </f:facet>
+        </b:modal>
+
+        <b:modal id="pdfmodal" size="modal-sm" title="打印合同" styleClass="pdfmodalModalClass">
+            <p>在未提交前打印合同，请保证纸制合同内容与提交合同的内容一致。</p>
+            <f:facet name="footer">
+
+
+                <h:commandLink styleClass="btn btn-success" action="#{contractCreate.printPdf}"
+                               onclick="$('.pdfmodalModalClass').modal('hide');" target="_blank" look="success"
+                               style="width:100%" value="打印合同">
+                    <f:param name="contractId" value="#{contractHome.instance.id}"/>
+                </h:commandLink>
+
+            </f:facet>
+        </b:modal>
+
+
+        <b:navBar brandImg="#{request.contextPath}/img/logo-icon.png" brand-href="#{request.contextPath}/home.xhtml" position="top" sticky="true">
+            <b:container>
+
+
+                <b:navbarLinks>
+
+
+                    <b:navCommandLink value="保存" action="#{contractHome.save}" ajax="true" update="@none">
+                        <f:param name="contractId" value="#{contractHome.instance.id}"/>
+                    </b:navCommandLink>
+
+                    <b:navLink value="删除" onclick="$('.modalPseudoClass').modal();return false;"  href="#"></b:navLink>
+                    <b:navLink value="提交合同" onclick="$('.submodalModalClass').modal();return false;"  href="#"></b:navLink>
+
+
+                    <b:navLink value="打印合同" onclick="$('.pdfmodalModalClass').modal();return false;"  href="#"></b:navLink>
+
+
+
+
+
+                </b:navbarLinks>
+
+                <b:navbarLinks pull="right">
+                    <b:navLink iconAwesome="gear" tooltip="设置" value=" " href="#{request.contextPath}/logout"/>
+                    <b:navLink iconAwesome="sign-out" tooltip="退出" value=" " href="#{request.contextPath}/logout"/>
+                </b:navbarLinks>
+
+            </b:container>
+        </b:navBar>
+
+
+
+
+        <b:container >
+
+            <div class="row">
+
+                <div class="col-md-9" role="main">
+
+                    <div class="bs-docs-section">
+                        <h1 id="overview" class="page-header">
+                            <a class="anchorjs-link " href="#overview" aria-label="Anchor link for: overview" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            房屋交易合同书
+                        </h1>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <p>出卖人：<span class="input-line">#{contractHome.contractContextMap.seller_name.stringValue} </span> #{contractHome.contractContextMap.seller_card_type.stringValue}号：<span class="input-line">#{contractHome.contractContextMap.seller_card_number.stringValue}</span></p>
+                        <c:if test="#{not contractHome.contractContextMap.seller_pool.emptyData }">
+                        <c:forEach items="#{contractHome.contractContextMap.seller_pool.arrayValue}" var="_pool">
+                            <p>共有人：<span class="input-line">#{_pool.name.stringValue} </span> #{_pool.card_type.stringValue}号：<span class="input-line">#{_pool.card_number.stringValue}</span></p>
+                        </c:forEach>
+                        </c:if>
+                        <p>买受人：<span class="input-line">#{contractHome.contractContextMap.buyer_name.stringValue}   </span>#{contractHome.contractContextMap.buyer_card_name.stringValue}号：<span class="input-line">#{contractHome.contractContextMap.buyer_card_number.stringValue}</span></p>
+                        <c:if test="#{not contractHome.contractContextMap.buyer_pool.emptyData }">
+                            <c:forEach items="#{contractHome.contractContextMap.buyer_pool.arrayValue}" var="_pool">
+                                <p>共有人：<span class="input-line">#{_pool.name.stringValue} </span> #{_pool.card_type.stringValue}号：<span class="input-line">#{_pool.card_number.stringValue}</span></p>
+                            </c:forEach>
+                        </c:if>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <p class="lead">
+                            根据《中华人民共和国合同法》、《中华人民共和国城市房地产管理法》及其他有关法律、法规之规定，买受人和出卖人在平等、自愿、协商一致的基础上就买卖房屋达成如下协议：
+                        </p>
+                    </div>
+
+
+                    <div class="bs-docs-section">
+
+                        <h2 id="section1"><a class="anchorjs-link " href="#section1" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第一条  项目建设依据</h2>
+
+                        <div class="doc-p">
+                            1、出卖人以 【<b:selectOneMenu style="width:50px !important;" value="#{contractHome.contractContextMap.c_1_1_1.stringValue}"><f:selectItem itemLabel="出让" itemValue="出让"/><f:selectItem itemLabel="转让" itemValue="转让"/><f:selectItem itemLabel="划拨" itemValue="划拨"/></b:selectOneMenu>】 方式取得座落于  <h:inputText size="60" styleClass="form-control" value="#{contractHome.contractContextMap.c_1_1_2.stringValue}"/>地块的国有土地使用权。
+                        </div>
+                        <div class="doc-p">
+                            2、该地块
+                            【
+                            <ui:decorate template="/frame/selectEditInput.xhtml">
+                                <ui:param name="inputStyle" value="width: 70px"/>
+                                <ui:param name="inputValue" value="#{contractHome.contractContextMap.c_1_2_1.stringValue}"/>
+                                <li><a href="#">国有土地使用证号</a></li>
+                                <li><a href="#">不动产权证</a></li>
+                            </ui:decorate>
+                            】为：<h:inputText size="32" styleClass="form-control" value="#{contractHome.contractContextMap.c_1_2_2.stringValue}"/>     ，土地使用面积为：  <h:inputText size="12" styleClass="form-control" value="#{contractHome.contractContextMap.c_1_2_3.stringValue}"/>  ，买受人购买的房屋所在土地用途为： <h:inputText size="12" styleClass="form-control" value="#{contractHome.contractContextMap.c_1_2_4.stringValue}"/>， 土地使用年限自<h:inputText size="6" styleClass="form-control" value="#{contractHome.contractContextMap.c_1_2_5.stringValue}"/>年<h:inputText size="4" styleClass="form-control" value="#{contractHome.contractContextMap.c_1_2_6.stringValue}"/>月<h:inputText size="4" styleClass="form-control" value="#{contractHome.contractContextMap.c_1_2_7.stringValue}"/>日至<h:inputText size="6" styleClass="form-control" value="#{contractHome.contractContextMap.c_1_2_8.stringValue}"/>年<h:inputText size="4" styleClass="form-control" value="#{contractHome.contractContextMap.c_1_2_9.stringValue}"/>月<h:inputText size="4" styleClass="form-control" value="#{contractHome.contractContextMap.c_1_2_10.stringValue}"/>止。
+                        </div>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section2"><a class="anchorjs-link " href="#section2" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第二条  房屋情况</h2>
+
+                        <p>
+                            房屋座落：<span class="input-line">西丰县#{contractHome.contractContextMap.address.stringValue}</span>，设计用途<span class="input-line">#{contractHome.contractContextMap.use_type.stringValue}</span>； 建筑结构<span class="input-line">#{contractHome.contractContextMap.structure.stringValue}</span>； 建筑层数为<span class="input-line">#{contractHome.contractContextMap.floor_count.stringValue}</span>层。建筑面积<span class="input-line"><h:outputText value="#{contractHome.contractContextMap.house_area.numberValue}"><f:convertNumber pattern="#0.00"/></h:outputText></span>平方米，其中：套内建筑面积<span class="input-line"><h:outputText value="#{contractHome.contractContextMap.use_area.numberValue}"><f:convertNumber pattern="#0.00"/></h:outputText></span>平方米，公共部位分摊建筑面积<span class="input-line"><h:outputText value="#{contractHome.contractContextMap.comm_area.numberValue}"><f:convertNumber pattern="#0.00"/></h:outputText></span>平方米。原房权证号：<span class="input-line">#{contractHome.contractContextMap.power_card_number.stringValue}</span> 。
+                        </p>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section3"><a class="anchorjs-link " href="#section3" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第三条 计价方式与价款</h2>
+
+
+                        <div class="doc-p">
+                            出卖人与买受人约定按下述第<b:selectOneMenu update="c_3_select" process="@form" style="width:50px !important;" value="#{contractHome.contractContextMap.c_3_0_1.numberValue}"><f:selectItem noSelectionOption="true" itemLabel="-" itemValue="0"/><f:selectItem itemLabel="1" itemValue="1"/><f:selectItem itemLabel="2" itemValue="2"/><f:selectItem itemLabel="3" itemValue="3"/></b:selectOneMenu>种方式计算该房屋价款；
+                            <h:inputHidden value="#{contractHome.contractContextMap.price_house_area.numberValue}"/>
+                            <h:inputHidden value="#{contractHome.contractContextMap.price_use_area.numberValue}"/>
+                            <h:inputHidden value="#{contractHome.contractContextMap.money.numberValue}"/>
+                        </div>
+                        <p:outputPanel id="c_3_select">
+                        <p>
+                            1、按建筑面积计算，该房屋单价为（人民币）每平方米<h:outputText rendered="#{not (contractHome.contractContextMap.c_3_0_1.numberValue eq 1)}" value="  -  " styleClass="input-line"></h:outputText> <h:outputText rendered="#{contractHome.contractContextMap.c_3_0_1.numberValue eq 1}" value="#{contractHome.contractContextMap.price_house_area.numberValue}" styleClass="input-line"><f:convertNumber pattern="#0.00"/> </h:outputText> 元，总金额（人民币）<h:outputText rendered="#{not (contractHome.contractContextMap.c_3_0_1.numberValue eq 1)}" value="  -  " styleClass="input-line"></h:outputText><h:outputText rendered="#{contractHome.contractContextMap.c_3_0_1.numberValue eq 1}" value="#{contractHome.contractContextMap.money.numberValue}" styleClass="input-line"><f:convertNumber pattern="#0.00"/> </h:outputText> 元。
+                        </p>
+                        <p>
+                            2、按套内建筑面积计算，该房屋单价为（人民币）每平方米<h:outputText rendered="#{not (contractHome.contractContextMap.c_3_0_1.numberValue eq 2)}" value="  -  " styleClass="input-line"></h:outputText> <h:outputText rendered="#{contractHome.contractContextMap.c_3_0_1.numberValue eq 2}" value="#{contractHome.contractContextMap.price_use_area.numberValue}" styleClass="input-line"><f:convertNumber pattern="#0.00"/> </h:outputText> 元，总金额（人民币）<h:outputText rendered="#{not (contractHome.contractContextMap.c_3_0_1.numberValue eq 2)}" value="  -  " styleClass="input-line"></h:outputText><h:outputText rendered="#{contractHome.contractContextMap.c_3_0_1.numberValue eq 2}" value="#{contractHome.contractContextMap.money.numberValue}" styleClass="input-line"><f:convertNumber pattern="#0.00"/> </h:outputText>  元。
+                        </p>
+                        <p>
+                            3、按套（单元）计算，该房屋总价款为（人民币）<h:outputText rendered="#{not (contractHome.contractContextMap.c_3_0_1.numberValue eq 3)}" value="  -  " styleClass="input-line"></h:outputText> <h:outputText rendered="#{contractHome.contractContextMap.c_3_0_1.numberValue eq 3}" value="#{contractHome.contractContextMap.money.numberValue}" styleClass="input-line"><f:convertNumber pattern="#0.00"/> </h:outputText> 元。
+                        </p>
+
+                        </p:outputPanel>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section4"><a class="anchorjs-link " href="#section4" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第四条 付款方式及期限 </h2>
+                        <div class="doc-p">
+                            买受人采取下列第<span class="input-line"> #{(contractHome.contractContextMap.pay_type.stringValue eq 'ALL_PAY') ? '1' : ((contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY') ? '2' : ((contractHome.contractContextMap.pay_type.stringValue eq 'DEBIT_PAY') ? '3' : '4'))} </span> 种方式付款;
+                        </div>
+
+                        <p>
+                            1、一次性付款，自签约日期起<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'ALL_PAY')}" value="  -  " styleClass="input-line"/>  <h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'ALL_PAY'}" size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_1_1.stringValue}"/> 日内付全部价款<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'ALL_PAY')}" value="  -  " styleClass="input-line"/><h:outputText value="#{contractHome.contractContextMap.money.numberValue}" styleClass="input-line"><f:converter converterId="cooper.faces.BigMoneyConverter"/> </h:outputText>。（小写：<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'ALL_PAY')}" value="  -  " styleClass="input-line"/><h:outputText value="#{contractHome.contractContextMap.money.numberValue}" styleClass="input-line"><f:convertNumber pattern="#0.00"/></h:outputText>万元）。
+                        </p>
+
+                        <p>
+                            2、分期付款：
+                        </p>
+                        <p>
+                            （1）第一次付款自签约日起<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY')}" value="  -  " styleClass="input-line"/><h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY'}" size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_2_1.stringValue}"/>日内付全部价款的<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY')}" value="  -  " styleClass="input-line"/><h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY'}" size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_2_2.stringValue}"/>%，人民币<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY')}" value="  -  " styleClass="input-line"/><h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY'}" size="32" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_2_3.stringValue}"/>元。（小写：<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY')}" value="  -  " styleClass="input-line"/><h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY'}" size="20" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_2_4.stringValue}"/>元）。
+                        </p>
+
+                        <p>
+
+                            （2）第二次付款自签约日起<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY')}" value="  -  " styleClass="input-line"/><h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY'}" size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_2_5.stringValue}"/>日内付全部价款的<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY')}" value="  -  " styleClass="input-line"/><h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY'}" size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_2_6.stringValue}"/>%，人民币<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY')}" value="  -  " styleClass="input-line"/><h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY'}" size="32" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_2_7.stringValue}"/>元。（小写：<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY')}" value="  -  " styleClass="input-line"/><h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'PART_PAY'}" size="20" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_2_8.stringValue}"/>元）。
+                        </p>
+
+                        <p>
+                            3、货款方式付款。买受人可以首期支付购房总价款的<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'DEBIT_PAY')}" value="  -  " styleClass="input-line"/><h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'DEBIT_PAY'}" size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_3_1.stringValue}"/>%，其余价款要以向<h:outputText rendered="#{not (contractHome.contractContextMap.pay_type.stringValue eq 'DEBIT_PAY')}" value="  -  " styleClass="input-line"/><h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'DEBIT_PAY'}" size="60" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_3_2.stringValue}"/>银行或住房公积金管理机构借款支付。
+                        </p>
+
+                        <p>
+                            4、<h:inputText rendered="#{contractHome.contractContextMap.pay_type.stringValue eq 'OTHER_PAY'}" size="100" styleClass="form-control" value="#{contractHome.contractContextMap.c_4_4_1.stringValue}"/>。
+                        </p>
+
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section5"><a class="anchorjs-link " href="#section5" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第五条 房产交付</h2>
+                        <p>
+                            1、房产实物状况、权利状况，符合有关规定和双方约定的，方可交付；不符合有关规定和双方约定的，不得交付。
+                        </p>
+                        <p>
+                            2、出卖人须于<h:inputText size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_5_2_1.stringValue}"/>前，将该房产及相关证明交付买受人。如遇不可抗力，双方约定处理方式<h:inputText size="32" styleClass="form-control" value="#{contractHome.contractContextMap.c_5_2_2.stringValue}"/>。
+                        </p>
+                        <p>
+                            3、上述相关证明包括：身份证、户口本、婚姻证明及复印件。
+                        </p>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section6"><a class="anchorjs-link " href="#section6" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第六条 产权转移登记及其它相关设施登记</h2>
+
+                        <p>
+                            1、协议订立后，买卖双方应在30日内，到房屋所有权登记机关办理房屋所有权转移登记手续。
+                        </p>
+                        <p>
+                            2、按照有关规定，其他相关设施应办理登记的，应在规定期限内办理。
+                        </p>
+                        <p>
+                            3、如因一方原因造成另一方未能及时办理房屋所有权转移登记、其他相关设施登记造成损失的，应依法承担违约责任。
+                        </p>
+                    </div>
+
+
+
+                    <div class="bs-docs-section">
+                        <h2 id="section7"><a class="anchorjs-link " href="#section7" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第七条 出卖人逾期交付房屋的处理</h2>
+
+                        <div class="doc-p">
+                            除遇不可抗力外，出卖人如未按本合同约定日期交付房屋，逾期在 <h:inputText size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_7_0_1.stringValue}"/>日内的，买受人有权向出卖人追究已付款利息，利息自合同约定出卖人应交付房屋之日次日起至实际交付房屋之日按银行同期货款利率计算。如超过上述约定期限的，买受人有权按照下述的第<b:selectOneMenu update="c_7_select" process="@form" style="width:50px !important;" value="#{contractHome.contractContextMap.c_7_0_2.numberValue}"><f:selectItem noSelectionOption="true" itemLabel="-" itemValue="0"/><f:selectItem itemLabel="1" itemValue="1"/><f:selectItem itemLabel="2" itemValue="2"/></b:selectOneMenu>种约定，追究出卖人违约责任；
+                        </div>
+
+                        <p:outputPanel id="c_7_select">
+                        <p>
+                            1、合同继续履行。出卖人应支付买受人已付款利息，利息自合同约定出卖人应交付房屋之日次日起至实际交付房屋之日止，按银行同期贷款利率计算。此外，出卖人还应每日按房屋价款的<h:outputText rendered="#{not (contractHome.contractContextMap.c_7_0_2.numberValue eq 1)}" value="  -  " styleClass="input-line"></h:outputText><h:inputText rendered="#{contractHome.contractContextMap.c_7_0_2.numberValue eq 1}" size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_7_1_1.stringValue}"/>‰向买受人支付违约金。
+                        </p>
+                        <p>
+                            2、解除合同。出卖人应退还买受人已付款、支付已付款利息，利息自合同约定出卖人应付房屋之日次日起至出卖人退还买受人已付款之日止，按银行同期贷款利率计算。
+
+                        </p>
+                        <p>
+                            此外，出卖人还应该每日按房屋价款的<h:outputText rendered="#{not (contractHome.contractContextMap.c_7_0_2.numberValue eq 2)}" value="  -  " styleClass="input-line"></h:outputText><h:inputText rendered="#{contractHome.contractContextMap.c_7_0_2.numberValue eq 2}" size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_7_2_1.stringValue}"/>‰向买受人支付违约金。买受人的实际损失超过出卖人支付的违约金时，出卖人还应承担赔偿责任。
+                        </p>
+                        </p:outputPanel>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section8"><a class="anchorjs-link " href="#section8" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第八条 买受人逾期付款的处理</h2>
+
+                        <div class="doc-p">
+                            买受人如未按本合同约定的日期付款，逾期在<h:inputText size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_8_0_1.stringValue}"/>日内，出卖人有权追究买受人逾期付款及其利息，利息自合同约定买受人应付款之日次日起至实际付款之日止，按银行同期贷款利率计算。如超过上述约定期限的，出卖人有权按照下述的第<b:selectOneMenu update="c_8_select" process="@form" style="width:50px !important;" value="#{contractHome.contractContextMap.c_8_0_2.numberValue}"><f:selectItem noSelectionOption="true" itemLabel="-" itemValue="0"/><f:selectItem itemLabel="1" itemValue="1"/><f:selectItem itemLabel="2" itemValue="2"/></b:selectOneMenu>种约定，追究买受人违约责任。
+                        </div>
+                        <p:outputPanel id="c_8_select">
+                        <p>
+                            1、合同继续履行。买受人应支付逾期付款及其利息，利息自合同约定买受人应付款之日次日起至实际付款之日止，按银行同期贷款利率计算。此外，买受人还应每日按房屋价款的<h:outputText rendered="#{not (contractHome.contractContextMap.c_8_0_2.numberValue eq 1)}" value="  -  " styleClass="input-line"></h:outputText><h:inputText rendered="#{contractHome.contractContextMap.c_8_0_2.numberValue eq 1}" size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_8_1_1.stringValue}"/>‰向出卖人支付违约金。
+                        </p>
+                        <p>
+                            2、解除合同，买受人应每日按房屋价款的<h:outputText rendered="#{not (contractHome.contractContextMap.c_8_0_2.numberValue eq 2)}" value="  -  " styleClass="input-line"></h:outputText><h:inputText rendered="#{contractHome.contractContextMap.c_8_0_2.numberValue eq 2}" size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_8_2_1.stringValue}"/>‰向出卖人支付违约金。
+                        </p>
+                        </p:outputPanel>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section9"><a class="anchorjs-link " href="#section9" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第九条 面积确认及面积差异处理</h2>
+                        <p>
+                            （一）根据当事人选择的计价方式，本条规定以（建筑面积/套内建筑面积）（本条款中均简称面积）为依据进行面积确认及面积差异处理。
+                        </p>
+                        <p>
+                            （二）当事人选择按套计价的，不适用本条约定。
+                        </p>
+                        <p>
+                            （三）合同约定面积与产权登记面积有差异的，以产权登记面积为准。
+                        </p>
+                        <div class="doc-p">
+                            （四）房屋交付后，产权登记面积与合同约定面积发生差异，双方同意按<b:selectOneMenu update="c_9_select" process="@form" style="width:50px !important;" value="#{contractHome.contractContextMap.c_9_0_1.numberValue}"><f:selectItem noSelectionOption="true" itemLabel="-" itemValue="0"/><f:selectItem itemLabel="1" itemValue="1"/><f:selectItem itemLabel="2" itemValue="2"/></b:selectOneMenu>种方式进行处理：
+                        </div>
+                        <p:outputPanel id="c_9_select">
+                        <p>
+                            1、双方自行约定：<h:outputText rendered="#{not (contractHome.contractContextMap.c_9_0_1.numberValue eq 1)}" value="  -  " styleClass="input-line"></h:outputText><h:inputText rendered="#{contractHome.contractContextMap.c_9_0_1.numberValue eq 1}" size="70" styleClass="form-control" value="#{contractHome.contractContextMap.c_9_1_1.stringValue}"/>。
+                        </p>
+                        </p:outputPanel>
+                        <p>
+                            2、双方同意按以下原则处理：
+                        </p>
+                        <p>
+                            （1）面积误差比绝对值在3%以内（含3%）的，据实结算房款；
+                        </p>
+                        <p>
+                            （2）面积误差比绝对值超出3%时，买受人有权退房。
+                        </p>
+                        <p>
+                            （五）买受人退房的，出卖人在买受人提出退房之日起30天内将买受人已付款退还给买受人，并按<h:inputText size="12" styleClass="form-control" value="#{contractHome.contractContextMap.c_9_5_1.stringValue}"/>利率付给利息。
+                        </p>
+                        <p>
+                            （六）买受人不退房的，产权登记面积大于合同约定面积时，面积误差比3%以内（含3%）部分的房价款由买受人补足；超出3%部分的房价款由出卖人承担，产权归买受人。产权登记面积小于合同约定面积款由出卖人双倍返还买受人。
+                        </p>
+                        <p>
+                            产权登记面积-合同约定面积
+                        </p>
+                        <p>
+                            面积误差比=   ✕100%
+                        </p>
+                        <p>
+                            合同约定面积
+                        </p>
+                        <p>
+                            （七）因设计变更造成面积差异，双方不解除合同的，应当签署补充协议。
+                        </p>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section10"><a class="anchorjs-link " href="#section10" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第十条 出卖人关于房屋产权状况的承诺</h2>
+                        <p>
+                            出卖人保证销售的房屋没有产权纠纷和债权债务纠纷。因出卖人原因，造成该房屋不能办理产权登记或发生债权债务纠纷的，由出卖人承担全部责任。若出售的房屋设有他项权利的，出卖人应当在出售前征得他项权利人的书面同意，并以书面形式公示和明确告知买受人。
+                        </p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section11"><a class="anchorjs-link " href="#section11" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第十一条  风险责任的转移</h2>
+                        <p>
+                            该商品房的风险责任自交付之日起由出卖人转移给买受人。如买受人未按约定的日期办理该房屋的验收交接手续，出卖人应当发出书面催告书一次。买受人未按催告书规定的日期办理该房屋的验收交接手续的，则自催告书约定的验收交接日之第二日起该房屋的风险责任转移由买受人承担。
+                        </p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section12"><a class="anchorjs-link " href="#section12" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第十二条  声明及保证</h2>
+                        <p>
+                            出卖人：
+                        </p>
+                        <p>
+                            1、出卖人有权签署并有能力履行本合同。
+                        </p>
+                        <p>
+                            2、出卖人签署和履行本合同所需的一功手续（身份证、户口本、婚姻证明）均已办妥并合法有效。
+                        </p>
+                        <p>
+                            3、在签署本合同时，任何法院、仲裁机构、行政机关或监督机构未作出任何足以对出卖人履行本合同产生重大不利影响的判决、裁定、裁决或具体行政行为。
+                        </p>
+                        <p>
+                            4、出卖人为签署本合同所需的内部授权程序均已完成，本合同的签署人是出卖人法定代表人或授权代表人。本合同生效后即对合同双方具有法律约束力。
+                        </p>
+                        <p>
+                            买受人：
+                        </p>
+                        <p>
+                            1、买受人有权签署并有能力履行本合同。
+                        </p>
+                        <p>
+                            2、买受人签署和履行本合同所需的一切手续（身份证、户口本、婚姻证明）均已办妥并合法有效。
+                        </p>
+                        <p>
+                            3、在签署本合同时，任何法院、仲裁机构、行政机关或监督机构均未作出任何足以对出卖人履行本合同产生重大不利影响的判决、裁定、裁决或具体行政行为。
+                        </p>
+                        <p>
+                            4、买受人为签署本合同所需的内部授权程序均已完成，本合同的签署人是买受人法定代表人或授权代表人。本合同生效后即对合同双方具有法律约束力。
+                        </p>
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section13"><a class="anchorjs-link " href="#section13" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第十三条 保密</h2>
+                        <p>
+                            买卖双方保证对在讨论、签订、执行本协议过程中所获悉的属于对方的且无法自公开渠道获得的文件及资料（包括商业秘密、公司计划、运营活动、财务信息、技术信息、经营信息及其他商业秘密）予以保密。未经该资料和文件的原提供方同意，另一方不得向任何第三方泄漏该商业秘密的全部或部分内容、但法律、法规另有规定或双方另有约定的除外。保密期限为<h:inputText size="12" styleClass="form-control" value="#{contractHome.contractContextMap.c_13_0_1.stringValue}"/>年。
+                        </p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section14"><a class="anchorjs-link " href="#section14" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第十四条 通知</h2>
+                        <div class="doc-p">
+                            1、根据本合同需要一方向另一方发出的全部通知以及双方的文件往来及与本合同有关的通知和要求等，必须用书面形式，可采用
+                            【
+                            <ui:decorate template="/frame/selectEditInput.xhtml">
+                                <ui:param name="inputStyle" value="width: 70px"/>
+                                <ui:param name="inputValue" value="#{contractHome.contractContextMap.c_14_1_1.stringValue}"/>
+                                <li><a href="#">书信</a></li>
+                                <li><a href="#">传真</a></li>
+                                <li><a href="#">电报</a></li>
+                                <li><a href="#">当面送交</a></li>
+                            </ui:decorate>
+                            】（书信、传真、电报、当面送交等）方式传递。以上方式无法送达的，方可采取公告送达方式。
+                        </div>
+                        <p>
+                            2、各方通讯地址如下：<h:inputText size="70" styleClass="form-control" value="#{contractHome.contractContextMap.c_14_2_1.stringValue}"/>。
+                        </p>
+                        <p>
+                            3、一方变更通知或通讯地址的，应自变更之日起<h:inputText size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_14_3_1.stringValue}"/>日内，以书面形式通知对方；否则，由未通知方承担由此引起的相关责任。
+                        </p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section15"><a class="anchorjs-link " href="#section15" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第十五条 合同的变更</h2>
+                        <p>
+                            本合同履行期间，发生特殊情况时，买卖任何一方需要变更本合同的，要求变更一方应及时书面通知对方，征得对方同意后，双方在规定的时限内（书面通知发出<h:inputText size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_15_0_1.stringValue}"/>天内）签订书面变更协议，该协议将成为合同不可分割的部分。未经双方签署书面文件，任何一方无权变更本合同，否则，由此造成对方的经济损失，由责任方承担。
+                        </p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section16"><a class="anchorjs-link " href="#section16" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第十六条 合同的转让</h2>
+                        <p>
+                            除合同中另有规定外或经双方协商同意外，本合同所规定双方的任何权利和义务任何一方在未经得另一方书面同意之前，不得转让给第三者。任何转让，未经另一方书面明确同意，均属无效。
+                        </p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section17"><a class="anchorjs-link " href="#section17" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第十七条 争议的处理</h2>
+                        <p>
+                            1、本合同受中华人民共和国法律管辖并按其进行解释。
+                        </p>
+                        <div class="doc-p">
+                            2、本合同在履行过程中发生的争议，由双方当事人协商解决，也可由有关部门调解；协商或调解不成的，按下列第<b:selectOneMenu update="c_17_select" process="@form" style="width:50px !important;" value="#{contractHome.contractContextMap.c_17_2_1.numberValue}"><f:selectItem noSelectionOption="true" itemLabel="-" itemValue="0"/><f:selectItem itemLabel="1" itemValue="1"/><f:selectItem itemLabel="2" itemValue="2"/></b:selectOneMenu>种方式解决；
+                        </div>
+                        <p:outputPanel id="c_17_select">
+                        <p>
+                            （1）提交<h:outputText rendered="#{not (contractHome.contractContextMap.c_17_2_1.numberValue eq 1)}" value="  -  " styleClass="input-line"></h:outputText><h:inputText rendered="#{contractHome.contractContextMap.c_17_2_1.numberValue eq 1}" size="32" styleClass="form-control" value="#{contractHome.contractContextMap.c_17_2_2.stringValue}"/>仲裁委员会仲裁；
+                        </p>
+                        </p:outputPanel>
+                        <p>
+                            （2）依法向人民法院起诉。
+                        </p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section18"><a class="anchorjs-link " href="#section18" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第十八条 不可抗力</h2>
+                        <p>
+                            1、如果本合同任何一方因受不可抗力事件影响而未能履行其在本合同下的全部或部分义务，该义务的履行在不可抗力事件妨碍其履行期间应予中止。
+                        </p>
+                        <p>
+                            2、声称受到不可抗力事件影响的一方尽可能在最短的时间内通过书面形式将不可抗力事件的发生通知另一方，并在该不可抗力事件发生后<h:inputText size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_18_2_1.stringValue}"/>日内向另一方提供关于此种不可抗力事件及其持续时间的适当证据及合同不能履行或者需要延期履行的书面材料。声称不可抗力事件导致其对本合同的履行在客观上成为不可能或不实际的一方，有责任尽一功合理的努力消除或减轻此等不可抗力事件的影响。
+                        </p>
+                        <p>
+                            3、不可抗力事件发生时，双方应立即通过友好协商决定如何执行本合同。不可抗力事件或其影响终止或消除后，双方须立即恢复履行各自在本合同项目下的各项义务。如不可抗力及其影响无法终止或消除而致使合同任何一方丧失继续履行合同的能力，则双方可协商解除合同或暂时延迟合同的履行，且遭遇不可抗力一方无须为此承担责任。当事人延迟履行后发生不可抗力的，不能免除责任。
+                        </p>
+                        <p>
+                            4、本合同所称“不可抗力”是指受影响一方不能合理控制的，无法预料或即使可预料也不可避免且无法克服，并于本合同签订日之后出现的，使该方对本合同全部或部分的履行在客观上成为不可能或不实际的任何事件。此等事件包括但不限于自然灾害如水灾、火灾、台风、地震，以及社会事件如战争（不论曾否宣战）动乱、罢工，政府行为或法律规定等。
+                        </p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section19"><a class="anchorjs-link " href="#section19" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第十九条 合同的解释</h2>
+                        <p>
+                            本合同未尽事宜或条款内容不明确，合同双方当事人可以根据本合同的原则、合同的目的、交易习惯及关联条款的内容，按照通常理解对本合同作出合理解释。该解释具有约束力；除非解释与法律或本合同相抵触。
+                        </p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section20"><a class="anchorjs-link " href="#section20" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第二十第 补充与附件</h2>
+                        <p>
+                            本合同未尽事宜，依照有关法律、法规执行，法律、法规未作规定的，买卖双方可以达成书面补充合同。本合同的附件和补充合同均为本合同不可分割的组成部分，与本合同具有同等法律效力。
+                        </p>
+
+                    </div>
+
+                    <div class="bs-docs-section">
+                        <h2 id="section21"><a class="anchorjs-link " href="#section21" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
+                            第二十一条 合同的效力</h2>
+                        <p>
+                            1、本合同自双方或双方法定代表人或其授权代表人签字并加盖单位公章或合同专用章之日起生效。
+                        </p>
+                        <p>
+                            2、本协议一式<h:inputText size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_21_2_1.stringValue}"/>份，出卖人、买受人各<h:inputText size="8" styleClass="form-control" value="#{contractHome.contractContextMap.c_21_2_2.stringValue}"/>份，具有同等法律效力。
+                        </p>
+                        <p>
+                            3、本合同的附件和补充合同均为本合同不可分割的组成部分，与本合同具有同等的法律效力。
+                        </p>
+
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="col-md-3" role="complementary" >
+
+                    <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" style="margin-top:40px">
+                        <ul class="nav bs-docs-sidenav">
+
+                            <li>
+                                <a href="#overview">房屋交易合同书</a>
+                            </li>
+
+                            <li>
+                                <a href="#section1">第一条 项目建设依据</a>
+                            </li>
+                            <li>
+                                <a href="#section2">第二条 房屋情况</a>
+                            </li>
+                            <li>
+                                <a href="#section3">第三条 计价方式与价款</a>
+                            </li>
+                            <li>
+                                <a href="#section4">第四条 付款方式及期限</a>
+                            </li>
+                            <li>
+                                <a href="#section5">第五条 房产交付</a>
+                            </li>
+                            <li>
+                                <a href="#section6">第六条 产权转移登记及其它相关设施登记</a>
+                            </li>
+                            <li>
+                                <a href="#section7">第七条 出卖人逾期交付房屋的处理</a>
+                            </li>
+                            <li>
+                                <a href="#section8">第八条 买受人逾期付款的处理</a>
+                            </li>
+                            <li>
+                                <a href="#section9">第九条 面积确认及面积差异处理</a>
+                            </li>
+                            <li>
+                                <a href="#section10">第十条 出卖人关于房屋产权状况的承诺</a>
+                            </li>
+                            <li>
+                                <a href="#section11">第十一条  风险责任的转移</a>
+                            </li>
+                            <li>
+                                <a href="#section12">第十二条  声明及保证</a>
+                            </li>
+                            <li>
+                                <a href="#section13">第十三条 保密</a>
+                            </li>
+                            <li>
+                                <a href="#section14">第十四条 通知</a>
+                            </li>
+                            <li>
+                                <a href="#section15">第十五条 合同的变更</a>
+                            </li>
+                            <li>
+                                <a href="#section16">第十六条 合同的转让</a>
+                            </li>
+                            <li>
+                                <a href="#section17">第十七条 争议的处理</a>
+                            </li>
+                            <li>
+                                <a href="#section18">第十八条 不可抗力</a>
+                            </li>
+                            <li>
+                                <a href="#section19">第十九条 合同的解释</a>
+                            </li>
+                            <li>
+                                <a href="#section20">第二十第 补充与附件</a>
+                            </li>
+                            <li>
+                                <a href="#section21">第二十一条 合同的效力</a>
+                            </li>
+
+                        </ul>
+                    </nav>
+
+                </div>
+
+            </div>
+        </b:container>
+
+    </h:form>
+    <b:container styleClass="site-footer-container">
+        <div class="site-footer" role="contentinfo">
+
+
+            <span class="site-footer-mark">
+                <b:iconAwesome name="home" size="lg"/>
+            </span>
+
+            <ul class="site-footer-links">
+                <li>© 2016 <span title="Cooper's soft">Cooper's soft</span>, Studio.</li>
+            </ul>
+        </div>
+    </b:container>
+
+
+
+
+</h:body>
+
+</html>

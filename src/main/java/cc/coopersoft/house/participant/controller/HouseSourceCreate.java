@@ -20,6 +20,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -62,6 +63,9 @@ public class HouseSourceCreate {
     @Inject
     protected Logger logger;
 
+    @Inject
+    private ServerWord serverWord;
+
     private void endConversation() {
         if ( !conversation.isTransient() )
         {
@@ -75,6 +79,73 @@ public class HouseSourceCreate {
         }
     }
 
+    private boolean sourceNext(HouseValidResult result){
+        HouseSource editHouseSource = houseSourceService.existsHouseSource(result.getHouseSource().getHouseCode(),attrUser.getLoginData().getCorpInfo().getId());
+        if (editHouseSource != null){
+            houseSourceHome.setId(editHouseSource.getId());
+            messages.addInfo().houseSourceToEdit();
+            return false;
+        }
+
+        HouseSource passHouseSource = houseSourceService.existsPassHouseSource(result.getHouseSource().getHouseCode());
+        if (passHouseSource != null ){
+            houseSourceHome.setId(passHouseSource.getId());
+
+            if (passHouseSource.isAllowJoin()) {
+                houseSourceHome.getInstance().getHouseSourceCompanies().add(new HouseSourceCompany(UUID.randomUUID().toString().replace("-", ""), attrUser.getLoginData().getCorpInfo().getId(), houseSourceHome.getInstance()));
+                houseSourceHome.save();
+                messages.addInfo().houseSourceExists();
+            }else{
+                messages.addInfo().houseSourceOnlyExists();
+            }
+
+            return false;
+        }
+
+
+        houseSourceHome.setInstance(result.getHouseSource());
+
+        houseSourceHome.getInstance().setId(UUID.randomUUID().toString().replace("-",""));
+        houseSourceHome.getInstance().setGroupId(attrUser.getLoginData().getCorpInfo().getId());
+
+        houseSourceHome.getInstance().getHouseSourceCompanies().add(new HouseSourceCompany(UUID.randomUUID().toString().replace("-",""),attrUser.getLoginData().getCorpInfo().getId(),houseSourceHome.getInstance()));
+
+        houseSourceHome.getInstance().setPowerCardNumber(houseValidInfo.getPowerCardNumber());
+        houseSourceHome.getInstance().setCredentialsNumber(houseValidInfo.getCredentialsNumber());
+        houseSourceHome.getInstance().setCredentialsType(houseValidInfo.getCredentialsType());
+        houseSourceHome.getInstance().setPersonName(houseValidInfo.getPersonName());
+        houseSourceHome.getInstance().setPowerCardType(houseValidInfo.getPowerCardType());
+
+        houseSourceHome.getInstance().setSaleType(HouseSource.SaleType.SELLER);
+        houseSourceHome.getInstance().setApplyTime(new Date());
+        houseSourceHome.getInstance().setCheckTime(new Date());
+        houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.PREPARE);
+
+
+
+        if ( conversation.isTransient() )
+        {
+
+            conversation.begin();
+            conversation.setTimeout(1200000);
+        }
+
+        return true;
+    }
+
+    @Seller
+    @Transient
+    public  Class<? extends  ViewConfig> createHouse(){
+        houseSourceHome.getInstance().setAddress(serverWord.getDistrictName(houseSourceHome.getInstance().getDistrict()) + "街" + houseSourceHome.getInstance().getWei() + "委" + houseSourceHome.getInstance().getSectionName() + "小区" + houseSourceHome.getInstance().getBuildNumber() + "号楼" + houseSourceHome.getInstance().getHouseOrder() + "室");
+        houseSourceHome.getInstance().setBlockNumber("-");
+        houseSourceHome.getInstance().setMapNumber("-");
+        if (houseSourceHome.getInstance().getDesignUseType() == null || "".equals(houseSourceHome.getInstance().getDesignUseType().trim())){
+            houseSourceHome.getInstance().setDesignUseType(enumHelper.getLabel(houseSourceHome.getInstance().getUseType()));
+        }
+        return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSellInfo.class;
+
+    }
+
     @Seller
     @Transactional
     public Class<? extends ViewConfig> validHouse(){
@@ -82,77 +153,28 @@ public class HouseSourceCreate {
         try {
             HouseValidResult result = houseSourceService.validHouseSource(houseValidInfo);
             switch (result.getValidStatus()){
+                case LIMIT:
+                    addLimitMessages(result.getLimits());
 
                 case SUCCESS:
 
-
-                    HouseSource editHouseSource = houseSourceService.existsHouseSource(result.getHouseSource().getHouseCode(),attrUser.getLoginData().getCorpInfo().getId());
-                    if (editHouseSource != null){
-                        houseSourceHome.setId(editHouseSource.getId());
-                        messages.addInfo().houseSourceToEdit();
-                        return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
-                    }
-
-
-                    HouseSource passHouseSource = houseSourceService.existsPassHouseSource(result.getHouseSource().getHouseCode());
-                    if (passHouseSource != null ){
-
-
-
-                        houseSourceHome.setId(passHouseSource.getId());
-
-                        if (passHouseSource.isAllowJoin()) {
-                            houseSourceHome.getInstance().getHouseSourceCompanies().add(new HouseSourceCompany(UUID.randomUUID().toString().replace("-", ""), attrUser.getLoginData().getCorpInfo().getId(), houseSourceHome.getInstance()));
-                            houseSourceHome.save();
-                            messages.addInfo().houseSourceExists();
-                        }else{
-                            messages.addInfo().houseSourceOnlyExists();
-                        }
-
-                        return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
-                    }
-
-
-                    if (result.getLimits().isEmpty()) {
-
-
-
-                        houseSourceHome.setInstance(result.getHouseSource());
-
-                        houseSourceHome.getInstance().setId(UUID.randomUUID().toString().replace("-",""));
-                        houseSourceHome.getInstance().setGroupId(attrUser.getLoginData().getCorpInfo().getId());
-
-                        houseSourceHome.getInstance().getHouseSourceCompanies().add(new HouseSourceCompany(UUID.randomUUID().toString().replace("-",""),attrUser.getLoginData().getCorpInfo().getId(),houseSourceHome.getInstance()));
-
-                        houseSourceHome.getInstance().setPowerCardNumber(houseValidInfo.getPowerCardNumber());
-                        houseSourceHome.getInstance().setCredentialsNumber(houseValidInfo.getCredentialsNumber());
-                        houseSourceHome.getInstance().setCredentialsType(houseValidInfo.getCredentialsType());
-                        houseSourceHome.getInstance().setPersonName(houseValidInfo.getPersonName());
-                        houseSourceHome.getInstance().setPowerCardType(houseValidInfo.getPowerCardType());
-
-                        houseSourceHome.getInstance().setSaleType(HouseSource.SaleType.SELLER);
-                        houseSourceHome.getInstance().setApplyTime(new Date());
-                        houseSourceHome.getInstance().setCheckTime(new Date());
-                        houseSourceHome.getInstance().setStatus(HouseSource.HouseSourceStatus.PREPARE);
-
-
-
-                        if ( conversation.isTransient() )
-                        {
-
-                            conversation.begin();
-                            conversation.setTimeout(1200000);
-                        }
-
+                    if (sourceNext(result)){
                         return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSellInfo.class;
-                    } else {
-                        addLimitMessages(result.getLimits());
+                    }else{
+                        return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
                     }
 
-                    logger.config(result.getHouseSource().getHouseCode());
-                    break;
+
                 case HOUSE_NOT_FOUND:
-                    messages.addError().validHouseNotFound();
+                    if (result.getHouseSource() != null){
+                        if (sourceNext(result)){
+                            return cc.coopersoft.house.participant.pages.Seller.Apply.HouseSourceCreate.class;
+                        }else{
+                            return cc.coopersoft.house.participant.pages.Seller.HouseSourceView.class;
+                        }
+
+                    }else
+                        messages.addError().validHouseNotFound();
                     break;
                 case OWNER_FAIL:
 
@@ -204,7 +226,8 @@ public class HouseSourceCreate {
 
         contractContextMap.put("house_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getAddress()));
         contractContextMap.put("house_area",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea()));
-
+        contractContextMap.put("use_area",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getUseArea()));
+        contractContextMap.put("comm_area", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea().subtract(houseSourceHome.getInstance().getUseArea())));
 
         contractContextMap.put("time_limit_begin", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getApplyTime()));
 

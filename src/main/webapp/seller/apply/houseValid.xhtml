@@ -78,6 +78,8 @@
                                          autocomplete="false"
                                          value="#{houseValidInfo.houseNumber}" renderLabel="false"/>
 
+
+
                         </div>
                     </p:outputPanel>
 
@@ -113,11 +115,19 @@
 
 
                 </div>
+
+                    <div class="form-checkbox">
+                        <b:radiobutton ajax="true" update="valid_radio_panel"  converter="validTypeConverter" value="#{houseValidInfo.validType}" itemLabel="无房屋标识" process="@this" itemValue="NONE" display="inline"/>
+                        <b:iconAwesome name="cubes"/>
+                        <span class="note">
+                        没有房屋标识，将通过权证号查找房屋.
+                    </span>
+                    </div>
                 </p:outputPanel>
 
                 <hr/>
 
-                <b:inputText label="权证编号" renderLabel="true"  value="#{houseValidInfo.powerCardNumber}"
+                <b:inputText label="权证编号" renderLabel="true" placeholder="权证编号"  value="#{houseValidInfo.powerCardNumber}"
                              required="true">
                     <f:facet name="prepend">
                         <h:selectOneMenu pt:data-width="170px" styleClass="selectpicker form-control select-theme" value="#{houseValidInfo.powerCardType}"

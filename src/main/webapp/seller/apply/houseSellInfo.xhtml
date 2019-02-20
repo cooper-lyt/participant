@@ -176,7 +176,7 @@
 
                 <hr />
 
-                <b:commandButton  action="#{houseSourceCreate.toShowInfo}" look="success" value="挂牌">
+                <b:commandButton rendered="#{runParam.getStringParam('show_in_public') eq 'TRUE'}"  action="#{houseSourceCreate.toShowInfo}" look="success" value="挂牌">
                     <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
 
                 </b:commandButton>

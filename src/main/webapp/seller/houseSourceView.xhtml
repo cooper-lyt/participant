@@ -70,7 +70,10 @@
 
                     <b:dropButton icon="print" value="打印" >
                         <b:navLink value="交易合同" target="_blank" disabled="#{not houseSourceHome.allowPrintSellContract}" href="#{runParam.getStringParam('contract_address')}#{houseSourceHome.houseSourceCompany.houseContract.fileId}"/>
-                        <b:navLink value="委托合同" disabled="true"/>
+
+                        <b:navCommandLink value="委托合同" action="#{houseSourceHome.printAgentPdf}" target="_blank">
+                            <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                        </b:navCommandLink>
                     </b:dropButton>
 
                 </b:buttonGroup>

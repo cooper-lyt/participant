@@ -221,7 +221,7 @@ public class HouseSourceCreate {
         contractContextMap.put("allow_join", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().isAllowJoin()?"放弃":"保留"));
 
         contractContextMap.put("house_card_type", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getPowerCardType())));
-        contractContextMap.put("house_card_number",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getCredentialsNumber()));
+        contractContextMap.put("house_card_number",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getPowerCardNumber()));
         contractContextMap.put("house_design_type",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getDesignUseType()));
 
         contractContextMap.put("house_address",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getAddress()));

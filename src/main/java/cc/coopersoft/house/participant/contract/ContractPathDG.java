@@ -20,32 +20,28 @@ public class ContractPathDG implements ContractPath {
     }
 
 
-    public Class<? extends ViewConfig> getEditPath(SaleType saleType, int ver) {
+    public Class<? extends ViewConfig> getEditPath(SaleType saleType) {
 
-        switch (ver) {
 
-            case 1:
                 return Seller.Contract.Dg.OldEdit.class;
-            default:
-                throw new IllegalArgumentException("unknow ver:" + ver);
 
-        }
 
     }
 
-    public void pdf(ContractContextMap contractContextMap, OutputStream outputStream, int ver) {
+    public void pdf(ContractContextMap contractContextMap, OutputStream outputStream) {
 
-        switch (ver) {
-
-            case 1:
                 ContractPdfDG1.pdf(contractContextMap,outputStream);
-                break;
-            default:
-                throw new IllegalArgumentException("unknow ver:" + ver);
-
-        }
 
 
+
+    }
+
+    public void AgentPdf(ContractContextMap contractContextMap, OutputStream outputStream) {
+
+    }
+
+    public Class<? extends ViewConfig> getAgentEditPath() {
+        return null;
     }
 
 

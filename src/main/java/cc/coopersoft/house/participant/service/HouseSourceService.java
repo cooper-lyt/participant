@@ -12,17 +12,21 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by cooper on 05/08/2017.
  */
-public class HouseSourceService {
+public class HouseSourceService implements java.io.Serializable{
 
     @Inject
     private RunParam runParam;
 
     @Inject
     private HouseSourceRepository houseSourceRepository;
+
+    @Inject
+    private Logger logger;
 
 
     public HouseValidResult validHouseSource(HouseValidInfo houseValidInfo) throws HttpApiServerException {
@@ -40,6 +44,18 @@ public class HouseSourceService {
 
 
         return validHouseSource(houseValidInfo);
+    }
+
+    public boolean isContractRecorded(String id)  {
+        logger.config("status id:" + id );
+        try {
+            String s = HouseSellService.contractBusinessStatus(runParam.getStringParam("nginx_address"),id);
+            logger.config("status:" + s);
+            return  "COMPLETE".equals(s);
+        } catch (HttpApiServerException e) {
+            return false;
+        }
+
     }
 
     private HouseSource getSingleHouseSource(List<HouseSource> houseSourceList){

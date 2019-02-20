@@ -38,6 +38,267 @@ public class ContractPdfXf1 {
         return pm(s,4);
     }
 
+    public static void agentPdf(ContractContextMap contractContextMap, OutputStream outputStream){
+        Document document = new Document(PageSize.A4,40,40,60,60);
+
+        try {
+            PdfWriter pdfWriter = PdfWriter.getInstance(document, outputStream);
+
+            pdfWriter.setEncryption(null, null, PdfWriter.ALLOW_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128);
+
+
+            BaseFont bfChinese = BaseFont.createFont("STSongStd-Light",
+                    "UniGB-UCS2-H", false);
+
+
+            Font h1 = new Font(bfChinese, 32, Font.BOLD,
+                    BaseColor.BLACK);
+
+
+            Font h2 = new Font(bfChinese, 18, Font.BOLD,
+                    BaseColor.BLACK);
+
+            Font h3 = new Font(bfChinese, 12, Font.BOLD,
+                    BaseColor.BLACK);
+
+            Font h3i = new Font(bfChinese, 13, Font.UNDERLINE,
+                    BaseColor.BLACK);
+
+            Font b1 = new Font(bfChinese, 13, Font.NORMAL,
+                    BaseColor.BLACK);
+
+            Font b2 = new Font(bfChinese, 12, Font.NORMAL,
+                    BaseColor.BLACK);
+
+            Font bi = new Font(bfChinese, 12, Font.UNDERLINE, BaseColor.BLACK);
+
+            DecimalFormat dfArea = new DecimalFormat("#0.00");
+            DecimalFormat dfMoney = new DecimalFormat("¥#0.00");
+            DecimalFormat dfInt = new DecimalFormat("#0");
+
+            document.open();
+
+            Paragraph p = new Paragraph("委托协议书",h2);
+            p.setAlignment(Element.ALIGN_CENTER);
+            document.add(p);
+
+            document.add(new Paragraph(" ",b1));
+
+            PdfPTable table = new PdfPTable(1);
+            table.setWidthPercentage(100);
+            table.setKeepTogether(true);
+
+
+            PdfPCell cel;
+
+            PdfPTable titleTable = new PdfPTable(4);
+            float f[] = {3,5,12,12};
+            titleTable.setWidths(f);
+            titleTable.setWidthPercentage(100);
+            titleTable.setKeepTogether(true);
+
+            cel = new PdfPCell(new Paragraph("姓名",b1 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setColspan(2);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("身份证号",b1 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("联系电话",b1 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("委托人",b2 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setPaddingLeft(0);
+            cel.setPaddingRight(0);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("seller_name").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("seller_id_number").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("seller_tel").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("委托人",b2 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setPaddingLeft(0);
+            cel.setPaddingRight(0);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("group_owner").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("group_cer_number").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("group_tel").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(titleTable);
+            cel.setBorderWidth(1);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+
+
+            cel = new PdfPCell(p);
+
+            p = new Paragraph("第一条   委托人自愿委托受托方" ,b2);
+
+            p.add(new Phrase(pm(contractContextMap.get("group_name").getStringValue(),70),bi));
+            p.add(new Phrase("，办理房屋买卖契约合同见证，所需一切税费均由委托方负担。",b2));
+            cel.addElement(p);
+
+            p = new Paragraph("第二条   委托标的房地产坐落：西丰县" ,b2);
+
+            p.add(new Phrase(pm(contractContextMap.get("house_address").getStringValue(),70),bi));
+            p.add(new Phrase("。建筑面积",b2));
+
+            p.add(new Phrase(pm(dfArea.format(contractContextMap.get("house_area").getNumberValue()) ,8),bi));
+            p.add(new Phrase("平方米，系",b2));
+            p.add(new Phrase(pm(contractContextMap.get("house_design_type").getStringValue(),70),bi));
+
+            p.add(new Phrase("用房，房权证号西字第",b2));
+            p.add(new Phrase(pm(contractContextMap.get("house_card_number").getStringValue(),70),bi));
+            p.add(new Phrase("号。",b2));
+
+            cel.addElement(p);
+            p = new Paragraph("第三条   委托期限" ,b2);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+            p.add(new Phrase(pm(sdf.format(contractContextMap.get("time_limit_begin").getDateValue()),70),bi));
+            p.add(new Phrase("至",b2));
+            p.add(new Phrase(pm("",6),bi));
+            p.add(new Phrase("年",b2));
+            p.add(new Phrase(pm("",4),bi));
+            p.add(new Phrase("月",b2));
+            p.add(new Phrase(pm("",4),bi));
+            p.add(new Phrase("日。",b2));
+            cel.addElement(p);
+
+            cel.addElement(new Paragraph("第四条   买卖双方承诺共同履行《房屋买卖合同（契约）》所订立的内容，现据实申请见证上述房屋，如有不实，愿负法律责任。" ,b2));
+
+            cel.addElement(new Paragraph("第五条   补充条款" ,b2));
+            cel.addElement(new Paragraph(" " ,h1));
+            cel.addElement(new Paragraph(" " ,h1));
+            cel.addElement(new Paragraph(" " ,h1));
+
+
+
+
+            cel.addElement(new Paragraph("第六条   本协议经双方签字盖章后生效。" ,b2));
+            cel.setBorderWidth(1);
+            cel.setBorderColor(BaseColor.BLACK);
+            cel.setPadding(10);
+            table.addCell(cel);
+
+
+            PdfPTable footTable = new PdfPTable(2);
+            float ff[] = {5,7};
+            footTable.setWidths(ff);
+            footTable.setWidthPercentage(100);
+            footTable.setKeepTogether(true);
+
+            cel = new PdfPCell(new Paragraph("委托人：" ,b1));
+            cel.setBorderWidth(0);
+            cel.setPadding(20);
+            footTable.addCell(cel);
+
+
+            cel = new PdfPCell(new Paragraph("受委托人："  + contractContextMap.get("group_name").getStringValue() ,b1));
+            cel.setBorderWidth(0);
+            cel.setPadding(20);
+            footTable.addCell(cel);
+
+            cel = new PdfPCell();
+            cel.setBorderWidth(0);
+            cel.setPadding(20);
+            footTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("住所：" + contractContextMap.get("group_address").getStringValue()  ,b1));
+            cel.setBorderWidth(0);
+            cel.setPadding(20);
+            footTable.addCell(cel);
+
+            cel = new PdfPCell();
+            cel.setBorderWidth(0);
+            cel.setPadding(20);
+            footTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("法定代表人：" + contractContextMap.get("group_owner").getStringValue()  ,b1));
+            cel.setBorderWidth(0);
+            cel.setPadding(20);
+            footTable.addCell(cel);
+
+            cel = new PdfPCell();
+            cel.setBorderWidth(0);
+            cel.setPadding(20);
+            footTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(sdf.format(new Date()) ,b1));
+            cel.setBorderWidth(0);
+            cel.setPadding(20);
+            cel.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            footTable.addCell(cel);
+
+
+            cel = new PdfPCell(footTable);
+
+            table.addCell(cel);
+            document.add(table);
+            document.close();
+
+        }catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void pdf(ContractContextMap contractContextMap, OutputStream outputStream){
 
         Document document = new Document(PageSize.A4,40,40,60,60);
@@ -60,7 +321,7 @@ public class ContractPdfXf1 {
             Font h2 = new Font(bfChinese, 18, Font.BOLD,
                     BaseColor.BLACK);
 
-            Font h3 = new Font(bfChinese, 13, Font.BOLD,
+            Font h3 = new Font(bfChinese, 12, Font.BOLD,
                     BaseColor.BLACK);
 
             Font h3i = new Font(bfChinese, 13, Font.UNDERLINE,
@@ -69,10 +330,10 @@ public class ContractPdfXf1 {
             Font b1 = new Font(bfChinese, 13, Font.NORMAL,
                     BaseColor.BLACK);
 
-            Font b2 = new Font(bfChinese, 12, Font.NORMAL,
+            Font b2 = new Font(bfChinese, 11, Font.NORMAL,
                     BaseColor.BLACK);
 
-            Font bi = new Font(bfChinese,12,Font.UNDERLINE,BaseColor.BLACK);
+            Font bi = new Font(bfChinese,11,Font.UNDERLINE,BaseColor.BLACK);
 
             DecimalFormat dfArea = new DecimalFormat("#0.00");
             DecimalFormat dfMoney = new DecimalFormat("¥#0.00");
@@ -509,148 +770,255 @@ public class ContractPdfXf1 {
             document.add(p);
 
             document.add(new Paragraph(25,"        第九条 面积确认及面积差异处理",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
-
-            p.add(new Phrase("条",h3));
+            int select9 = contractContextMap.get("c_9_0_1").getNumberValue().intValue();
+            document.add(new Paragraph(20,"        （一）根据当事人选择的计价方式，本条规定以（建筑面积/套内建筑面积）（本条款中均简称面积）为依据进行面积确认及面积差异处理。",b2));
+            document.add(new Paragraph(20,"        （二）当事人选择按套计价的，不适用本条约定。",b2));
+            document.add(new Paragraph(20,"        （三）合同约定面积与产权登记面积有差异的，以产权登记面积为准。",b2));
+            p = new Paragraph(20,"        （四）房屋交付后，产权登记面积与合同约定面积发生差异，双方同意按",b2);
+            p.add(new Phrase(pm(select9), bi));
+            p.add(new Phrase("种方式进行处理：",b2));
             document.add(p);
 
+            p = new Paragraph(20,"        1、双方自行约定：",b2);
+            if (select9 == 1) {
+                p.add(new Phrase(pm(contractContextMap.get("c_9_1_1").getStringValue(), 4), bi));
+            }else{
+                p.add(new Phrase(pm("-", 40), bi));
+            }
+            p.add(new Phrase("。", b2));
+            document.add(p);
+            document.add(new Paragraph(20,"        2、双方同意按以下原则处理：",b2));
+            document.add(new Paragraph(20,"        （1）面积误差比绝对值在3%以内（含3%）的，据实结算房款；",b2));
+            document.add(new Paragraph(20,"        （2）面积误差比绝对值超出3%时，买受人有权退房。",b2));
 
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
-
-            p.add(new Phrase("条",h3));
+            p = new Paragraph(20,"        （五）买受人退房的，出卖人在买受人提出退房之日起30天内将买受人已付款退还给买受人，并按",b2);
+            p.add(new Phrase(pm(contractContextMap.get("c_9_5_1").getStringValue(), 9), bi));
+            p.add(new Phrase("利率付给利息。", b2));
             document.add(p);
 
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
+            document.add(new Paragraph(20,"        （六）买受人不退房的，产权登记面积大于合同约定面积时，面积误差比3%以内（含3%）部分的房价款由买受人补足；超出3%部分的房价款由出卖人承担，产权归买受人。产权登记面积小于合同约定面积款由出卖人双倍返还买受人。",b2));
+            document.add(new Paragraph(20,"        产权登记面积-合同约定面积",b2));
+            document.add(new Paragraph(20,"        面积误差比=   X100%",b2));
+            document.add(new Paragraph(20,"        合同约定面积",b2));
+            document.add(new Paragraph(20,"        （七）因设计变更造成面积差异，双方不解除合同的，应当签署补充协议。",b2));
 
-            p.add(new Phrase("条",h3));
+
+            document.add(new Paragraph(25,"        第十条 出卖人关于房屋产权状况的承诺",h3));
+            document.add(new Paragraph(20,"        出卖人保证销售的房屋没有产权纠纷和债权债务纠纷。因出卖人原因，造成该房屋不能办理产权登记或发生债权债务纠纷的，由出卖人承担全部责任。若出售的房屋设有他项权利的，出卖人应当在出售前征得他项权利人的书面同意，并以书面形式公示和明确告知买受人。",b2));
+
+            document.add(new Paragraph(25,"        第十一条  风险责任的转移",h3));
+            document.add(new Paragraph(20,"        该商品房的风险责任自交付之日起由出卖人转移给买受人。如买受人未按约定的日期办理该房屋的验收交接手续，出卖人应当发出书面催告书一次。买受人未按催告书规定的日期办理该房屋的验收交接手续的，则自催告书约定的验收交接日之第二日起该房屋的风险责任转移由买受人承担。",b2));
+
+
+            document.add(new Paragraph(25,"        第十二条  声明及保证",h3));
+            document.add(new Paragraph(20,"        出卖人：",b2));
+            document.add(new Paragraph(20,"        1、出卖人有权签署并有能力履行本合同。",b2));
+            document.add(new Paragraph(20,"        2、出卖人签署和履行本合同所需的一功手续（身份证、户口本、婚姻证明）均已办妥并合法有效。",b2));
+            document.add(new Paragraph(20,"        3、在签署本合同时，任何法院、仲裁机构、行政机关或监督机构未作出任何足以对出卖人履行本合同产生重大不利影响的判决、裁定、裁决或具体行政行为。",b2));
+            document.add(new Paragraph(20,"        4、出卖人为签署本合同所需的内部授权程序均已完成，本合同的签署人是出卖人法定代表人或授权代表人。本合同生效后即对合同双方具有法律约束力。",b2));
+            document.add(new Paragraph(20,"        买受人：",b2));
+            document.add(new Paragraph(20,"        1、买受人有权签署并有能力履行本合同。",b2));
+            document.add(new Paragraph(20,"        2、买受人签署和履行本合同所需的一切手续（身份证、户口本、婚姻证明）均已办妥并合法有效。",b2));
+            document.add(new Paragraph(20,"        3、在签署本合同时，任何法院、仲裁机构、行政机关或监督机构均未作出任何足以对出卖人履行本合同产生重大不利影响的判决、裁定、裁决或具体行政行为。",b2));
+            document.add(new Paragraph(20,"        4、买受人为签署本合同所需的内部授权程序均已完成，本合同的签署人是买受人法定代表人或授权代表人。本合同生效后即对合同双方具有法律约束力。",b2));
+
+
+            document.add(new Paragraph(25,"        第十三条 保密",h3));
+            p = new Paragraph(20,"        买卖双方保证对在讨论、签订、执行本协议过程中所获悉的属于对方的且无法自公开渠道获得的文件及资料（包括商业秘密、公司计划、运营活动、财务信息、技术信息、经营信息及其他商业秘密）予以保密。未经该资料和文件的原提供方同意，另一方不得向任何第三方泄漏该商业秘密的全部或部分内容、但法律、法规另有规定或双方另有约定的除外。保密期限为",b2);
+            p.add(new Phrase(pm(contractContextMap.get("c_13_0_1").getStringValue(), 9), bi));
+            p.add(new Phrase("年。", b2));
             document.add(p);
 
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
-
-            p.add(new Phrase("条",h3));
+            document.add(new Paragraph(25,"        第十四条 通知",h3));
+            p = new Paragraph(20,"        1、根据本合同需要一方向另一方发出的全部通知以及双方的文件往来及与本合同有关的通知和要求等，必须用书面形式，可采用",b2);
+            p.add(new Phrase(pm(contractContextMap.get("c_14_1_1").getStringValue(), 8), bi));
+            p.add(new Phrase("（书信、传真、电报、当面送交等）方式传递。以上方式无法送达的，方可采取公告送达方式。",b2));
             document.add(p);
 
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
-
-            p.add(new Phrase("条",h3));
+            p = new Paragraph(20,"        2、各方通讯地址如下：",b2);
+            p.add(new Phrase(pm(contractContextMap.get("c_14_2_1").getStringValue(), 40), bi));
+            p.add(new Phrase("。",b2));
             document.add(p);
 
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
-
-            p.add(new Phrase("条",h3));
+            p = new Paragraph(20,"        3、一方变更通知或通讯地址的，应自变更之日起",b2);
+            p.add(new Phrase(pm(contractContextMap.get("c_14_3_1").getStringValue(), 8), bi));
+            p.add(new Phrase("日内，以书面形式通知对方；否则，由未通知方承担由此引起的相关责任。",b2));
             document.add(p);
 
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
-
-            p.add(new Phrase("条",h3));
+            document.add(new Paragraph(25,"        第十五条 合同的变更",h3));
+            p = new Paragraph(20,"        本合同履行期间，发生特殊情况时，买卖任何一方需要变更本合同的，要求变更一方应及时书面通知对方，征得对方同意后，双方在规定的时限内（书面通知发出",b2);
+            p.add(new Phrase(pm(contractContextMap.get("c_15_0_1").getStringValue(), 4), bi));
+            p.add(new Phrase("天内）签订书面变更协议，该协议将成为合同不可分割的部分。未经双方签署书面文件，任何一方无权变更本合同，否则，由此造成对方的经济损失，由责任方承担。",b2));
             document.add(p);
 
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
+            document.add(new Paragraph(25,"        第十六条 合同的转让",h3));
+            document.add(new Paragraph(20,"        除合同中另有规定外或经双方协商同意外，本合同所规定双方的任何权利和义务任何一方在未经得另一方书面同意之前，不得转让给第三者。任何转让，未经另一方书面明确同意，均属无效。",b2));
 
-            p.add(new Phrase("条",h3));
+            document.add(new Paragraph(25,"        第十七条 争议的处理",h3));
+            int select17 = contractContextMap.get("c_17_2_1").getNumberValue().intValue();
+            document.add(new Paragraph(20,"        1、本合同受中华人民共和国法律管辖并按其进行解释。",b2));
+            p = new Paragraph(20,"        2、本合同在履行过程中发生的争议，由双方当事人协商解决，也可由有关部门调解；协商或调解不成的，按下列第",b2);
+            p.add(new Phrase(pm(select17), bi));
+            p.add(new Phrase("种方式解决；",b2));
             document.add(p);
 
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
-
-            p.add(new Phrase("条",h3));
+            p = new Paragraph(20,"        （1）提交",b2);
+            if (select17 == 1){
+                p.add(new Phrase(pm(contractContextMap.get("c_17_2_2").getStringValue(), 9), bi));
+            }else{
+                p.add(new Phrase(pm("-", 9), bi));
+            }
+            p.add(new Phrase("仲裁委员会仲裁；",b2));
             document.add(p);
+            document.add(new Paragraph(20,"        （2）依法向人民法院起诉。",b2));
 
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
-
-            p.add(new Phrase("条",h3));
+            document.add(new Paragraph(25,"        第十八条 不可抗力",h3));
+            document.add(new Paragraph(20,"        1、如果本合同任何一方因受不可抗力事件影响而未能履行其在本合同下的全部或部分义务，该义务的履行在不可抗力事件妨碍其履行期间应予中止。",b2));
+            p = new Paragraph(20,"        2、声称受到不可抗力事件影响的一方尽可能在最短的时间内通过书面形式将不可抗力事件的发生通知另一方，并在该不可抗力事件发生后",b2);
+            p.add(new Phrase(pm(contractContextMap.get("c_18_2_1").getStringValue(), 4), bi));
+            p.add(new Phrase("日内向另一方提供关于此种不可抗力事件及其持续时间的适当证据及合同不能履行或者需要延期履行的书面材料。声称不可抗力事件导致其对本合同的履行在客观上成为不可能或不实际的一方，有责任尽一功合理的努力消除或减轻此等不可抗力事件的影响。",b2));
             document.add(p);
+            document.add(new Paragraph(20,"        3、不可抗力事件发生时，双方应立即通过友好协商决定如何执行本合同。不可抗力事件或其影响终止或消除后，双方须立即恢复履行各自在本合同项目下的各项义务。如不可抗力及其影响无法终止或消除而致使合同任何一方丧失继续履行合同的能力，则双方可协商解除合同或暂时延迟合同的履行，且遭遇不可抗力一方无须为此承担责任。当事人延迟履行后发生不可抗力的，不能免除责任。",b2));
+            document.add(new Paragraph(20,"        4、本合同所称“不可抗力”是指受影响一方不能合理控制的，无法预料或即使可预料也不可避免且无法克服，并于本合同签订日之后出现的，使该方对本合同全部或部分的履行在客观上成为不可能或不实际的任何事件。此等事件包括但不限于自然灾害如水灾、火灾、台风、地震，以及社会事件如战争（不论曾否宣战）动乱、罢工，政府行为或法律规定等。",b2));
 
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
+            document.add(new Paragraph(25,"        第十九条 合同的解释",h3));
+            document.add(new Paragraph(20,"        本合同未尽事宜或条款内容不明确，合同双方当事人可以根据本合同的原则、合同的目的、交易习惯及关联条款的内容，按照通常理解对本合同作出合理解释。该解释具有约束力；除非解释与法律或本合同相抵触。",b2));
 
-            p.add(new Phrase("条",h3));
+            document.add(new Paragraph(25,"        第二十条 补充与附件",h3));
+            document.add(new Paragraph(20,"        本合同未尽事宜，依照有关法律、法规执行，法律、法规未作规定的，买卖双方可以达成书面补充合同。本合同的附件和补充合同均为本合同不可分割的组成部分，与本合同具有同等法律效力。",b2));
+
+            document.add(new Paragraph(25,"        第二十一条 合同的效力",h3));
+            document.add(new Paragraph(20,"        1、本合同自双方或双方法定代表人或其授权代表人签字并加盖单位公章或合同专用章之日起生效。",b2));
+
+            p = new Paragraph(20,"        2、本协议一式",b2);
+            p.add(new Phrase(pm(contractContextMap.get("c_21_2_1").getStringValue(), 4), bi));
+            p.add(new Phrase("份，出卖人、买受人各",b2));
+            p.add(new Phrase(pm(contractContextMap.get("c_21_2_2").getStringValue(), 4), bi));
+            p.add(new Phrase("份，具有同等法律效力。",b2));
             document.add(p);
-
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
-
-            p.add(new Phrase("条",h3));
-            document.add(p);
-
-            document.add(new Paragraph(25,"        第五条 房产交付",h3));
-            p = new Paragraph(20,"        房屋座落：",b2);
-
-            p.add(new Phrase("条",h3));
-            document.add(p);
-
+            document.add(new Paragraph(20,"        3、本合同的附件和补充合同均为本合同不可分割的组成部分，与本合同具有同等的法律效力。",b2));
 
 
 
 
             document.add(new Paragraph(25," ",h2));
             table = new PdfPTable(4);
-
-            table.setWidths(f);
+            float fb[] = {2,4,2,4};
+            table.setWidths(fb);
             table.setWidthPercentage(100);
 
-            cel = new PdfPCell(new Paragraph("卖              方(签章):",b2));
+            cel = new PdfPCell(new Paragraph("出卖方产权人：",b2));
             cel.setBorder(0);
             table.addCell(cel);
 
 
-            cel = new PdfPCell(new Paragraph("买              方(签章):",b2));
+            cel = new PdfPCell();
+            cel.setBorder(0);
+            cel.setBorderWidthBottom(1);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("买受方产权人：",b2));
             cel.setBorder(0);
             table.addCell(cel);
 
 
-            cel = new PdfPCell(new Paragraph("委托代理人(签章):",b2));
+            cel = new PdfPCell();
             cel.setBorder(0);
-            cel.setPaddingTop(10);
+            cel.setBorderWidthBottom(1);
+            cel.setBorderColor(BaseColor.BLACK);
             table.addCell(cel);
 
-            cel = new PdfPCell(new Paragraph("委托代理人(签章):",b2));
+            cel = new PdfPCell(new Paragraph("电话：",b2));
             cel.setBorder(0);
-            cel.setPaddingTop(10);
-            table.addCell(cel);
-
-
-            p = new Paragraph(20);
-            p.add(new Phrase("                       ",bi));
-            p.add(new Phrase("证号码:",b2));
-            cel = new PdfPCell(p);
-            cel.setBorder(0);
-            cel.setPaddingTop(10);
-            table.addCell(cel);
-
-            p = new Paragraph(20);
-            p.add(new Phrase("                       ",bi));
-            p.add(new Phrase("证号码:",b2));
-            cel = new PdfPCell(p);
-            cel.setBorder(0);
-            cel.setPaddingTop(10);
             table.addCell(cel);
 
 
-            cel = new PdfPCell(new Paragraph("联系电话:",b2));
+            cel = new PdfPCell();
             cel.setBorder(0);
-            cel.setPaddingTop(10);
+            cel.setBorderWidthBottom(1);
+            cel.setBorderColor(BaseColor.BLACK);
             table.addCell(cel);
 
-            cel = new PdfPCell(new Paragraph("联系电话:",b2));
+
+            cel = new PdfPCell(new Paragraph("电话：",b2));
             cel.setBorder(0);
-            cel.setPaddingTop(10);
             table.addCell(cel);
+
+
+            cel = new PdfPCell();
+            cel.setBorder(0);
+            cel.setBorderWidthBottom(1);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("共有人：",b2));
+            cel.setBorder(0);
+            table.addCell(cel);
+
+
+            cel = new PdfPCell();
+            cel.setBorder(0);
+            cel.setBorderWidthBottom(1);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("共有人：",b2));
+            cel.setBorder(0);
+            table.addCell(cel);
+
+
+            cel = new PdfPCell();
+            cel.setBorder(0);
+            cel.setBorderWidthBottom(1);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("电话：",b2));
+            cel.setBorder(0);
+            table.addCell(cel);
+
+
+            cel = new PdfPCell();
+            cel.setBorder(0);
+            cel.setBorderWidthBottom(1);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+
+            cel = new PdfPCell(new Paragraph("电话：",b2));
+            cel.setBorder(0);
+            table.addCell(cel);
+
+
+            cel = new PdfPCell();
+            cel.setBorder(0);
+            cel.setBorderWidthBottom(1);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+            cel = new PdfPCell();
+            cel.setBorder(0);
+            table.addCell(cel);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+            cel = new PdfPCell(new Paragraph(sdf.format(new Date()),b2));
+            cel.setVerticalAlignment(Element.ALIGN_RIGHT);
+            cel.setBorder(0);
+            table.addCell(cel);
+
+            cel = new PdfPCell();
+            cel.setBorder(0);
+            table.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(sdf.format(new Date()),b2));
+            cel.setVerticalAlignment(Element.ALIGN_RIGHT);
+            cel.setBorder(0);
+            table.addCell(cel);
+
             table.setKeepTogether(true);
             document.add(table);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
-            p = new Paragraph(sdf.format(new Date()),b2);
-            p.setAlignment(Element.ALIGN_RIGHT);
-            document.add(p);
 
             document.close();
 

@@ -4,7 +4,9 @@ import cc.coopersoft.comm.HttpJsonDataGet;
 import cc.coopersoft.common.EntityHome;
 import cc.coopersoft.house.participant.AttrUser;
 import cc.coopersoft.house.participant.Messages;
+import cc.coopersoft.house.participant.data.ContractContextMap;
 import cc.coopersoft.house.participant.data.repository.HouseSourceRepository;
+import cc.coopersoft.house.participant.service.HouseSourceService;
 import cc.coopersoft.house.sale.data.*;
 import com.dgsoft.common.system.OwnerPersonHelper;
 import com.dgsoft.common.system.ProxyPersonEntity;
@@ -13,9 +15,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.deltaspike.jsf.api.message.JsfMessage;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ConversationScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -38,6 +43,12 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
     private HouseSourceRepository houseSourceRepository;
 
     @Inject
+    private HouseSourceService houseSourceService;
+
+    @Inject
+    private LocalContractConfig localContractConfig;
+
+    @Inject
     private FacesContext facesContext;
 
     @Inject
@@ -53,6 +64,8 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
     protected String getInstaceId(){
         return getInstance().getId();
     }
+
+
 
 
     private HouseSourceCompany houseSourceCompany;
@@ -105,13 +118,44 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
     }
 
     public boolean isAllowPrintSellContract(){
+
+
+
         return isJoin() && (getHouseSourceCompany().getHouseContract() != null) &&
                 HouseSource.HouseSourceStatus.SUBMIT.equals(getInstance().getStatus()) &&
-                HouseContract.ContractStatus.SUBMIT.equals(getHouseSourceCompany().getHouseContract().getStatus());
+                HouseContract.ContractStatus.SUBMIT.equals(getHouseSourceCompany().getHouseContract().getStatus()) &&
+                (!"TRUE".equals(runParam.getStringParam("print_after")) || houseSourceService.isContractRecorded( getHouseSourceCompany().getHouseContract().getId()));
 
     }
 
+    private ContractContextMap getContractContextMap(){
 
+        try {
+            if (getHouseSourceCompany().getContext() == null || "".equals(getHouseSourceCompany().getContext().trim())) {
+                return new ContractContextMap();
+            } else
+                return new ContractContextMap(new JSONObject(getHouseSourceCompany().getContext()));
+        } catch (JSONException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+
+    @cc.coopersoft.house.participant.annotations.Seller
+    public void printAgentPdf(){
+
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.responseReset();
+        externalContext.setResponseContentType("application/pdf");
+        externalContext.setResponseHeader("Content-Disposition", "inline; filename=\"" + getInstance().getId() + ".pdf\"");
+
+        try {
+            localContractConfig.getConfig().AgentPdf(getContractContextMap(),externalContext.getResponseOutputStream());
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+        facesContext.responseComplete();
+    }
 
 
 

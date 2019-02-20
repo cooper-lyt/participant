@@ -103,7 +103,7 @@
                     <b:navLink value="提交合同" onclick="$('.submodalModalClass').modal();return false;"  href="#"></b:navLink>
 
 
-                    <b:navLink value="打印合同" onclick="$('.pdfmodalModalClass').modal();return false;"  href="#"></b:navLink>
+                    <b:navLink rendered="#{not (runParam.getStringParam('print_after') eq 'TRUE')}" value="打印合同" onclick="$('.pdfmodalModalClass').modal();return false;"  href="#"></b:navLink>
 
 
 
@@ -520,7 +520,7 @@
 
                     <div class="bs-docs-section">
                         <h2 id="section20"><a class="anchorjs-link " href="#section20" aria-label="Anchor link for: grid intro" data-anchorjs-icon="" style="font-family: anchorjs-icons; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; line-height: inherit; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>
-                            第二十第 补充与附件</h2>
+                            第二十条 补充与附件</h2>
                         <p>
                             本合同未尽事宜，依照有关法律、法规执行，法律、法规未作规定的，买卖双方可以达成书面补充合同。本合同的附件和补充合同均为本合同不可分割的组成部分，与本合同具有同等法律效力。
                         </p>

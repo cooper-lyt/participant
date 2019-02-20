@@ -117,7 +117,7 @@ public class ContractCreate implements java.io.Serializable{
 
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
-            localContractConfig.getConfig().pdf(contractHome.getContractContextMap(),buffer,contractHome.getInstance().getContractVersion());
+            localContractConfig.getConfig().pdf(contractHome.getContractContextMap(),buffer);
 
             buffer.close();
             //logger.config("begin upload file;");
@@ -131,7 +131,16 @@ public class ContractCreate implements java.io.Serializable{
             String data = mapper.writeValueAsString(contractHome.getInstance());
             //logger.config(data);
             params.put("data", DESUtil.encrypt(data, attrUser.getLoginData().getToken()));
-            SubmitResult result = HttpJsonDataGet.postData(runParam.getStringParam("server_address") + "interfaces/extends/contract/" + SubmitType.SALE_CONTRACT.name() + "/" + attrUser.getLoginData().getKey(),params, SubmitResult.class);
+            SubmitResult result;
+            if (runParam.getStringParam("has_server_record").equals("FALSE")){
+                params.put("source", DESUtil.encrypt(mapper.writeValueAsString(houseSourceHome.getInstance()), attrUser.getLoginData().getToken()));
+                result = HttpJsonDataGet.postData(runParam.getStringParam("server_address") + "interfaces/extends/contract_and_house/" + attrUser.getLoginData().getKey(),params, SubmitResult.class);
+
+            }else{
+
+                result = HttpJsonDataGet.postData(runParam.getStringParam("server_address") + "interfaces/extends/contract/" + SubmitType.SALE_CONTRACT.name() + "/" + attrUser.getLoginData().getKey(),params, SubmitResult.class);
+
+            }
 
 
 
@@ -184,7 +193,7 @@ public class ContractCreate implements java.io.Serializable{
         externalContext.setResponseHeader("Content-Disposition", "inline; filename=\"" + contractHome.getInstance().getId() + ".pdf\"");
 
         try {
-            localContractConfig.getConfig().pdf(contractHome.getContractContextMap(),externalContext.getResponseOutputStream(),contractHome.getInstance().getContractVersion());
+            localContractConfig.getConfig().pdf(contractHome.getContractContextMap(),externalContext.getResponseOutputStream());
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -198,7 +207,7 @@ public class ContractCreate implements java.io.Serializable{
             contractHome.clearInstance();
             contractHome.setId(houseSourceHome.getHouseSourceCompany().getHouseContract().getId());
             if (HouseContract.ContractStatus.PREPARE.equals(contractHome.getInstance().getStatus())){
-                return localContractConfig.getConfig().getEditPath(contractHome.getInstance().getType(),contractHome.getInstance().getContractVersion());
+                return localContractConfig.getConfig().getEditPath(contractHome.getInstance().getType());
             }else{
                 throw new IllegalArgumentException("contract status error!");
             }
@@ -343,7 +352,7 @@ public class ContractCreate implements java.io.Serializable{
 
         houseSourceHome.save();
         endConversation();
-        return localContractConfig.getConfig().getEditPath(contractHome.getInstance().getType(),contractHome.getInstance().getContractVersion());
+        return localContractConfig.getConfig().getEditPath(contractHome.getInstance().getType());
 
     }
 

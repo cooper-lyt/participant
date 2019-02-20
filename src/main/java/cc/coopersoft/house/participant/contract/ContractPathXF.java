@@ -15,26 +15,25 @@ public class ContractPathXF implements ContractPath {
         return "xf";
     }
 
-    public Class<? extends ViewConfig> getEditPath(SaleType saleType, int ver) {
-        switch (ver) {
+    public Class<? extends ViewConfig> getEditPath(SaleType saleType) {
 
-            case 1:
                 return Seller.Contract.Xf.OldEdit.class;
-            default:
-                throw new IllegalArgumentException("unknow ver:" + ver);
 
-        }
     }
 
-    public void pdf(ContractContextMap contractContextMap, OutputStream outputStream, int ver) {
-        switch (ver) {
+    public void pdf(ContractContextMap contractContextMap, OutputStream outputStream) {
 
-            case 1:
                 ContractPdfXf1.pdf(contractContextMap,outputStream);
-                break;
-            default:
-                throw new IllegalArgumentException("unknow ver:" + ver);
 
-        }
+    }
+
+    public void AgentPdf(ContractContextMap contractContextMap, OutputStream outputStream) {
+
+                ContractPdfXf1.agentPdf(contractContextMap,outputStream);
+
+    }
+
+    public Class<? extends ViewConfig> getAgentEditPath() {
+        return null;
     }
 }

@@ -14,9 +14,12 @@ public interface ContractPath {
     String getConfigName();
 
 
-    Class<? extends ViewConfig> getEditPath(SaleType saleType,int ver);
+    Class<? extends ViewConfig> getEditPath(SaleType saleType);
 
-    void pdf(ContractContextMap contractContextMap, OutputStream outputStream,int ver);
+    void pdf(ContractContextMap contractContextMap, OutputStream outputStream);
 
+    void AgentPdf(ContractContextMap contractContextMap, OutputStream outputStream);
+
+    Class<? extends ViewConfig> getAgentEditPath();
 
 }

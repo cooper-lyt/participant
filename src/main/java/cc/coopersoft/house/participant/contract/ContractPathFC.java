@@ -19,26 +19,23 @@ public class ContractPathFC implements ContractPath {
     }
 
 
-    public Class<? extends ViewConfig> getEditPath(SaleType saleType, int ver) {
-        switch (ver) {
+    public Class<? extends ViewConfig> getEditPath(SaleType saleType) {
 
-            case 1:
                 return Seller.Contract.Fc.OldEdit.class;
-            default:
-                throw new IllegalArgumentException("unknow ver:" + ver);
 
-        }
     }
 
-    public void pdf(ContractContextMap contractContextMap, OutputStream outputStream, int ver) {
-        switch (ver) {
+    public void pdf(ContractContextMap contractContextMap, OutputStream outputStream) {
 
-            case 1:
                 ContractPdfFC1.pdf(contractContextMap,outputStream);
-                break;
-            default:
-                throw new IllegalArgumentException("unknow ver:" + ver);
 
-        }
+    }
+
+    public void AgentPdf(ContractContextMap contractContextMap, OutputStream outputStream) {
+
+    }
+
+    public Class<? extends ViewConfig> getAgentEditPath() {
+        return null;
     }
 }

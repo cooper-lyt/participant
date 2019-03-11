@@ -74,6 +74,11 @@
                         <b:navCommandLink value="委托合同" action="#{houseSourceHome.printAgentPdf}" target="_blank">
                             <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
                         </b:navCommandLink>
+
+                        <b:navCommandLink value="见证书" action="#{contractHome.printSeeContract}" disabled="#{empty houseSourceHome.contractId}" target="_blank">
+                            <f:param name="contractId" value="#{houseSourceHome.contractId}"/>
+                            <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                        </b:navCommandLink>
                     </b:dropButton>
 
                 </b:buttonGroup>

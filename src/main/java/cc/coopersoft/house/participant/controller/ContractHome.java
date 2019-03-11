@@ -1,7 +1,6 @@
 package cc.coopersoft.house.participant.controller;
 
 import cc.coopersoft.common.EntityHome;
-import cc.coopersoft.common.EnumHelper;
 import cc.coopersoft.house.participant.AttrUser;
 import cc.coopersoft.house.participant.data.ContractContextMap;
 import cc.coopersoft.house.participant.data.ContractPowerPersonHelper;
@@ -15,10 +14,13 @@ import org.json.JSONObject;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ConversationScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Created by cooper on 10/10/2017.
@@ -46,7 +48,11 @@ public class ContractHome extends EntityHome<HouseContract,String> {
     @Inject
     private FacesContext facesContext;
 
+    @Inject
+    private Logger logger;
 
+    @Inject
+    private LocalContractConfig localContractConfig;
 
     private int buyerCount;
 
@@ -112,6 +118,21 @@ public class ContractHome extends EntityHome<HouseContract,String> {
             }
         }
         return contractContextMap;
+    }
+
+    public void printSeeContract(){
+        logger.config("print see contract by:" + getInstance().getId());
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.responseReset();
+        externalContext.setResponseContentType("application/pdf");
+        externalContext.setResponseHeader("Content-Disposition", "inline; filename=\"" + getInstance().getId() + ".pdf\"");
+
+        try {
+            localContractConfig.getConfig().seePdf(getContractContextMap(),externalContext.getResponseOutputStream());
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+        facesContext.responseComplete();
     }
 
 

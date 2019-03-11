@@ -31,7 +31,11 @@ public class ContractPathFC implements ContractPath {
 
     }
 
-    public void AgentPdf(ContractContextMap contractContextMap, OutputStream outputStream) {
+    public void agentPdf(ContractContextMap contractContextMap, OutputStream outputStream) {
+
+    }
+
+    public void seePdf(ContractContextMap contractContextMap, OutputStream outputStream) {
 
     }
 

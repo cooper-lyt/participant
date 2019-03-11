@@ -281,6 +281,9 @@ public class ContractCreate implements java.io.Serializable{
         contractHome.getContractContextMap().put("seller_name",new ContractContextMap.ContarctContextItem(seller.getPersonName()));
         contractHome.getContractContextMap().put("seller_card_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(seller.getCredentialsType())));
         contractHome.getContractContextMap().put("seller_card_number", new ContractContextMap.ContarctContextItem(seller.getCredentialsNumber()));
+        contractHome.getContractContextMap().put("seller_tel", new ContractContextMap.ContarctContextItem(seller.getPhone()));
+
+
 
         if (contractHome.getSellerEditList().size() > 1){
             List<ContractContextMap> poolMapList = new ArrayList<ContractContextMap>(contractHome.getSellerEditList().size() - 1);
@@ -290,6 +293,7 @@ public class ContractCreate implements java.io.Serializable{
                 poolMap.put("name", new ContractContextMap.ContarctContextItem(pool.getPersonName()));
                 poolMap.put("card_type", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(pool.getCredentialsType())));
                 poolMap.put("card_number", new ContractContextMap.ContarctContextItem(pool.getCredentialsNumber()));
+                poolMap.put("tel", new ContractContextMap.ContarctContextItem(pool.getPhone()));
                 poolMapList.add(poolMap);
             }
             contractHome.getContractContextMap().put("seller_pool", new ContractContextMap.ContarctContextItem(poolMapList));
@@ -303,6 +307,8 @@ public class ContractCreate implements java.io.Serializable{
                 poolMap.put("name", new ContractContextMap.ContarctContextItem(pool.getPersonName()));
                 poolMap.put("card_type", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(pool.getCredentialsType())));
                 poolMap.put("card_number", new ContractContextMap.ContarctContextItem(pool.getCredentialsNumber()));
+                poolMap.put("tel", new ContractContextMap.ContarctContextItem(pool.getPhone()));
+
                 poolMapList.add(poolMap);
             }
             contractHome.getContractContextMap().put("buyer_pool", new ContractContextMap.ContarctContextItem(poolMapList));
@@ -311,6 +317,7 @@ public class ContractCreate implements java.io.Serializable{
         contractHome.getContractContextMap().put("buyer_name", new ContractContextMap.ContarctContextItem(buyer.getPersonName()));
         contractHome.getContractContextMap().put("buyer_card_name", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(buyer.getCredentialsType())));
         contractHome.getContractContextMap().put("buyer_card_number",new ContractContextMap.ContarctContextItem(buyer.getCredentialsNumber()));
+        contractHome.getContractContextMap().put("buyer_tel",new ContractContextMap.ContarctContextItem(buyer.getPhone()));
         contractHome.getContractContextMap().put("money", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getPrice()));
         contractHome.getContractContextMap().put("pay_type", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getSalePayType().name()));
 

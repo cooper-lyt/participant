@@ -27,10 +27,14 @@ public class ContractPathXF implements ContractPath {
 
     }
 
-    public void AgentPdf(ContractContextMap contractContextMap, OutputStream outputStream) {
+    public void agentPdf(ContractContextMap contractContextMap, OutputStream outputStream) {
 
                 ContractPdfXf1.agentPdf(contractContextMap,outputStream);
 
+    }
+
+    public void seePdf(ContractContextMap contractContextMap, OutputStream outputStream) {
+        ContractPdfXf1.seePdf(contractContextMap,outputStream);
     }
 
     public Class<? extends ViewConfig> getAgentEditPath() {

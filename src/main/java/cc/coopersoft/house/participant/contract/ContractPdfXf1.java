@@ -38,6 +38,342 @@ public class ContractPdfXf1 {
         return pm(s,4);
     }
 
+    public static void seePdf(ContractContextMap contractContextMap, OutputStream outputStream){
+        Document document = new Document(PageSize.A4,40,40,60,60);
+
+        try {
+            PdfWriter pdfWriter = PdfWriter.getInstance(document, outputStream);
+
+            pdfWriter.setEncryption(null, null, PdfWriter.ALLOW_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128);
+
+
+            BaseFont bfChinese = BaseFont.createFont("STSongStd-Light",
+                    "UniGB-UCS2-H", false);
+
+
+            Font h1 = new Font(bfChinese, 32, Font.BOLD,
+                    BaseColor.BLACK);
+
+
+            Font h2 = new Font(bfChinese, 18, Font.BOLD,
+                    BaseColor.BLACK);
+
+            Font h3 = new Font(bfChinese, 12, Font.BOLD,
+                    BaseColor.BLACK);
+
+            Font h3i = new Font(bfChinese, 13, Font.UNDERLINE,
+                    BaseColor.BLACK);
+
+            Font b1 = new Font(bfChinese, 13, Font.NORMAL,
+                    BaseColor.BLACK);
+
+            Font b2 = new Font(bfChinese, 12, Font.NORMAL,
+                    BaseColor.BLACK);
+
+            Font b3 = new Font(bfChinese, 10, Font.NORMAL,
+                    BaseColor.BLACK);
+
+            Font bi = new Font(bfChinese, 12, Font.UNDERLINE, BaseColor.BLACK);
+
+            DecimalFormat dfArea = new DecimalFormat("#0.00");
+            DecimalFormat dfMoney = new DecimalFormat("¥#0.00");
+            DecimalFormat dfInt = new DecimalFormat("#0");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+            document.open();
+
+            Paragraph p = new Paragraph("房屋买卖合同（契约）见证书",h2);
+            p.setAlignment(Element.ALIGN_CENTER);
+            document.add(p);
+
+            p = new Paragraph("编号：" + contractContextMap.get("contract_number").getStringValue() ,b2);
+            p.setAlignment(Element.ALIGN_RIGHT);
+            document.add(p);
+
+            document.add(new Paragraph(" ",b1));
+
+            PdfPTable table = new PdfPTable(2);
+            float tableWidths[] = {1,12};
+            table.setWidths(tableWidths);
+            table.setWidthPercentage(100);
+            table.setKeepTogether(true);
+
+
+            PdfPCell cel;
+
+            PdfPTable titleTable = new PdfPTable(4);
+            float f[] = {3,7,12,10};
+            titleTable.setWidths(f);
+            titleTable.setWidthPercentage(100);
+            titleTable.setKeepTogether(true);
+
+            cel = new PdfPCell(new Paragraph("姓名",b1 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setColspan(2);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("身份证号",b1 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("联系电话",b1 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("卖方",b2 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setPaddingLeft(0);
+            cel.setPaddingRight(0);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("seller_name").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("seller_card_number").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("seller_tel").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("买方",b2 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setPaddingLeft(0);
+            cel.setPaddingRight(0);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("buyer_name").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("buyer_card_number").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("buyer_tel").getStringValue(),b2 ));
+
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("见证申请人",b2));
+            cel.setPadding(8);
+            cel.setBorderColor(BaseColor.BLACK);
+            cel.setBorderWidth(1);
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cel);
+
+            cel = new PdfPCell(titleTable);
+            cel.setBorderWidth(1);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+
+            titleTable = new PdfPTable(3);
+            float f2[] = {10,12,10};
+            titleTable.setWidths(f2);
+            titleTable.setWidthPercentage(100);
+            titleTable.setKeepTogether(true);
+
+            cel = new PdfPCell(new Paragraph("房屋所有权证号",b1 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("成交价格",b1 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("成交日期",b1 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("power_card_number").getStringValue(),b2 ));
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(dfMoney.format(contractContextMap.get("money").getNumberValue()),b2 ));
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(" ",b2 ));
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+
+            cel = new PdfPCell(new Paragraph("房屋状况",b2));
+            cel.setPadding(8);
+            cel.setBorderColor(BaseColor.BLACK);
+            cel.setBorderWidth(1);
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cel);
+
+            cel = new PdfPCell(titleTable);
+            cel.setBorderWidth(1);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+            titleTable = new PdfPTable(3);
+            titleTable.setWidths(f2);
+            titleTable.setWidthPercentage(100);
+            titleTable.setKeepTogether(true);
+
+            cel = new PdfPCell(new Paragraph("房屋买卖合同（契约）",b2 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(" ",b1 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph(" ",b1 ));
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setBorderWidth(1);
+            cel.setPadding(10);
+            cel.setBorderColor(BaseColor.BLACK);
+            titleTable.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("见证事项",b3));
+            cel.setPadding(5);
+            cel.setBorderColor(BaseColor.BLACK);
+            cel.setBorderWidth(1);
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cel);
+
+            cel = new PdfPCell(titleTable);
+            cel.setBorderWidth(1);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("见证申请人申报意见",b2));
+            cel.setPadding(8);
+            cel.setBorderColor(BaseColor.BLACK);
+            cel.setBorderWidth(1);
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cel);
+
+            cel = new PdfPCell();
+            p = new Paragraph("          1、卖方保证上述房屋产权清楚，如发生与此房有关的纠纷，卖方愿承担一切法律责任；",b2);
+            cel.addElement(p);
+            p = new Paragraph("          2、买卖双方签订的《房屋买卖合同（契约）》意思表示真实，相关约定及付款方式、税费承担、房屋交付日期、违约责任等条款已明确；",b2);
+            cel.addElement(p);
+            p = new Paragraph("          3、买卖双方承诺共同履行《房屋买卖合同（契约）》所订立的内容，现自愿申请见证上述房屋交易事宜，如有不实，愿承担全部法律责任。",b2);
+            cel.addElement(p);
+            p = new Paragraph(" ",b2);
+            cel.addElement(p);
+
+            p = new Paragraph("                卖  方：                                                             买  方：",b2);
+            cel.addElement(p);
+            p = new Paragraph(" ",b2);
+            cel.addElement(p);
+            p = new Paragraph("                共有人：                                                          共有人：",b2);
+            cel.addElement(p);
+            p = new Paragraph(sdf.format(new Date()),b2);
+            p.setAlignment(Element.ALIGN_RIGHT);
+            cel.addElement(p);
+
+            cel.setBorderWidth(1);
+            cel.setPadding(5);
+            cel.setPaddingBottom(20);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+            cel = new PdfPCell(new Paragraph("见证意见",b2));
+            cel.setPadding(8);
+            cel.setBorderColor(BaseColor.BLACK);
+            cel.setBorderWidth(1);
+            cel.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cel.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cel);
+
+            cel = new PdfPCell();
+            p = new Paragraph("          房屋买卖当事人共同到场，其签约行为符合《中华人民共和国民法通则》第五十五条规定，合同（契约）内容符合《中华人民共和国合同法》的规定，双方当事人的签字、指纹属实，上述房屋的权属转移，自西丰县房产管理局产权交易中心审查批准转移登记之日起生效。",b2);
+            cel.addElement(p);
+            p = new Paragraph(" ",b2);
+            cel.addElement(p);
+            p = new Paragraph(" ",b2);
+            cel.addElement(p);
+            p = new Paragraph("                                                                          见证人：",b2);
+            cel.addElement(p);
+            p = new Paragraph(" ",b2);
+            cel.addElement(p);
+            p = new Paragraph(sdf.format(new Date()),b2);
+            p.setAlignment(Element.ALIGN_RIGHT);
+            cel.addElement(p);
+
+            cel.setBorderWidth(1);
+            cel.setPadding(5);
+            cel.setPaddingBottom(20);
+            cel.setBorderColor(BaseColor.BLACK);
+            table.addCell(cel);
+
+            document.add(table);
+            document.close();
+
+        }catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void agentPdf(ContractContextMap contractContextMap, OutputStream outputStream){
         Document document = new Document(PageSize.A4,40,40,60,60);
 
@@ -149,7 +485,7 @@ public class ContractPdfXf1 {
             cel.setBorderColor(BaseColor.BLACK);
             titleTable.addCell(cel);
 
-            cel = new PdfPCell(new Paragraph("委托人",b2 ));
+            cel = new PdfPCell(new Paragraph("受托人",b2 ));
             cel.setHorizontalAlignment(Element.ALIGN_CENTER);
             cel.setBorderWidth(1);
             cel.setPadding(10);
@@ -165,7 +501,7 @@ public class ContractPdfXf1 {
             cel.setBorderColor(BaseColor.BLACK);
             titleTable.addCell(cel);
 
-            cel = new PdfPCell(new Paragraph(contractContextMap.get("group_cer_number").getStringValue(),b2 ));
+            cel = new PdfPCell(new Paragraph(contractContextMap.get("group_owner_number").getStringValue(),b2 ));
 
             cel.setBorderWidth(1);
             cel.setPadding(10);

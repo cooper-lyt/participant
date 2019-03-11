@@ -18,7 +18,9 @@ public interface ContractPath {
 
     void pdf(ContractContextMap contractContextMap, OutputStream outputStream);
 
-    void AgentPdf(ContractContextMap contractContextMap, OutputStream outputStream);
+    void agentPdf(ContractContextMap contractContextMap, OutputStream outputStream);
+
+    void seePdf(ContractContextMap contractContextMap, OutputStream outputStream);
 
     Class<? extends ViewConfig> getAgentEditPath();
 

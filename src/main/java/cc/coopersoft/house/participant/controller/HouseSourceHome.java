@@ -128,6 +128,14 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
 
     }
 
+    public String getContractId(){
+        if (getHouseSourceCompany().getHouseContract() != null) {
+            return getHouseSourceCompany().getHouseContract().getId();
+        }else{
+            return null;
+        }
+    }
+
     private ContractContextMap getContractContextMap(){
 
         try {
@@ -150,7 +158,7 @@ public class HouseSourceHome extends EntityHome<HouseSource,String> {
         externalContext.setResponseHeader("Content-Disposition", "inline; filename=\"" + getInstance().getId() + ".pdf\"");
 
         try {
-            localContractConfig.getConfig().AgentPdf(getContractContextMap(),externalContext.getResponseOutputStream());
+            localContractConfig.getConfig().agentPdf(getContractContextMap(),externalContext.getResponseOutputStream());
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

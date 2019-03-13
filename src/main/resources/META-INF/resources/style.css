@@ -22,3 +22,8 @@
 .label.CHECK_FAIL{
     background-color: #d9534f;
 }
+
+
+.reading-bli.card-reading {
+    color: #8a6d3b;!important;
+}

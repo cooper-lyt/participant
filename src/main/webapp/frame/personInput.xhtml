@@ -10,8 +10,9 @@
 
     <!-- param: personEntityHelper  , render-->
 
-    <h:panelGroup>
+    <h:panelGroup >
 
+    <div data-person-input="">
 
     <p:outputPanel id="personCardInput" layout="block" styleClass="input-group" >
 
@@ -30,6 +31,10 @@
         </p:outputPanel>
 
 
+        <span class="input-group-btn">
+            <button class="btn btn-default" data-person-id-read="" style="font-size: 14px" type="button"><span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span></button>
+        </span>
+
         <b:inputText id="cardNumber"
                      label="证件编号"
                      styleClass="form-control"
@@ -37,8 +42,9 @@
                      size="25"
                      maxlength="100"
                      renderLabel="false"
-                     p:placeholder="证件编号"
+                     placeholder="证件编号"
                      autocomplete="false"
+                     pt:data-person-field="number"
                      value="#{_person.credentialsNumber}">
         </b:inputText>
 
@@ -48,7 +54,8 @@
             @
         </div>
         <b:inputText id="cerdentialsName" value="#{_person.personName}"
-                     p:placeholder="姓名" renderLabel="false" autocomplete="false"
+                     placeholder="姓名" renderLabel="false" autocomplete="false"
+                     pt:data-person-field="name"
                      required="true" styleClass="form-control person-name" label="姓名">
 
         </b:inputText>
@@ -62,6 +69,7 @@
 
             <ui:insert/>
         </p:outputPanel>
+    </div>
     </h:panelGroup>
 
 </ui:composition>

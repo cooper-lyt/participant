@@ -14,20 +14,20 @@
 
         <div class="form-group">
             <label class="control-label" for="rootAddressInput">#{_person.credentialsType.name() eq 'PASSPORT' ? '国籍' : '户籍所在地'}</label>
-            <h:inputText p:placeholder="#{_person.credentialsType.name() eq 'PASSPORT' ? '国籍' : '户籍所在地'}" id="rootAddressInput" styleClass="form-control" value="#{_person.personEntity.rootAddress}"/>
+            <h:inputText pt:data-person-field="address" pt:placeholder="#{_person.credentialsType.name() eq 'PASSPORT' ? '国籍' : '户籍所在地'}" id="rootAddressInput" styleClass="form-control" value="#{_person.personEntity.rootAddress}"/>
         </div>
 
         <label class="control-label" for="birthdayInput">出生日期</label>
         <div class="input-group" style="margin-bottom: 15px">
 
 
-            <h:inputText p:placeholder="出生日期" styleClass="js-datepicker  form-control" id="birthdayInput" value="#{_person.personEntity.birthday}">
+            <h:inputText pt:placeholder="出生日期" pt:data-person-field="birthday" styleClass="js-datepicker  form-control" id="birthdayInput" value="#{_person.personEntity.birthday}">
                 <f:convertDateTime pattern="yyyy-mm-dd"/>
             </h:inputText>
 
 
             <span class="input-group-btn">
-                <h:selectOneMenu label="性别"
+                <h:selectOneMenu label="性别" pt:data-person-field="sex"
                                  styleClass="selectpicker form-control select-theme"
                                  converter="omnifaces.GenericEnumConverter" pt:data-width="70px"
                                  value="#{_person.personEntity.sex}" required="false">

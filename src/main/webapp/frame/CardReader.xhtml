@@ -1,0 +1,116 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <iframe style="display:none;" class="ext_iframe" src=""/>
+
+
+    <h:outputScript>
+        function extCall(printUrl) {
+            $('.ext_iframe').attr('src', printUrl);
+        }
+    </h:outputScript>
+
+    <h:outputStylesheet>
+        .reading-bli.card-reading {
+            color: #8a6d3b;!important;
+        }
+
+
+
+    </h:outputStylesheet>
+
+    <h:outputScript name="uuid.js"/>
+
+
+    <h:outputScript>
+
+
+
+        function poolPerson() {
+
+            $('.card-reading').each(function () {
+                var uuid = $(this).attr('data-person-id-read');
+
+                $.ajax({
+                    url: "#{runParam.getStringParam('public_api_server')}/api/protected/cache-get",
+                    data: {key: uuid},
+                    type: 'GET',
+                    dataType: 'json',
+                    crossDomain: true,
+                    async: false,
+                    success: function(data){
+                        console.log('get data:' + data);
+                        $('[data-person-id-read="' + uuid + '"]').removeClass('card-reading');
+
+
+                        $('[data-person-input="'+ uuid +'"]').find('[data-person-field="name"]').val(data.name);
+                        $('[data-person-input="'+ uuid +'"]').find('[data-person-field="number"]').val(data.number);
+                        $('[data-person-input="'+ uuid +'"]').find('[data-person-field="address"]').val(data.address);
+                        $('[data-person-input="'+ uuid +'"]').find('[data-person-field="birthday"]').val(data.dateOfBirth);
+                        $('[data-person-input="'+ uuid +'"]').find('[data-person-field="sex"]').selectpicker('val',data.sex);
+
+                    },
+            error: function(){
+             //alert(arguments[1]);
+            }
+                    });
+
+
+            });
+        }
+
+       setInterval(poolPerson, 3000);
+
+        function readingBil() {
+            $('.card-reading').each(function () {
+                if ($(this).hasClass('reading-bli')) {
+
+                    $(this).removeClass('reading-bli');
+                } else {
+
+                    $(this).addClass('reading-bli');
+                }
+            });
+        }
+
+        setInterval(readingBil, 500)
+
+
+    </h:outputScript>
+
+    <p:outputPanel autoUpdate="true">
+    <h:outputScript>
+        $(document).ready(function () {
+            $('[data-person-id-read]').unbind('click')
+            $('[data-person-id-read]').click(function () {
+                if ($(this).hasClass('card-reading')) {
+                    $('.card-reading').removeClass('card-reading');
+                    extCall('ExtendsCer://');
+                } else {
+                    var uuid = $(this).attr('data-person-id-read');
+                    if (uuid == ''){
+                        uuid = Math.uuid();
+                        $(this).attr('data-person-id-read',uuid);
+                        $(this).parents('[data-person-input]').attr('data-person-input',uuid)
+                    }
+                    $('.card-reading').removeClass('card-reading');
+                    $(this).addClass('card-reading');
+                    if (!$(this).hasClass('reading-bli')) {
+                        $(this).addClass('reading-bli');
+                    }
+                    extCall('ExtendsCer://' + uuid);
+                }
+                return false;
+            });
+        });
+    </h:outputScript>
+    </p:outputPanel>
+
+</ui:composition>

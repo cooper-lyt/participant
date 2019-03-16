@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+
+    <entity class="cc.coopersoft.house.sale.data.CommitFile" access="FIELD">
+        <table name="COMMIT_FILE" catalog="CONTRACT"/>
+
+        <attributes>
+            <id name="id">
+                <column name="ID" unique="true" nullable="false" length="32"/>
+            </id>
+            <basic name="uploadTime">
+                <column name="UPLOAD_TIME"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+
+            <basic name="md5" fetch="LAZY">
+                <column name="MD5" column-definition="LONGTEXT"/>
+            </basic>
+
+
+            <many-to-one name="houseContract" fetch="LAZY" optional="false">
+                <join-column name="CONTRACT" nullable="false"/>
+            </many-to-one>
+
+        </attributes>
+    </entity>
+
+
+</entity-mappings>

@@ -108,6 +108,7 @@ public class ContractCreate implements java.io.Serializable{
     @Transactional
     public Class<? extends ViewConfig> submitContract(){
 
+        logger.config("call contract commit!");
         contractHome.putContractContext();
 
 

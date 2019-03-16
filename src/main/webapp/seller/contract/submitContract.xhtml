@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/seller/layout/pageTemplate.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:o="http://omnifaces.org/ui">
+
+
+
+    <f:subview id="contart-commit">
+    <h:form>
+
+
+
+        <b:modal id="submodal" size="modal-sm" title="提交确认" styleClass="submodalModalClass">
+            <p>您确认要提交合同#{' '}<strong>#{contractHome.instance.id}</strong>#{' '} 到房屋交易备案部门 </p>
+            <p>提交后合同将从草签状态转为签约状态，签约状态的合同将无法被修改，但您仍然可以打印合同。</p>
+            <f:facet name="footer">
+
+
+                <h:commandButton immediate="true" styleClass="btn btn-success" style="width:100%" value="我确认要提交此合同"
+                                 action="#{contractCreate.submitContract}">
+                    <f:param name="contractId" value="#{contractHome.instance.id}"/>
+                    <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                </h:commandButton>
+
+            </f:facet>
+        </b:modal>
+    </h:form>
+    </f:subview>
+
+
+    <b:row style="margin-top: 20px;">
+        <b:column>
+            <b:messages globalOnly="true" styleClass="top-messages"/>
+        </b:column>
+        <b:column>
+            <b:panel styleClass="head-title-panel">
+                <b:buttonGroup styleClass="right" style="margin-left:5px">
+
+                </b:buttonGroup>
+                <div class="btn-group right" style="margin-left:5px"  role="group" aria-label="...">
+                    <button type="button" onclick="cameraUpload('#{contractHome.instance.id}','#{contractHome.instance.id} 合同要件上传');return false;" class="btn btn-default">拍摄要件</button>
+                    <button type="button" onclick="$('.submodalModalClass').modal();return false;" class="btn btn-default">提交合同</button>
+                </div>
+
+
+
+                <h2><h:outputText value="#{contractHome.instance.id}"/></h2>
+                <p>
+                    <h:outputText value="#{contractHome.instance.houseDescription}"/>
+                </p>
+            </b:panel>
+        </b:column>
+
+    </b:row>
+
+    <ui:include src="/frame/FileReader.xhtml"/>
+
+
+    <div class="row js-commit-files">
+        <c:forEach items="#{contractHome.commitFileList}" var="_file">
+        <div class="col-xs-6 col-md-3 js-commit-file-gallery">
+            <a href="#" data-commit-fileid="#{_file.id}" onclick="imgClick('#{_file.id}');return false;" class="thumbnail">
+                <img src="#{runParam.getStringParam('public_api_server')}/img/480x320s/#{_file.id}" alt="..."/>
+            </a>
+
+        </div>
+        </c:forEach>
+    </div>
+
+</ui:composition>

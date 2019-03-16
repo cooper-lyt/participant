@@ -105,6 +105,11 @@
                 <cascade><cascade-all/></cascade>
             </one-to-many>
 
+            <one-to-many name="commitFiles" fetch="LAZY" orphan-removal="true"
+                         mapped-by="houseContract">
+                <cascade><cascade-all/></cascade>
+            </one-to-many>
+
 
             <one-to-one fetch="LAZY" orphan-removal="true" name="saleProxyPerson">
                 <primary-key-join-column/>

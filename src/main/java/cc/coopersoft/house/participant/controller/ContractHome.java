@@ -221,7 +221,15 @@ public class ContractHome extends EntityHome<HouseContract,String> {
     }
 
 
-
+    public List<CommitFile> getCommitFileList(){
+        List<CommitFile> result = new ArrayList<CommitFile>(getInstance().getCommitFiles());
+        Collections.sort(result, new Comparator<CommitFile>() {
+            public int compare(CommitFile o1, CommitFile o2) {
+                return o1.getUploadTime().compareTo(o2.getUploadTime());
+            }
+        });
+        return result;
+    }
 
     protected HouseContract createInstance() {
 
@@ -242,6 +250,8 @@ public class ContractHome extends EntityHome<HouseContract,String> {
 
 
     }
+
+
 
 
     protected EntityRepository<HouseContract, String> getEntityRepository() {

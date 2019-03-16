@@ -100,7 +100,11 @@
                     </b:navCommandLink>
 
                     <b:navLink value="删除" onclick="$('.modalPseudoClass').modal();return false;"  href="#"></b:navLink>
-                    <b:navLink value="提交合同" onclick="$('.submodalModalClass').modal();return false;"  href="#"></b:navLink>
+
+                    <b:navCommandLink value="完成" action="#{contractFile.completeContract}" ajax="true" update="@none">
+                        <f:param name="contractId" value="#{contractHome.instance.id}"/>
+                        <f:param name="houseSaleInfoId" value="#{houseSourceHome.instance.id}"/>
+                    </b:navCommandLink>
 
 
                     <b:navLink rendered="#{not (runParam.getStringParam('print_after') eq 'TRUE')}" value="打印合同" onclick="$('.pdfmodalModalClass').modal();return false;"  href="#"></b:navLink>

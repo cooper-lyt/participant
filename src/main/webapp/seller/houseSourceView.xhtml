@@ -41,7 +41,9 @@
 
 
     <b:row style="margin-top: 20px;">
-
+        <b:column>
+            <b:messages globalOnly="true" styleClass="top-messages"/>
+        </b:column>
 
         <b:column rendered="#{houseSourceHome.join or houseSourceHome.instance.allowJoin}">
             <b:panel styleClass="head-title-panel">
@@ -96,9 +98,7 @@
             </b:panel>
         </b:column>
 
-        <b:column>
-            <b:messages globalOnly="true" styleClass="top-messages"/>
-        </b:column>
+
 
         <b:column rendered="#{houseSourceHome.join and (houseSourceHome.instance.status.name() eq 'CHECK_FAIL')}">
 

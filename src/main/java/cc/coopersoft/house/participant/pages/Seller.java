@@ -17,6 +17,8 @@ public interface Seller {
 
     interface Contract extends ViewConfig{
 
+        class SubmitContract implements Contract{}
+
         interface Dg extends Contract{
 
             class OldEdit implements Dg {}

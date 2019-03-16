@@ -7,7 +7,7 @@
           <element id="module-output" name="participant" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: local.house:HouseInterface:2.0.134Bate" />
+          <element id="library" level="project" name="Maven: local.house:HouseInterface:2.0.135Bate" />
           <element id="library" level="project" name="Maven: com.itextpdf:itextpdf:5.5.12" />
           <element id="library" level="project" name="Maven: com.itextpdf:itext-asian:5.2.0" />
           <element id="library" level="project" name="Maven: org.bouncycastle:bcprov-jdk15on:1.59" />

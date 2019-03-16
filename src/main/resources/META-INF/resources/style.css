@@ -27,3 +27,17 @@
 .reading-bli.card-reading {
     color: #8a6d3b;!important;
 }
+
+
+.head-title-panel.panel{
+
+    background-color: #fafafa;
+}
+
+.head-title-panel h2{
+    color: #4078c0;
+    margin-top: 9px;
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: normal;
+}

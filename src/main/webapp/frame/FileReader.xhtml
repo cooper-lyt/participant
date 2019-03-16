@@ -1,0 +1,84 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+
+
+
+    <link type="text/css" rel="stylesheet" href="/participant/javax.faces.resource/fancybox.css.xhtml"/>
+
+
+
+    <iframe style="display:none;" class="call_extend_iframe" src=""/>
+    <h:outputScript>
+
+        function imgClick(fid){
+        console.log('#{runParam.getStringParam('public_api_server')}/img/orig/' + fid  + '.jpg');
+        $.fancybox(
+        {
+
+        href: '#{runParam.getStringParam('public_api_server')}/img/orig/' + fid  + '.jpg',
+        title: '图片',
+         closeBtn: true,
+
+        openEffect : 'elastic',
+          openSpeed  : 150,
+          closeEffect : 'elastic',
+          closeSpeed  : 150,
+
+
+        }
+        );
+        }
+
+
+
+        function selectFileUpload(typeId,title){
+            $('.call_extend_iframe').attr('src', "ExtendsFileSelect:// -key='" + typeId + "' -title='" + title + "'");
+        }
+
+        function cameraUpload(typeId,title){
+            $('.call_extend_iframe').attr('src', "ExtendsCamera://-key='" + typeId + "' -title='" + title + "'");
+        }
+
+        
+        
+        function loadContractFile() {
+        $.ajax({
+        url: "#{runParam.getStringParam('public_api_server')}/api/protected/get-contract-file",
+        data: {key: '#{contractHome.instance.id}'},
+        type: 'GET',
+        dataType: 'json',
+        crossDomain: true,
+        async: false,
+        success: function(data){
+        console.log('get data:' + data);
+
+            $.each(data,function(idx,obj) {
+                if ($('[data-commit-fileid="' + obj.ID + '"]').length == 0){
+                    $('.js-commit-files').append('<div class="col-xs-6 col-md-3 js-commit-file-gallery"><a href="#" onclick="imgClick(\'' + obj.ID + '\');return false;" data-commit-fileid="' + obj.ID + '" class="thumbnail"><img src="#{runParam.getStringParam('public_api_server')}/img/480x320s/' + obj.ID + '"  alt="..."/></a></div>')
+                }
+            });
+
+
+        },
+        error: function(){
+        //alert(arguments[1]);
+        console.log('error:' + arguments[1]);
+        }
+        });
+        }
+
+        setInterval(loadContractFile, 3000);
+
+    </h:outputScript>
+
+    <h:outputScript library="fancybox" name="jquery.fancybox.pack.js"/>
+    
+</ui:composition>

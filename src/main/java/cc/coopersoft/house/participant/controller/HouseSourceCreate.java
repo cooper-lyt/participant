@@ -136,7 +136,18 @@ public class HouseSourceCreate {
     @Seller
     @Transient
     public  Class<? extends  ViewConfig> createHouse(){
-        houseSourceHome.getInstance().setAddress(serverWord.getDistrictName(houseSourceHome.getInstance().getDistrict()) + "街" + houseSourceHome.getInstance().getWei() + "委" + houseSourceHome.getInstance().getSectionName() + "小区" + houseSourceHome.getInstance().getBuildNumber() + "号楼" + houseSourceHome.getInstance().getHouseOrder() + "室");
+        String address = serverWord.getDistrictName(houseSourceHome.getInstance().getDistrict()) + "街";
+        if (houseSourceHome.getInstance().getWei() != null){
+            address = address + houseSourceHome.getInstance().getWei() + "委";
+        }
+        if (houseSourceHome.getInstance().getSectionName() != null){
+            address = address + houseSourceHome.getInstance().getSectionName() + "小区";
+        }
+        if (houseSourceHome.getInstance().getBuildNumber() != null){
+            address = address + houseSourceHome.getInstance().getBuildNumber() + "号楼";
+        }
+        address = address + houseSourceHome.getInstance().getHouseOrder() + "室";
+        houseSourceHome.getInstance().setAddress(address);
         houseSourceHome.getInstance().setBlockNumber("-");
         houseSourceHome.getInstance().setMapNumber("-");
         if (houseSourceHome.getInstance().getDesignUseType() == null || "".equals(houseSourceHome.getInstance().getDesignUseType().trim())){

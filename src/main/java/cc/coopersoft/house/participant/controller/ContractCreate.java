@@ -323,8 +323,11 @@ public class ContractCreate implements java.io.Serializable{
         contractHome.getContractContextMap().put("pay_type", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getSalePayType().name()));
 
         contractHome.getContractContextMap().put("price_house_area", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getPrice().divide(houseSourceHome.getInstance().getHouseArea(),2, BigDecimal.ROUND_HALF_EVEN)));
-        contractHome.getContractContextMap().put("price_use_area", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getPrice().divide(houseSourceHome.getInstance().getUseArea(),2, BigDecimal.ROUND_HALF_EVEN)));
 
+        if (houseSourceHome.getInstance().getUseArea() != null && houseSourceHome.getInstance().getUseArea().compareTo(BigDecimal.ZERO) > 0) {
+            contractHome.getContractContextMap().put("price_use_area", new ContractContextMap.ContarctContextItem(contractHome.getInstance().getPrice().divide(houseSourceHome.getInstance().getUseArea(), 2, BigDecimal.ROUND_HALF_EVEN)));
+
+        }
         contractHome.getContractContextMap().put("address", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getAddress()));
         contractHome.getContractContextMap().put("use_type", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getDesignUseType()));
         contractHome.getContractContextMap().put("map_number",new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getMapNumber()));
@@ -337,7 +340,9 @@ public class ContractCreate implements java.io.Serializable{
         contractHome.getContractContextMap().put("power_card_type", new ContractContextMap.ContarctContextItem(enumHelper.getLabel(houseSourceHome.getInstance().getPowerCardType())));
         contractHome.getContractContextMap().put("power_card_number", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getPowerCardNumber()));
         contractHome.getContractContextMap().put("house_area", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea()));
-        contractHome.getContractContextMap().put("use_area", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getUseArea()));
+        if (houseSourceHome.getInstance().getUseArea() != null && houseSourceHome.getInstance().getUseArea().compareTo(BigDecimal.ZERO) > 0 ) {
+            contractHome.getContractContextMap().put("use_area", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getUseArea()));
+        }
         contractHome.getContractContextMap().put("comm_area", new ContractContextMap.ContarctContextItem(houseSourceHome.getInstance().getHouseArea().subtract(houseSourceHome.getInstance().getUseArea())));
 
         contractHome.getContractContextMap().put("sale_pay_type",new ContractContextMap.ContarctContextItem(enumHelper.getLabel(contractHome.getInstance().getSalePayType())));

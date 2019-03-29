@@ -62,7 +62,7 @@
 
             $.each(data,function(idx,obj) {
                 if ($('[data-commit-fileid="' + obj.ID + '"]').length == 0){
-                    $('.js-commit-files').append('<div class="col-xs-6 col-md-3 js-commit-file-gallery"><a href="#" onclick="imgClick(\'' + obj.ID + '\');return false;" data-commit-fileid="' + obj.ID + '" class="thumbnail"><img src="#{runParam.getStringParam('public_api_server')}/img/480x320s/' + obj.ID + '"  alt="..."/></a></div>')
+                    $('.js-commit-files').append('<div class="col-xs-6 col-md-3 js-commit-file-gallery"><div class="bmbox" onclick="removeFile(\'' + obj.ID + '\')">删除</div><a href="#" onclick="imgClick(\'' + obj.ID + '\');return false;" data-commit-fileid="' + obj.ID + '" class="thumbnail"><img src="#{runParam.getStringParam('public_api_server')}/img/480x320s/' + obj.ID + '"  alt="..."/></a></div>')
                 }
             });
 
@@ -75,7 +75,21 @@
         });
         }
 
-        setInterval(loadContractFile, 3000);
+        setInterval(loadContractFile, 1000);
+
+
+        function bindDeleteBtn(){
+        $(".js-commit-file-gallery").unbind('hover');
+        $(".js-commit-file-gallery").hover(
+        function () {
+        $('.bmbox:first',this).show(100);
+        },
+        function () {
+        $('.bmbox:first',this).hide(100);
+        });
+        }
+
+        $(document).ready(bindDeleteBtn);
 
     </h:outputScript>
 

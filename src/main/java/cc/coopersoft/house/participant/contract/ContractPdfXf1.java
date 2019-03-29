@@ -854,7 +854,11 @@ public class ContractPdfXf1 {
             p.add(new Phrase("层。建筑面积",b2));
             p.add(new Phrase(pm(dfArea.format(contractContextMap.get("house_area").getNumberValue()),4),bi));
             p.add(new Phrase("平方米，其中：套内建筑面积",b2));
-            p.add(new Phrase(pm(dfArea.format(contractContextMap.get("use_area").getNumberValue()),4),bi));
+            if (!contractContextMap.get("use_area").isEmptyData()) {
+                p.add(new Phrase(pm(dfArea.format(contractContextMap.get("use_area").getNumberValue()), 4), bi));
+            }else{
+                p.add(new Phrase(pm("-", 4), bi));
+            }
             p.add(new Phrase("平方米，公共部位分摊建筑面积",b2));
             p.add(new Phrase(pm(dfArea.format(contractContextMap.get("comm_area").getNumberValue()),4),bi));
             p.add(new Phrase("平方米。原房权证号：",b2));
@@ -1245,16 +1249,22 @@ public class ContractPdfXf1 {
 
             cel = new PdfPCell(new Paragraph("出卖方产权人：",b2));
             cel.setBorder(0);
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             table.addCell(cel);
 
 
             cel = new PdfPCell();
             cel.setBorder(0);
             cel.setBorderWidthBottom(1);
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorderColor(BaseColor.BLACK);
             table.addCell(cel);
 
             cel = new PdfPCell(new Paragraph("买受方产权人：",b2));
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorder(0);
             table.addCell(cel);
 
@@ -1262,10 +1272,14 @@ public class ContractPdfXf1 {
             cel = new PdfPCell();
             cel.setBorder(0);
             cel.setBorderWidthBottom(1);
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorderColor(BaseColor.BLACK);
             table.addCell(cel);
 
             cel = new PdfPCell(new Paragraph("电话：",b2));
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorder(0);
             table.addCell(cel);
 
@@ -1273,11 +1287,15 @@ public class ContractPdfXf1 {
             cel = new PdfPCell();
             cel.setBorder(0);
             cel.setBorderWidthBottom(1);
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorderColor(BaseColor.BLACK);
             table.addCell(cel);
 
 
             cel = new PdfPCell(new Paragraph("电话：",b2));
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorder(0);
             table.addCell(cel);
 
@@ -1285,10 +1303,14 @@ public class ContractPdfXf1 {
             cel = new PdfPCell();
             cel.setBorder(0);
             cel.setBorderWidthBottom(1);
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorderColor(BaseColor.BLACK);
             table.addCell(cel);
 
             cel = new PdfPCell(new Paragraph("共有人：",b2));
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorder(0);
             table.addCell(cel);
 
@@ -1296,10 +1318,14 @@ public class ContractPdfXf1 {
             cel = new PdfPCell();
             cel.setBorder(0);
             cel.setBorderWidthBottom(1);
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorderColor(BaseColor.BLACK);
             table.addCell(cel);
 
             cel = new PdfPCell(new Paragraph("共有人：",b2));
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorder(0);
             table.addCell(cel);
 
@@ -1307,10 +1333,14 @@ public class ContractPdfXf1 {
             cel = new PdfPCell();
             cel.setBorder(0);
             cel.setBorderWidthBottom(1);
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorderColor(BaseColor.BLACK);
             table.addCell(cel);
 
             cel = new PdfPCell(new Paragraph("电话：",b2));
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorder(0);
             table.addCell(cel);
 
@@ -1318,11 +1348,15 @@ public class ContractPdfXf1 {
             cel = new PdfPCell();
             cel.setBorder(0);
             cel.setBorderWidthBottom(1);
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorderColor(BaseColor.BLACK);
             table.addCell(cel);
 
 
             cel = new PdfPCell(new Paragraph("电话：",b2));
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorder(0);
             table.addCell(cel);
 
@@ -1330,10 +1364,14 @@ public class ContractPdfXf1 {
             cel = new PdfPCell();
             cel.setBorder(0);
             cel.setBorderWidthBottom(1);
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorderColor(BaseColor.BLACK);
             table.addCell(cel);
 
             cel = new PdfPCell();
+            cel.setPaddingTop(10);
+            cel.setPaddingBottom(10);
             cel.setBorder(0);
             table.addCell(cel);
 

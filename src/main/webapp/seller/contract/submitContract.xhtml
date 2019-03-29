@@ -60,10 +60,31 @@
 
     <ui:include src="/frame/FileReader.xhtml"/>
 
+    <h:outputStylesheet>
 
+
+        .bmbox {
+            width: 85%;
+            height: 30px;
+            background: black;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            opacity: 0.4;
+            display: none;
+            margin: 5px 0 0 20px;
+            color: red;
+            text-align: center;
+            cursor:pointer;
+        }
+    </h:outputStylesheet>
+
+    <p:outputPanel layout="inline" id="commit_files_panel">
     <div class="row js-commit-files">
+
         <c:forEach items="#{contractHome.commitFileList}" var="_file">
         <div class="col-xs-6 col-md-3 js-commit-file-gallery">
+            <div class="bmbox" onclick="removeFile('#{_file.id}')">删除</div>
             <a href="#" data-commit-fileid="#{_file.id}" onclick="imgClick('#{_file.id}');return false;" class="thumbnail">
                 <img src="#{runParam.getStringParam('public_api_server')}/img/480x320s/#{_file.id}" alt="..."/>
             </a>
@@ -71,5 +92,27 @@
         </div>
         </c:forEach>
     </div>
+    </p:outputPanel>
 
+    <h:form >
+        <b:modal id="amodal2" title="删除确认" size="modal-sm"  styleClass="js-delete-file-modal">
+            <p>确认要删除这张图片？
+            </p>
+            <f:facet name="footer">
+                <h:inputHidden value="#{contractFile.fileId}"/>
+                <b:commandButton style="width:100%" oncomplete="$('.js-delete-file-modal').modal('hide');bindDeleteBtn();" value="我确认要删除这张图片" ajax="true" update="commit_files_panel" action="#{contractFile.removeFile}"/>
+            </f:facet>
+        </b:modal>
+    </h:form>
+
+    <h:outputScript>
+
+        function removeFile(id){
+            $('.js-delete-file-modal input[type=hidden]').val(id);
+            $('.js-delete-file-modal').modal();
+        }
+
+
+
+    </h:outputScript>
 </ui:composition>
